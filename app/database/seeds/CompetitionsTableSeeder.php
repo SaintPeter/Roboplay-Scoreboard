@@ -1,0 +1,18 @@
+<?php
+
+class CompetitionsTableSeeder extends Seeder {
+
+	public function run()
+	{
+		// Uncomment the below to wipe the table clean before populating
+		// DB::table('competitions')->truncate();
+
+		$competitions = array(
+
+		);
+
+		// Uncomment the below to run the seeder
+		// DB::table('competitions')->insert($competitions);
+	}
+
+}

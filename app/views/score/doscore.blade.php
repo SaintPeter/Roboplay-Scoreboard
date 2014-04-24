@@ -1,0 +1,95 @@
+@extends('layouts.mobile')
+
+@section('header', 'Score')
+
+@section('style')
+	.ui-li-static {
+		white-space: normal; !important
+	}
+@stop
+
+@section('navbar')
+<a class="ui-btn-right"
+   href="#"
+   data-icon="back"
+   data-iconpos="notext"
+   role="button"
+   id="back_button"
+   data-ajax="false"
+   >Back</a>
+@stop
+
+@section('script')
+	var val = "";
+	$(function() {
+		// Setup a function to recalculate the score on every "stop" event
+		$("[id^=sel_]").change(calculate_score);
+	});
+
+	function calculate_score() {
+		$('#score').html = "Blah";
+		var total = 0;
+		$('[id^=sel_]').each(function(i, obj) {
+			var base = parseInt($(obj).attr('base'));
+			var val = parseInt($(obj).val());
+			var multi = parseInt($(obj).attr('multi'));
+			total += base + ( val * multi);
+		});
+		total = Math.max(total, 0);
+		$('#score').html(total);
+	}
+
+@stop
+
+@section('main')
+<div class="ui-body ui-body-a">
+	<p>
+		<strong>Judge: </strong>{{ $judge->display_name }}<br />
+		<strong>Division: </strong>{{{ $team->division->name }}}<br />
+		<strong>Team: </strong>{{{ $team->longname() }}}
+	</p>
+	<h2>Run {{{ $run_number }}}</h2>
+	<p>
+		<strong>{{{ $challenge->display_name }}}</strong><br />
+		{{{ $challenge->rules }}}
+	</p>
+</div>
+<br />
+{{ Form::open(array('route' => array('score.save', $team->id, $challenge->id), 'id' => 'se_form', 'data-ajax' => 'false' )) }}
+	<ul data-role="listview">
+		@foreach($score_elements as $id => $score_element)
+			@if ($score_element->type == 'yesno')
+				@include('score.partial.yesno', compact('score_element'))
+			@elseif ($score_element->type == 'noyes')
+				@include('score.partial.noyes', compact('score_element'))
+			@elseif ($score_element->type == 'slider' OR $score_element->type == 'low_slider')
+				@include('score.partial.low_slider', compact('score_element'))
+			@elseif ($score_element->type == 'high_slider')
+				@include('score.partial.high_slider', compact('score_element'))
+			@else
+				<li>Error displaying Score Element '{{ $score_element->display_text }} ({{ $score_element->element_number }})'</li>
+			@endif
+		@endforeach
+		<li>
+			Estimated Score: <span id="score"></score>
+		</li>
+		<li>
+			<fieldset class="ui-grid-a">
+				<div class="ui-block-a">{{ Form::submit('Submit', array('class' => 'ui-btn', 'name' => 'submit')) }}</div>
+				<div class="ui-block-b">{{ Form::submit('Cancel', array('class' => 'ui-btn', 'name' => 'cancel')) }}</div>
+			</fieldset>
+		</li>
+	</ul>
+{{ Form::close() }}
+
+@if ($errors->any())
+	<ul>
+		{{ implode('', $errors->all('<li class="error">:message</li>')) }}
+	</ul>
+@endif
+
+<script>
+	$("#back_button").attr("href", "{{ route('score.score_team', [$competition_id, $division_id, $team->id]) }}");
+</script>
+
+@stop
