@@ -7,6 +7,8 @@ class Schools extends Eloquent {
 	protected $guarded = array('school_id');
 
 	public static $rules = array();
-
-
+	
+	public function district() {
+		return $this->belongsTo('Districts', 'district_id', 'district_id');
+	}
 }

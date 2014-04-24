@@ -22,6 +22,10 @@ Route::get('team/{team_id}', array('as' => 'display.teamscore', 'uses' => 'Displ
 		 ->where('team_id', '\d+');
 Route::get('comp/{competition_id}', array('as' => 'display.compscore', 'uses' => 'DisplayController@compscore'))
 		 ->where('competition_id', '\d+');
+		 
+/* ------------------------- Ajax Handlers -------------------------- */
+Route::get('ajax/d/{county_id}', [ 'as' => 'ajax.districts', 'uses' => 'Wp_fix@ajax_districts']);
+Route::get('ajax/s/{district_id}', [ 'as' => 'ajax.schools', 'uses' => 'Wp_fix@ajax_schools']);
 
 
 /* ------------------------------ User ------------------------------------- */
@@ -64,6 +68,8 @@ Route::group(array('before' => 'auth'), function() {
 		Route::resource('score_runs', 'Score_runsController');
 		Route::resource('judges', 'JudgesController');
 		Route::resource('videos', 'VideosController');
+		
+		Route::get('user_schools', [ 'as' => 'user_schools', 'uses' => 'Wp_fix@user_schools']);
 	});
 
 	Route::group(array('before' => 'judge'), function () {
