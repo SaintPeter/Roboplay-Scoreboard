@@ -9,7 +9,7 @@ public $connection = 'mysql-wordpress';
         public static $rules = array();
 
 	public function county() {
-		return $this->belongsTo('counties','county_id', 'county_id');
+		return $this->belongsTo('Counties','county_id', 'county_id');
 
 	}
 
