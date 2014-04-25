@@ -9,11 +9,11 @@ public $connection = 'mysql-wordpress';
         public static $rules = array();
 
 	public function county() {
-		return belongsTo('counties','county_id', 'county_id');
+		return $this->belongsTo('counties','county_id', 'county_id');
 
 	}
 
 	public function schools() {
-		return hasMany('Schools', 'school_id', 'school_id');
+		return $this->hasMany('Schools', 'school_id', 'school_id');
 	}
 }

@@ -5,6 +5,7 @@ class Usermeta extends Eloquent {
 	protected $table = 'usermeta';
 	protected $primaryKey = 'umeta_id';
 	protected $guarded = array('umeta_id');
+	public $timestamps = false;
 
 	public static $rules = array();
 

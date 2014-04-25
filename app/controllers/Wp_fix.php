@@ -12,6 +12,11 @@ class Wp_fix extends BaseController {
 			$user->metadata['wp_district'] = array_key_exists('wp_district',$user->metadata) ?  $user->metadata['wp_district'] : 'Not Set';
 			$user->metadata['wp_county'] = array_key_exists('wp_county',$user->metadata) ?  $user->metadata['wp_county'] : 'Not Set';
 			$user->metadata['school_id'] = array_key_exists('school_id',$user->metadata) ?  $user->metadata['school_id'] : 'Not Set';
+			
+			if(array_key_exists('wp_capabilities',$user->metadata)) {
+				$roles = unserialize($user->metadata['wp_capabilities']);
+				$user->metadata['role'] = array_key_exists('teachers',$roles) ?  'Teacher' : 'nonTeacher';
+			} 
 		}
 
 		return View::make('wp_fixes.user_school')
@@ -49,7 +54,30 @@ class Wp_fix extends BaseController {
     	// convert into JSON format and print
     	$response = isset($_GET['callback'])?$_GET['callback']."(".$data.")":$data;
 		return $response;
-
 	}
-
+	
+	public function ajax_save_school() {
+		$user_id = $_POST['user_id'];
+		$school_id = $_POST['select_school'];
+		
+		$school = Schools::with('district', 'district.county')->find($school_id);
+		
+		$um = Usermeta::firstOrCreate(['user_id' => $user_id, 'meta_key' => 'school_id']);
+		$um->meta_value = $school_id;
+		$um->save();
+		
+		$um = Usermeta::firstOrCreate(['user_id' => $user_id, 'meta_key' => 'wp_school']);
+		$um->meta_value = $school->name;
+		$um->save();
+		
+		$um = Usermeta::firstOrCreate(['user_id' => $user_id, 'meta_key' => 'wp_district']);
+		$um->meta_value = $school->district->name;
+		$um->save();
+		
+		$um = Usermeta::firstOrCreate(['user_id' => $user_id, 'meta_key' => 'wp_county']);
+		$um->meta_value = $school->district->county->name;
+		$um->save();
+		
+		return "true";
+	}
 }

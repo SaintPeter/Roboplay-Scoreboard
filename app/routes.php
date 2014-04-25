@@ -71,6 +71,7 @@ Route::group(array('before' => 'auth'), function() {
 		Route::resource('videos', 'VideosController');
 
 		Route::get('user_schools', [ 'as' => 'user_schools', 'uses' => 'Wp_fix@user_schools']);
+		Route::post('ajax/save_school', [ 'as' => 'ajax.save_school', 'uses' => 'Wp_fix@ajax_save_school']);
 	});
 
 	Route::group(array('before' => 'judge'), function () {
