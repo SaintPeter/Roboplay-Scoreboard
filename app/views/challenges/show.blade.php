@@ -2,7 +2,7 @@
 
 @section('script')
 $(function() {
-	$( "#dialog" ).dialog({ autoOpen: false });
+	$( "#dialog" ).clone().dialog({ autoOpen: false });
 
 	// Add Score Element Button
 	$("#add_score_element").click(function() {
