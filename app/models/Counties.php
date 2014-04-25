@@ -9,6 +9,6 @@ class Counties extends Eloquent {
         public static $rules = array();
 
 	public function districts() {
-		return $this->hasMany('districts', 'district_id');
+		return $this->hasMany('Districts', 'district_id');
 	}
 }

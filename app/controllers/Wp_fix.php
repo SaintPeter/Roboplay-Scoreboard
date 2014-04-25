@@ -11,7 +11,7 @@ class Wp_fix extends BaseController {
 			$user->metadata['wp_school'] = array_key_exists('wp_school',$user->metadata) ?  $user->metadata['wp_school'] : 'Not Set';
 			$user->metadata['wp_district'] = array_key_exists('wp_district',$user->metadata) ?  $user->metadata['wp_district'] : 'Not Set';
 			$user->metadata['wp_county'] = array_key_exists('wp_county',$user->metadata) ?  $user->metadata['wp_county'] : 'Not Set';
-			$user->metadata['school_id'] = array_key_exists('school_id',$user->metadata) ?  $user->metadata['school_id'] : 'Not Set';
+			$user->metadata['wp_school_id'] = array_key_exists('wp_school_id',$user->metadata) ?  $user->metadata['wp_school_id'] : 'Not Set';
 			
 			if(array_key_exists('wp_capabilities',$user->metadata)) {
 				$roles = unserialize($user->metadata['wp_capabilities']);
@@ -62,19 +62,19 @@ class Wp_fix extends BaseController {
 		
 		$school = Schools::with('district', 'district.county')->find($school_id);
 		
-		$um = Usermeta::firstOrCreate(['user_id' => $user_id, 'meta_key' => 'school_id']);
+		$um = Usermeta::firstOrNew(['user_id' => $user_id, 'meta_key' => 'wp_school_id']);
 		$um->meta_value = $school_id;
 		$um->save();
 		
-		$um = Usermeta::firstOrCreate(['user_id' => $user_id, 'meta_key' => 'wp_school']);
+		$um = Usermeta::firstOrNew(['user_id' => $user_id, 'meta_key' => 'wp_school']);
 		$um->meta_value = $school->name;
 		$um->save();
 		
-		$um = Usermeta::firstOrCreate(['user_id' => $user_id, 'meta_key' => 'wp_district']);
+		$um = Usermeta::firstOrNew(['user_id' => $user_id, 'meta_key' => 'wp_district']);
 		$um->meta_value = $school->district->name;
 		$um->save();
 		
-		$um = Usermeta::firstOrCreate(['user_id' => $user_id, 'meta_key' => 'wp_county']);
+		$um = Usermeta::firstOrNew(['user_id' => $user_id, 'meta_key' => 'wp_county']);
 		$um->meta_value = $school->district->county->name;
 		$um->save();
 		

@@ -6,10 +6,10 @@
 
 @section('style')
 tr.highlighted {
-	background-color: Yellow;
+	background-color: Yellow !important;
 }
 tr.done {
-	background-color: SkyBlue;
+	background-color: SkyBlue !important;
 }
 @stop
 
@@ -73,7 +73,7 @@ tr.done {
 			<td>{{ $user->metadata['wp_county'] }}</td>
 			<td>{{ $user->metadata['wp_district'] }}</td>
 			<td>{{ $user->metadata['wp_school'] }}</td>
-			<td id="school_id_{{ $user->ID }}">{{ $user->metadata['school_id'] }}</td>
+			<td id="school_id_{{ $user->ID }}">{{ $user->metadata['wp_school_id'] }}</td>
 			<td><button user_id="{{ $user->ID }}" class="btn btn-primary set_school">Set School</button></td>
 		</tr>
 	@endforeach
