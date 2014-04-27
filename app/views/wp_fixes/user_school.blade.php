@@ -5,12 +5,13 @@
 @stop
 
 @section('style')
-tr.highlighted {
+tr.highlighted td{
 	background-color: Yellow !important;
 }
-tr.done {
+tr.done td{
 	background-color: SkyBlue !important;
 }
+html, body { position: relative }
 @stop
 
 @section('script')

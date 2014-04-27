@@ -53,6 +53,7 @@
 	<li>{{ link_to('vid_divisions', 'Video Competition Divisions', $noajax) }}</li>
 	<li>{{ link_to('teams', 'Manage Teams', $noajax) }}</li>
 	<li>{{ link_to('challenges', 'Manage Challenges', $noajax) }}</li>
+	<li>{{ link_to('invoice_management', 'Invoice Payment Management', $noajax) }}</li>
 </ul>
 @endif
 

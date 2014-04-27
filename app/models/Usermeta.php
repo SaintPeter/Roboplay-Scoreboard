@@ -30,4 +30,11 @@ class Usermeta extends Eloquent {
 			return '';
 		}
 	}
+
+	public static function getFullName($user_id)
+	{
+		$first = Usermeta::where('user_id', $user_id)->where('meta_key', 'first_name')->pluck('meta_value');
+		$last = Usermeta::where('user_id', $user_id)->where('meta_key', 'last_name')->pluck('meta_value');
+		return $first . ' ' . $last;
+	}
 }

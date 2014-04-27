@@ -71,6 +71,10 @@ Route::group(array('before' => 'auth'), function() {
 		Route::resource('videos', 'VideosController');
 
 		Route::get('user_schools', [ 'as' => 'user_schools', 'uses' => 'Wp_fix@user_schools']);
+		Route::get('invoice_fix', [ 'as' => 'invoice_fix', 'uses' => 'Wp_fix@invoice_fix']);
+		Route::get('invoice_management', [ 'as' => 'invoice_set', 'uses' => 'Wp_fix@invoice_set']);
+		Route::get('ajax/set_paid/{invoice_no}/{value}', [ 'as' => 'ajax.set_paid', 'uses' => 'Wp_fix@ajax_set_paid']);
+		Route::get('ajax/set_div/{invoice_no}/{value}', [ 'as' => 'ajax.set_div', 'uses' => 'Wp_fix@ajax_set_div']);
 		Route::post('ajax/save_school', [ 'as' => 'ajax.save_school', 'uses' => 'Wp_fix@ajax_save_school']);
 	});
 

@@ -34,7 +34,7 @@ class Division extends Eloquent {
 	public static function longname_array()
 	{
 		$divlist = Division::with('Competition')->get();
-		$namelist = array();
+		$namelist[0] = "-- Select Division --";
 		foreach($divlist as $div) {
 			$namelist[$div->id] = $div->longname();
 		};

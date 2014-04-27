@@ -7,9 +7,9 @@ class Wp_user extends Eloquent {
 	protected $guarded = array('ID');
 
 	public static $rules = array();
-	
+
 	public $metadata = [];
-	
+
 	public function usermeta() {
 		return $this->hasMany('Usermeta', 'user_id');
 	}

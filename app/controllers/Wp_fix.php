@@ -12,15 +12,60 @@ class Wp_fix extends BaseController {
 			$user->metadata['wp_district'] = array_key_exists('wp_district',$user->metadata) ?  $user->metadata['wp_district'] : 'Not Set';
 			$user->metadata['wp_county'] = array_key_exists('wp_county',$user->metadata) ?  $user->metadata['wp_county'] : 'Not Set';
 			$user->metadata['wp_school_id'] = array_key_exists('wp_school_id',$user->metadata) ?  $user->metadata['wp_school_id'] : 'Not Set';
-			
+
 			if(array_key_exists('wp_capabilities',$user->metadata)) {
 				$roles = unserialize($user->metadata['wp_capabilities']);
 				$user->metadata['role'] = array_key_exists('teachers',$roles) ?  'Teacher' : 'nonTeacher';
-			} 
+			}
 		}
 
 		return View::make('wp_fixes.user_school')
 					->with(compact('users','counties'));
+	}
+
+	public function invoice_fix() {
+		$invoices = Wp_invoice::with('user', 'school')->with([ 'user.usermeta' => function($query) {
+				$query->where('meta_key', 'wp_school_id');
+			}])->get();
+
+		foreach($invoices as $invoice) {
+			if($invoice->school_id == 0 AND !$invoice->user->usermeta->isEmpty()) {
+				$invoice->school_id = $invoice->user->usermeta->first()->meta_value;
+				$invoice->save();
+			}
+			$invoice->user->metadata['fullname'] = Usermeta::getFullName($invoice->user_id);
+		}
+
+		return View::make('wp_fixes.invoice_fix')
+					->with(compact('invoices'));
+	}
+
+	public function invoice_set() {
+		Breadcrumbs::addCrumb('Invoice Payment Management','');
+		$invoices = Wp_invoice::with('user', 'school', 'user.usermeta')->get();
+		$divisions = Division::longname_array();
+
+		foreach($invoices as $invoice) {
+			$invoice->user->metadata = $invoice->user->usermeta()->lists('meta_value', 'meta_key');
+		}
+
+		return View::make('wp_fixes.invoice_set', compact('invoices', 'divisions'));
+	}
+
+	public function ajax_set_paid($invoice_no, $value) {
+		$invoice = Wp_invoice::find($invoice_no);
+		$invoice->paid = $value;
+		$invoice->save();
+
+		return 'true';
+	}
+
+	public function ajax_set_div($invoice_no, $value) {
+		$invoice = Wp_invoice::find($invoice_no);
+		$invoice->division_id = $value;
+		$invoice->save();
+
+		return 'true';
 	}
 
 	public function ajax_counties() {
@@ -55,29 +100,29 @@ class Wp_fix extends BaseController {
     	$response = isset($_GET['callback'])?$_GET['callback']."(".$data.")":$data;
 		return $response;
 	}
-	
+
 	public function ajax_save_school() {
 		$user_id = $_POST['user_id'];
 		$school_id = $_POST['select_school'];
-		
+
 		$school = Schools::with('district', 'district.county')->find($school_id);
-		
+
 		$um = Usermeta::firstOrNew(['user_id' => $user_id, 'meta_key' => 'wp_school_id']);
 		$um->meta_value = $school_id;
 		$um->save();
-		
+
 		$um = Usermeta::firstOrNew(['user_id' => $user_id, 'meta_key' => 'wp_school']);
 		$um->meta_value = $school->name;
 		$um->save();
-		
+
 		$um = Usermeta::firstOrNew(['user_id' => $user_id, 'meta_key' => 'wp_district']);
 		$um->meta_value = $school->district->name;
 		$um->save();
-		
+
 		$um = Usermeta::firstOrNew(['user_id' => $user_id, 'meta_key' => 'wp_county']);
 		$um->meta_value = $school->district->county->name;
 		$um->save();
-		
+
 		return "true";
 	}
 }
