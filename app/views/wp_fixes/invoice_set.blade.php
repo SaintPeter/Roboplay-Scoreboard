@@ -53,9 +53,15 @@ tr.done2 td{
 				<td>{{ $invoice->invoice_no }}</td>
 				<td>{{ $invoice->user->metadata['first_name'] }} {{ $invoice->user->metadata['last_name'] }}</td>
 				<td><a href="mailto:{{ $invoice->user->user_email }}" class="btn btn-info btn-mini"><i class=icon-envelope>M</i> </a></td>
-				<td>{{ $invoice->school->district->county->name }}</td>
-				<td>{{ $invoice->school->district->name }}</td>
-				<td>{{ $invoice->school->name }}</td>
+				@if(isset($invoice->school))
+					<td>{{ $invoice->school->district->county->name }}</td>
+					<td>{{ $invoice->school->district->name }}</td>
+					<td>{{ $invoice->school->name }}</td>
+				@else
+					<td>Not Set</td>
+					<td>Not Set</td>
+					<td>Not Set</td>
+				@endif
 				<td>{{ $invoice->division }}</td>
 				<td>{{ Form::select('division_id', $divisions, $invoice->division_id ,[ 'class' => 'select_div', 'invoice_no' => $invoice->invoice_no ]) }}</td>
 				<td>${{ $invoice->total }}</td>
