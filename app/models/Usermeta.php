@@ -18,6 +18,17 @@ class Usermeta extends Eloquent {
 			return '';
 		}
 	}
+	
+	public static function getSchoolId()
+	{
+		if(!Auth::guest())
+		{
+			$school_id = Usermeta::where('user_id', Auth::user()->ID)->where('meta_key', 'wp_school_id')->pluck('meta_value');
+			return isset($school_id) ? $school_id : 0;
+		} else {
+			return 0;
+		}
+	}
 
 	public static function getName()
 	{

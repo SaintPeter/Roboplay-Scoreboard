@@ -18,7 +18,7 @@ class Wp_invoice extends Eloquent {
 	}
 
 	public function division() {
-		return $this->hasOne('Division');
+		return $this->hasOne('Division', 'id', 'division_id');
 	}
 
 	public function getDateAttribute($value) {

@@ -18,6 +18,11 @@ class Team extends Eloquent {
 	{
 		return $this->belongsTo('Score_run');
 	}
+	
+	public function school()
+	{
+		return $this->hasOne('Schools', 'school_id', 'school_id');
+	}
 
 	public function longname()
 	{

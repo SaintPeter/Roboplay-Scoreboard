@@ -1,11 +1,50 @@
 @extends('layouts.scaffold')
 
+@section('style')
+.Paid {
+	background-color: lightgreen;
+}
+
+.Unpaid {
+	background-color: lightred;
+}
+@stop
+
 @section('main')
 
-<h1>Challenge Teams - {{ $school_name }}</h1>
+<h1>Challenge Teams - {{ $school->name }}</h1>
 {{ Breadcrumbs::render() }}
-<p>{{ link_to_route('teacher.teams.create', 'Add Team',array(), array('class' => 'btn btn-primary')) }}</p>
 
+<div class="pull-right" style="width: 500;">
+	<table class="table table-condensed table-bordered">
+		<thead>
+			<tr>
+				<th>County/District/School</th>
+				<th>Division</th>
+				<th>Challenge Teams (Used)</th>
+				<th>Status</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>
+					<strong>C:</strong> {{ $invoice->school->district->county->name }}<br />
+					<strong>D:</strong> {{ $invoice->school->district->name }}<br />
+					<strong>S:</strong> {{ $invoice->school->name }}
+				</td>
+				<td>{{ $invoice->division->name }}</td>
+				<td>{{ $invoice->team_count }} ({{ $teams->count() }})</td>
+				<td class="{{ $paid }}">{{ $paid }}</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+@if( $teams-> count() <= $invoice->team_count)
+	<p>{{ link_to_route('teacher.teams.create', 'Add Team',array(), array('class' => 'btn btn-primary')) }}</p>
+@else
+<p>No More Teams May Be Created.</p>
+@endif
 
 <table class="table table-striped table-bordered">
 	<thead>

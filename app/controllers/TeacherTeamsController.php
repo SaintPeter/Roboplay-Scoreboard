@@ -10,11 +10,14 @@ class TeacherTeamsController extends BaseController {
 	public function index()
 	{
 		Breadcrumbs::addCrumb('Teams', 'index');
-		$school_name = Usermeta::getSchoolName();
+		$school_id = Usermeta::getSchoolId();
+		$school = Schools::find($school_id);
+		$invoice = Wp_invoice::with('division')->where('user_id', Auth::user()->ID)->first();
+		$paid = $invoice->paid ? 'Paid' : 'Unpaid';
 
-		$teams = Team::where('school_name', $school_name)->get();
+		$teams = Team::where('school_id', $school_id)->get();
 
-        return View::make('teacher.teams.index', compact('school_name', 'teams'));
+        return View::make('teacher.teams.index', compact('school_id', 'teams', 'school', 'invoice', 'paid'));
 	}
 
 	/**
