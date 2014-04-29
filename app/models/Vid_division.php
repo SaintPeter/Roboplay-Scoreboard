@@ -22,9 +22,9 @@ class Vid_division extends Eloquent {
 	public static function longname_array()
 	{
 		$divlist = Vid_division::with('competition')->get();
-		$namelist = array();
+		$namelist[0] = "-- Select Video Division --";
 		foreach($divlist as $div) {
-			$namelist[$div->id] = $div->longname();
+			$namelist[$div->competition->name][$div->id] = $div->name;
 		};
 		return $namelist;
 	}

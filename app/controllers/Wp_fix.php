@@ -44,12 +44,13 @@ class Wp_fix extends BaseController {
 		Breadcrumbs::addCrumb('Invoice Payment Management','');
 		$invoices = Wp_invoice::with('user', 'school', 'user.usermeta')->get();
 		$divisions = Division::longname_array();
+		$vid_divisions = Vid_division::longname_array();
 
 		foreach($invoices as $invoice) {
 			$invoice->user->metadata = $invoice->user->usermeta()->lists('meta_value', 'meta_key');
 		}
 
-		return View::make('wp_fixes.invoice_set', compact('invoices', 'divisions'));
+		return View::make('wp_fixes.invoice_set', compact('invoices', 'divisions', 'vid_divisions'));
 	}
 
 	public function ajax_set_paid($invoice_no, $value) {
@@ -63,6 +64,14 @@ class Wp_fix extends BaseController {
 	public function ajax_set_div($invoice_no, $value) {
 		$invoice = Wp_invoice::find($invoice_no);
 		$invoice->division_id = $value;
+		$invoice->save();
+
+		return 'true';
+	}
+	
+	public function ajax_set_vid_div($invoice_no, $value) {
+		$invoice = Wp_invoice::find($invoice_no);
+		$invoice->vid_division_id = $value;
 		$invoice->save();
 
 		return 'true';

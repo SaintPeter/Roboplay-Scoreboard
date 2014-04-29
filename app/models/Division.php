@@ -36,7 +36,7 @@ class Division extends Eloquent {
 		$divlist = Division::with('Competition')->get();
 		$namelist[0] = "-- Select Division --";
 		foreach($divlist as $div) {
-			$namelist[$div->id] = $div->longname();
+			$namelist[$div->competition->name][$div->id] = $div->competition->location . " - " . $div->name;
 		};
 		return $namelist;
 	}
