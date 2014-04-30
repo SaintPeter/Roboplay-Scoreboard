@@ -12,8 +12,8 @@ class TeacherTeamsController extends BaseController {
 		Breadcrumbs::addCrumb('Teams', 'index');
 		$school_id = Usermeta::getSchoolId();
 		$school = Schools::find($school_id);
-		$invoice = Wp_invoice::with('division')->where('user_id', Auth::user()->ID)->first();
-		$paid = $invoice->paid ? 'Paid' : 'Unpaid';
+		$invoice = Wp_invoice::with('challenge_division')->where('user_id', Auth::user()->ID)->first();
+		$paid = $invoice->paid==1 ? 'Paid' : 'Unpaid';
 
 		$teams = Team::where('school_id', $school_id)->get();
 

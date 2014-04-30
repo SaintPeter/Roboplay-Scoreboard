@@ -6,22 +6,19 @@
 }
 
 .Unpaid {
-	background-color: lightred;
+	background-color: pink;
 }
 @stop
 
 @section('main')
-
-<h1>Challenge Teams - {{ $school->name }}</h1>
-{{ Breadcrumbs::render() }}
 
 <div class="pull-right" style="width: 500;">
 	<table class="table table-condensed table-bordered">
 		<thead>
 			<tr>
 				<th>County/District/School</th>
-				<th>Division</th>
-				<th>Challenge Teams (Used)</th>
+				<th>Challenge/Division</th>
+				<th>Teams (Used)</th>
 				<th>Status</th>
 			</tr>
 		</thead>
@@ -32,18 +29,28 @@
 					<strong>D:</strong> {{ $invoice->school->district->name }}<br />
 					<strong>S:</strong> {{ $invoice->school->name }}
 				</td>
-				<td>{{ $invoice->division->name }}</td>
-				<td>{{ $invoice->team_count }} ({{ $teams->count() }})</td>
+				<td>
+					{{ $invoice->challenge_division->competition->name }}<br />
+					{{ $invoice->challenge_division->name }}
+				</td>
+				<td class="text-center">{{ $invoice->team_count }} ({{ $teams->count() }})</td>
 				<td class="{{ $paid }}">{{ $paid }}</td>
 			</tr>
 		</tbody>
 	</table>
 </div>
 
-@if( $teams-> count() <= $invoice->team_count)
-	<p>{{ link_to_route('teacher.teams.create', 'Add Team',array(), array('class' => 'btn btn-primary')) }}</p>
+<h1>Challenge Teams - {{ $school->name }}</h1>
+{{ Breadcrumbs::render() }}
+
+@if( $teams->count() <= $invoice->team_count AND $invoice->team_count > 0)
+	@if($invoice->paid == 1)
+		<p>{{ link_to_route('teacher.teams.create', 'Add Team',array(), array('class' => 'btn btn-primary')) }}</p>
+	@else
+		<p>Payment Not Recieved</p>
+	@endif
 @else
-<p>No More Teams May Be Created.</p>
+	<p>Team Limit Reached</p>
 @endif
 
 <table class="table table-striped table-bordered">
