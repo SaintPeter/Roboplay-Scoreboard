@@ -17,7 +17,7 @@ class Wp_invoice extends Eloquent {
 		return $this->hasOne('Schools', 'school_id', 'school_id');
 	}
 
-	public function division() {
+	public function challenge_division() {
 		return $this->hasOne('Division', 'id', 'division_id');
 	}
 

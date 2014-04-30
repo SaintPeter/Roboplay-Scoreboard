@@ -73,6 +73,7 @@ Route::group(array('before' => 'auth'), function() {
 		Route::get('user_schools', [ 'as' => 'user_schools', 'uses' => 'Wp_fix@user_schools']);
 		Route::get('invoice_fix', [ 'as' => 'invoice_fix', 'uses' => 'Wp_fix@invoice_fix']);
 		Route::get('invoice_management', [ 'as' => 'invoice_set', 'uses' => 'Wp_fix@invoice_set']);
+		Route::get('invoice_csv', [ 'as' => 'invoice_csv', 'uses' => 'Wp_fix@invoice_csv']);
 		Route::get('ajax/set_paid/{invoice_no}/{value}', [ 'as' => 'ajax.set_paid', 'uses' => 'Wp_fix@ajax_set_paid']);
 		Route::get('ajax/set_div/{invoice_no}/{value}', [ 'as' => 'ajax.set_div', 'uses' => 'Wp_fix@ajax_set_div']);
 		Route::get('ajax/set_vid_div/{invoice_no}/{value}', [ 'as' => 'ajax.set_vid_div', 'uses' => 'Wp_fix@ajax_set_vid_div']);

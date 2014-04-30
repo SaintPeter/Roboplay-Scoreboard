@@ -53,6 +53,32 @@ class Wp_fix extends BaseController {
 		return View::make('wp_fixes.invoice_set', compact('invoices', 'divisions', 'vid_divisions'));
 	}
 
+	public function invoice_csv() {
+		$content = 'Name,County,School,"Challenge Teams","Video Teams","Competition","Division"' . "\n";
+
+		$invoices = Wp_invoice::with('user', 'school', 'challenge_division', 'challenge_division.competition')->get();
+
+		foreach($invoices as $invoice) {
+			$invoice->user->metadata = $invoice->user->usermeta()->lists('meta_value', 'meta_key');
+			$content .= '"' . join('","', [ $invoice->user->metadata['first_name'] . " " . $invoice->user->metadata['last_name'],
+										   $invoice->school->district->county->name,
+										   $invoice->school->name,
+										   $invoice->team_count,
+										   $invoice->video_count
+										   ,
+										   isset($invoice->challenge_division) ? $invoice->challenge_division->competition->name : 'Not Set',
+										   isset($invoice->challenge_division) ? $invoice->challenge_division->name : 'Not Set'
+										   ]) . '"' . "\n";
+		}
+
+
+		// return an string as a file to the user
+		return Response::make($content, '200', array(
+			'Content-Type' => 'application/octet-stream',
+			'Content-Disposition' => 'attachment; filename="invoices.csv'
+		));
+	}
+
 	public function ajax_set_paid($invoice_no, $value) {
 		$invoice = Wp_invoice::find($invoice_no);
 		$invoice->paid = $value;
@@ -68,7 +94,7 @@ class Wp_fix extends BaseController {
 
 		return 'true';
 	}
-	
+
 	public function ajax_set_vid_div($invoice_no, $value) {
 		$invoice = Wp_invoice::find($invoice_no);
 		$invoice->vid_division_id = $value;
