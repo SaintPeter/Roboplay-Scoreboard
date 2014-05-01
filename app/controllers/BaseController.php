@@ -17,7 +17,8 @@ class BaseController extends Controller {
 
 	public function __construct()
 	{
-		Breadcrumbs::setDivider('> ');
+		Breadcrumbs::setDivider('');
+		Breadcrumbs::setCssClasses('breadcrumb');
 		Breadcrumbs::addCrumb('Home', '/scoreboard');
 	}
 

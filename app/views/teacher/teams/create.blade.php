@@ -2,7 +2,7 @@
 
 @section('main')
 
-<h1>Create Team - {{ $school_name }}</h1>
+<h1>Create Team - {{ $school->name }}</h1>
 {{ Breadcrumbs::render() }}
 {{ Form::open(array('route' => 'teacher.teams.store', 'role'=>"form", 'class' => 'col-md-6')) }}
         <div class="form-group">
@@ -11,11 +11,14 @@
         </div>
 
         <div class="form-group">
-            {{ Form::label('division_id', 'Division:') }}
-            {{ Form::select('division_id', $divisions, '', array('class'=>'form-control col-md-4')) }}
+            {{ Form::label('students', 'Students:') }}
+            {{ Form::textarea('students', '' , array('class'=>'form-control col-md-4')) }}
+            <p>Enter one student per line.</p>
         </div>
 
  		{{ Form::submit('Submit', array('class' => 'btn btn-info ')) }}
+ 		&nbsp;
+ 		{{ link_to_route('teacher.teams.index', 'Cancel', [], ['class' => 'btn btn-info']) }}
 
 {{ Form::close() }}
 

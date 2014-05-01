@@ -9,13 +9,18 @@ class TeacherTeamsController extends BaseController {
 	 */
 	public function index()
 	{
-		Breadcrumbs::addCrumb('Teams', 'index');
+		Breadcrumbs::addCrumb('Teams', 'teacher/teams');
 		$school_id = Usermeta::getSchoolId();
 		$school = Schools::find($school_id);
 		$invoice = Wp_invoice::with('challenge_division')->where('user_id', Auth::user()->ID)->first();
+		
+		if(!isset($invoice)) {
+			return View::make('error', [ 'message' => 'No invoice found for this user.']);
+		}
+		
 		$paid = $invoice->paid==1 ? 'Paid' : 'Unpaid';
 
-		$teams = Team::where('school_id', $school_id)->get();
+		$teams = Team::with('school')->where('school_id', $school_id)->get();
 
         return View::make('teacher.teams.index', compact('school_id', 'teams', 'school', 'invoice', 'paid'));
 	}
@@ -27,11 +32,12 @@ class TeacherTeamsController extends BaseController {
 	 */
 	public function create()
 	{
+		Breadcrumbs::addCrumb('Teams', 'teacher/teams');
 		Breadcrumbs::addCrumb('Add Team', 'create');
-		$divisions = Division::longname_array();
-		$school_name = Usermeta::getSchoolName();
+		$school_id = Usermeta::getSchoolId();
+		$school = Schools::find($school_id);
 
-        return View::make('teacher.teams.create', compact('divisions', 'school_name'));
+        return View::make('teacher.teams.create', compact('school'));
 	}
 
 	/**
@@ -42,7 +48,10 @@ class TeacherTeamsController extends BaseController {
 	public function store()
 	{
 		$input = Input::all();
-		$input['school_name'] = Usermeta::getSchoolName();
+		$input['school_id'] = Usermeta::getSchoolId();
+		$invoice = Wp_invoice::with('challenge_division')->where('user_id', Auth::user()->ID)->first();
+		$input['division_id'] = $invoice->challenge_division->id;
+		
 		$validation = Validator::make($input, Team::$rules);
 
 		if ($validation->passes())
@@ -59,17 +68,6 @@ class TeacherTeamsController extends BaseController {
 	}
 
 	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function show($id)
-	{
-        return View::make('teacher.teams.show');
-	}
-
-	/**
 	 * Show the form for editing the specified resource.
 	 *
 	 * @param  int  $id
@@ -77,6 +75,7 @@ class TeacherTeamsController extends BaseController {
 	 */
 	public function edit($id)
 	{
+		Breadcrumbs::addCrumb('Teams', 'teacher/teams');
 		Breadcrumbs::addCrumb('Edit Team', $id);
 		$team = Team::find($id);
 
@@ -100,7 +99,10 @@ class TeacherTeamsController extends BaseController {
 	public function update($id)
 	{
 		$input = array_except(Input::all(), '_method');
-		$input['school_name'] = Usermeta::getSchoolName();
+		$input['school_id'] = Usermeta::getSchoolId();
+		$invoice = Wp_invoice::with('challenge_division')->where('user_id', Auth::user()->ID)->first();
+		$input['division_id'] = $invoice->challenge_division->id;
+		
 		$validation = Validator::make($input, Team::$rules);
 
 		if ($validation->passes())

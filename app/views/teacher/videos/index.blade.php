@@ -2,7 +2,7 @@
 
 @section('main')
 
-<h1>Videos - {{ $school_name }}</h1>
+<h1>Videos - {{ $school->name }}</h1>
 {{ Breadcrumbs::render() }}
 <p>{{ link_to_route('teacher.videos.create', 'Add new video') }}</p>
 
@@ -25,7 +25,7 @@
 					<td>{{{ $video->name }}}</td>
 					<td><a href="http://youtube.com/watch?v={{{ $video->yt_code }}}" target="_new">YouTube</a></td>
 					<td>{{{ $video->has_custom }}}</td>
-					<td>{{{ $video->school_name }}}</td>
+					<td>{{{ $video->school->name }}}</td>
 					<td>{{{ $video->vid_division->longname() }}}</td>
 					<td>{{ link_to_route('teacher.videos.show', 'Show', array($video->id), array('class' => 'btn btn-primary')) }}</td>
                     <td>{{ link_to_route('teacher.videos.edit', 'Edit', array($video->id), array('class' => 'btn btn-info')) }}</td>

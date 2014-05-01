@@ -14,7 +14,7 @@
 				<th>Yt_code</th>
 				<th>Students</th>
 				<th>Has_custom</th>
-				<th>School_name</th>
+				<th>school->name</th>
 				<th>Vid_division_id</th>
 			</tr>
 		</thead>
@@ -26,7 +26,7 @@
 					<td>{{{ $video->yt_code }}}</td>
 					<td>{{{ $video->students }}}</td>
 					<td>{{{ $video->has_custom }}}</td>
-					<td>{{{ $video->school_name }}}</td>
+					<td>{{{ $video->school->name }}}</td>
 					<td>{{{ $video->vid_division_id }}}</td>
                     <td>{{ link_to_route('videos.edit', 'Edit', array($video->id), array('class' => 'btn btn-info')) }}</td>
                     <td>

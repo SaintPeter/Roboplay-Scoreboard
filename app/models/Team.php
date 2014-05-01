@@ -6,7 +6,8 @@ class Team extends Eloquent {
 	public static $rules = array(
 		'name' => 'required',
 		'division_id' => 'required',
-		'school_name' => 'required',
+		'school_id' => 'required',
+		'students' => 'required'
 	);
 
 	public function division()

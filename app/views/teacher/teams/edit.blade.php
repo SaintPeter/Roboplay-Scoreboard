@@ -11,11 +11,14 @@
         </div>
 
         <div class="form-group">
-            {{ Form::label('division_id', 'Division:') }}
-            {{ Form::select('division_id', $divisions, $team->division_id, array('class'=>'form-control col-md-4')) }}
+            {{ Form::label('students', 'Students:') }}
+            {{ Form::textarea('students', $team->students , array('class'=>'form-control col-md-4')) }}
+            <p>Enter one student per line.</p>
         </div>
 
- 		{{ Form::submit('Submit', array('class' => 'btn btn-info ')) }}
+ 		{{ Form::submit('Submit', array('class' => 'btn btn-primary ')) }}
+ 		&nbsp;
+ 		{{ link_to_route('teacher.teams.index', 'Cancel', [], ['class' => 'btn btn-info']) }}
 
 {{ Form::close() }}
 

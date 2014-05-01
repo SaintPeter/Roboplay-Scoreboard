@@ -6,7 +6,7 @@
 {{ Breadcrumbs::render() }}
 <p>{{ link_to_route('teacher.videos.index', 'Return to all videos') }}</p>
 
-<p><strong>School:</strong> {{{ $video->school_name }}} </p>
+<p><strong>School:</strong> {{{ $video->school->name }}} </p>
 <p><strong>Division:</strong> {{{ $video->vid_division_id }}}</p>
 
 <h3>{{{ $video->name }}}</h3>

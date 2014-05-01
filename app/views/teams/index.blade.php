@@ -21,7 +21,7 @@
 				<tr>
 					<td>{{{ $team->name }}}</td>
 					<td>{{{ $team->division->longname() }}}</td>
-					<td>{{{ $team->school_name }}}</td>
+					<td>{{{ $team->school->name }}}</td>
                     <td>{{ link_to_route('teams.edit', 'Edit', array($team->id), array('class' => 'btn btn-info')) }}</td>
                     <td>
                         {{ Form::open(array('method' => 'DELETE', 'route' => array('teams.destroy', $team->id))) }}

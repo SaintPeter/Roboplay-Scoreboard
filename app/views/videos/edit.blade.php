@@ -26,8 +26,8 @@
         </li>
 
         <li>
-            {{ Form::label('school_name', 'School_name:') }}
-            {{ Form::text('school_name') }}
+            {{ Form::label('school->name', 'school->name:') }}
+            {{ Form::text('school->name') }}
         </li>
 
         <li>
