@@ -33,13 +33,11 @@
             {{ Form::checkbox('has_custom') }}
         </li>
 
-        <li>
-			{{ Form::label('vid_division_id', 'Video Division:') }}
-            {{ Form::select('vid_division_id', $vid_divisions, '', array('class'=>'form-control col-md-4')) }}
-        </li>
-
 		<li>
 			{{ Form::submit('Submit', array('class' => 'btn btn-info')) }}
+			 		&nbsp;
+	 		{{ link_to_route('teacher.videos.index', 'Cancel', [], ['class' => 'btn btn-info']) }}
+
 		</li>
 	</ul>
 {{ Form::close() }}

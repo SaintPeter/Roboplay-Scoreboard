@@ -7,7 +7,7 @@ class Video extends Eloquent {
 		'name' => 'required',
 		'yt_code' => array('required','regex:#([A-Za-z0-9_-]{5,11})#'),
 		'students' => 'required',
-		'school_name' => 'required',
+		'school_id' => 'required',
 		'vid_division_id' => 'required'
 	);
 
@@ -29,5 +29,10 @@ class Video extends Eloquent {
 	public function vid_division()
 	{
 		return $this->belongsTo('Vid_division')->orderBy('display_order', 'asc');
+	}
+	
+	public function school() 
+	{
+		return $this->hasOne('School', 'school_id', 'school_id');
 	}
 }

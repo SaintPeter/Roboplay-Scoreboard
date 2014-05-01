@@ -2,19 +2,6 @@
 
 class TeacherVideoController extends BaseController {
 
-
-	/**
-	 * Video Repository
-	 *
-	 * @var Video
-	 */
-	protected $video;
-
-	public function __construct(Video $video)
-	{
-		$this->video = $video;
-	}
-
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -22,10 +9,21 @@ class TeacherVideoController extends BaseController {
 	 */
 	public function index()
 	{
-		$school_name = Usermeta::getSchoolName();
-		$videos = $this->video->with('vid_division')->where('school_name',$school_name)->get();
+		Breadcrumbs::addCrumb('Videos', 'teacher/teams');
+	
+		$school_id = Usermeta::getSchoolId();
+		$school = Schools::find($school_id);
+		$invoice = Wp_invoice::with('challenge_division')->where('user_id', Auth::user()->ID)->first();
+		
+		if(!isset($invoice)) {
+			return View::make('error', [ 'message' => 'No invoice found for this user.']);
+		}
+		
+		$paid = $invoice->paid==1 ? 'Paid' : 'Unpaid';
 
-		return View::make('teacher.videos.index', compact('videos','school_name'));
+		$videos = Video::with('school', 'vid_division')->where('school_id',$school_id)->get();
+
+		return View::make('teacher.videos.index', compact('school', 'videos','invoice', 'paid'));
 	}
 
 	/**
@@ -47,7 +45,10 @@ class TeacherVideoController extends BaseController {
 	public function store()
 	{
 		$input = Input::all();
-		$input['school_name'] = Usermeta::getSchoolName();
+		$input['school_id'] = Usermeta::getSchoolId();
+		$invoice = Wp_invoice::with('challenge_division')->where('user_id', Auth::user()->ID)->first();
+		$input['division_id'] = $invoice->challenge_division->id;
+		
 		$validation = Validator::make($input, Video::$rules);
 
 		if ($validation->passes())
@@ -85,7 +86,6 @@ class TeacherVideoController extends BaseController {
 	public function edit($id)
 	{
 		$video = $this->video->with('vid_division')->find($id);
-		$vid_divisions = Vid_division::longname_array();
 
 		if (is_null($video))
 		{
@@ -104,7 +104,10 @@ class TeacherVideoController extends BaseController {
 	public function update($id)
 	{
 		$input = array_except(Input::all(), '_method');
-		$input['school_name'] = Usermeta::getSchoolName();
+		$input['school_id'] = Usermeta::getSchoolId();
+		$invoice = Wp_invoice::with('challenge_division')->where('user_id', Auth::user()->ID)->first();
+		$input['division_id'] = $invoice->challenge_division->id;
+		
 		$validation = Validator::make($input, Video::$rules);
 
 		if ($validation->passes())
