@@ -2,6 +2,13 @@
 
 class TeacherVideoController extends BaseController {
 
+	public function __construct() 
+	{
+		parent::__construct();
+		
+		Breadcrumbs::addCrumb('Videos', 'teacher/videos');
+	}
+	
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -9,14 +16,12 @@ class TeacherVideoController extends BaseController {
 	 */
 	public function index()
 	{
-		Breadcrumbs::addCrumb('Videos', 'teacher/teams');
-	
 		$school_id = Usermeta::getSchoolId();
 		$school = Schools::find($school_id);
-		$invoice = Wp_invoice::with('challenge_division')->where('user_id', Auth::user()->ID)->first();
+		$invoice = Wp_invoice::with('vid_division')->where('school_id', $school_id)->first();
 		
 		if(!isset($invoice)) {
-			return View::make('error', [ 'message' => 'No invoice found for this user.']);
+			return View::make('error', [ 'message' => 'No invoice found for this School.']);
 		}
 		
 		$paid = $invoice->paid==1 ? 'Paid' : 'Unpaid';
@@ -33,6 +38,7 @@ class TeacherVideoController extends BaseController {
 	 */
 	public function create()
 	{
+		Breadcrumbs::addCrumb('Add Video', 'teacher/videos/create');
 		$vid_divisions = Vid_division::longname_array();
 		return View::make('teacher.videos.create',compact('vid_divisions'));
 	}
@@ -46,16 +52,16 @@ class TeacherVideoController extends BaseController {
 	{
 		$input = Input::all();
 		$input['school_id'] = Usermeta::getSchoolId();
-		$invoice = Wp_invoice::with('challenge_division')->where('user_id', Auth::user()->ID)->first();
-		$input['division_id'] = $invoice->challenge_division->id;
+		$invoice = Wp_invoice::where('school_id', $input['school_id'])->first();
+		$input['vid_division_id'] = $invoice->vid_division_id;
 		
 		$validation = Validator::make($input, Video::$rules);
 
 		if ($validation->passes())
 		{
-			$this->video->create($input);
+			$video = Video::create($input);
 
-			return Redirect::route('teacher.videos.index');
+			return Redirect::route('teacher.videos.show', $video->id);
 		}
 
 		return Redirect::route('teacher.videos.create')
@@ -72,7 +78,8 @@ class TeacherVideoController extends BaseController {
 	 */
 	public function show($id)
 	{
-		$video = $this->video->findOrFail($id);
+		Breadcrumbs::addCrumb('Video Preview', 'teacher/videos/create');
+		$video = Video::findOrFail($id);
 
 		return View::make('teacher.videos.show', compact('video'));
 	}
@@ -85,14 +92,15 @@ class TeacherVideoController extends BaseController {
 	 */
 	public function edit($id)
 	{
-		$video = $this->video->with('vid_division')->find($id);
+		Breadcrumbs::addCrumb('Edit Video', 'teacher/videos/edit');
+		$video = Video::with('vid_division')->find($id);
 
 		if (is_null($video))
 		{
 			return Redirect::route('teacher.videos.index');
 		}
 
-		return View::make('teacher.videos.edit', compact('video','vid_divisions'));
+		return View::make('teacher.videos.edit', compact('video'));
 	}
 
 	/**
@@ -105,14 +113,14 @@ class TeacherVideoController extends BaseController {
 	{
 		$input = array_except(Input::all(), '_method');
 		$input['school_id'] = Usermeta::getSchoolId();
-		$invoice = Wp_invoice::with('challenge_division')->where('user_id', Auth::user()->ID)->first();
-		$input['division_id'] = $invoice->challenge_division->id;
+		$invoice = Wp_invoice::where('school_id', $input['school_id'])->first();
+		$input['vid_division_id'] = $invoice->vid_division_id;
 		
 		$validation = Validator::make($input, Video::$rules);
 
 		if ($validation->passes())
 		{
-			$video = $this->video->find($id);
+			$video = Video::find($id);
 			$video->update($input);
 
 			return Redirect::route('teacher.videos.show', $id);
@@ -132,7 +140,7 @@ class TeacherVideoController extends BaseController {
 	 */
 	public function destroy($id)
 	{
-		$this->video->find($id)->delete();
+		Video::find($id)->delete();
 
 		return Redirect::route('teacher.videos.index');
 	}

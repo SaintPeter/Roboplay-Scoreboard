@@ -16,7 +16,7 @@
             <p>Enter one student per line.</p>
         </div>
 
- 		{{ Form::submit('Submit', array('class' => 'btn btn-info ')) }}
+ 		{{ Form::submit('Submit', array('class' => 'btn btn-primary ')) }}
  		&nbsp;
  		{{ link_to_route('teacher.teams.index', 'Cancel', [], ['class' => 'btn btn-info']) }}
 

@@ -103,7 +103,7 @@
 		<tr>
 			<th>Name</th>
 			<th>Students</th>
-			<th colspan="2">Actions</th>
+			<th>Actions</th>
 		</tr>
 	</thead>
 
@@ -113,16 +113,16 @@
 				<tr>
 					<td>{{{ $team->name }}}</td>
 					<td>{{ nl2br($team->students) }}</td>
-	                <td>{{ link_to_route('teacher.teams.edit', 'Edit', array($team->id), array('class' => 'btn btn-info')) }}</td>
-	                <td>
-	                    {{ Form::open(array('method' => 'DELETE', 'route' => array('teacher.teams.destroy', $team->id), 'id' => 'delete_form_' . $team->id)) }}
+	                <td>{{ link_to_route('teacher.teams.edit', 'Edit', array($team->id), array('class' => 'btn btn-info')) }}
+	                	&nbsp;
+	                    {{ Form::open(array('method' => 'DELETE', 'route' => array('teacher.teams.destroy', $team->id), 'id' => 'delete_form_' . $team->id, 'style' => 'display: inline-block;')) }}
 	                        {{ Form::submit('Delete', array('class' => 'btn btn-danger delete_button', 'delete_id' => $team->id)) }}
 	                    {{ Form::close() }}
 	                </td>
 				</tr>
 			@endforeach
 		@else
-			<tr><td colspan="4">No Teams Created</td></tr>
+			<tr><td colspan="3">No Teams Created</td></tr>
 		@endif
 
 	</tbody>

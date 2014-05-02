@@ -33,6 +33,6 @@ class Video extends Eloquent {
 	
 	public function school() 
 	{
-		return $this->hasOne('School', 'school_id', 'school_id');
+		return $this->hasOne('Schools', 'school_id', 'school_id');
 	}
 }

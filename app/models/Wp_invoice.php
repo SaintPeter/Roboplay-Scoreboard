@@ -20,6 +20,10 @@ class Wp_invoice extends Eloquent {
 	public function challenge_division() {
 		return $this->hasOne('Division', 'id', 'division_id');
 	}
+	
+	public function vid_division() {
+		return $this->hasOne('Vid_division', 'id', 'vid_division_id');
+	}
 
 	public function getDateAttribute($value) {
 		if(isset($value)) {
