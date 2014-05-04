@@ -1,12 +1,12 @@
 @extends('layouts.scaffold')
 
 @section('style')
-.Paid {
-	background-color: lightgreen;
+.Paid, .confirmed {
+	background-color: lightgreen !important;
 }
 
-.Unpaid {
-	background-color: pink;
+.Unpaid, .unconfirmed {
+	background-color: pink !important;
 }
 
 .ui-widget-overlay {
@@ -19,6 +19,11 @@
 	background-color: white;
 }
 
+.narrow {
+	width: 350px;
+	white-space:nowrap;
+}
+
 .clear { clear: both; }
 
 @stop
@@ -26,12 +31,12 @@
 @section('script')
 	var delete_id = 0;
 	$(function() {
-		$(".delete_button").click(function(e) { 
+		$(".delete_button").click(function(e) {
 			e.preventDefault();
 			delete_id = $(this).attr('delete_id');
-			$("#dialog-confirm").dialog('open');		
+			$("#dialog-confirm").dialog('open');
 		});
-	
+
 		$( "#dialog-confirm" ).dialog({
 			resizable: false,
 			autoOpen: false,
@@ -59,7 +64,7 @@
 				<tr>
 					<th>County/District/School</th>
 					<th>Challenge/Division</th>
-					<th>videos (Used)</th>
+					<th>Videos (Used)</th>
 					<th>Status</th>
 				</tr>
 			</thead>
@@ -84,7 +89,7 @@
 			</tbody>
 		</table>
 	</div>
-	
+
 	<h1>Challenge videos</h1>
 	<h2>{{ $school->name }}</h2>
 	<div class="clear"></div>
@@ -109,9 +114,11 @@
 		<thead>
 			<tr>
 				<th>Name</th>
+				<th>Students</th>
 				<th>YouTube</th>
 				<th>Custom Parts</th>
-				<th colspan="3">Actions</th>
+				<th>Upload</th>
+				<th class="narrow">Actions</th>
 			</tr>
 		</thead>
 
@@ -120,19 +127,27 @@
 				@foreach ($videos as $video)
 					<tr>
 						<td>{{{ $video->name }}}</td>
+						<td>{{ $video->student_count() }}</td>
 						<td><a href="http://youtube.com/watch?v={{{ $video->yt_code }}}" target="_new">YouTube</a></td>
 						<td>{{{ $video->has_custom==1 ? 'Yes' : 'No' }}}</td>
-						<td>{{ link_to_route('teacher.videos.show', 'Preview', array($video->id), array('class' => 'btn btn-primary')) }}</td>
-	                    <td>{{ link_to_route('teacher.videos.edit', 'Edit', array($video->id), array('class' => 'btn btn-info')) }}</td>
-	                    <td>
-	                    {{ Form::open(array('method' => 'DELETE', 'route' => array('teacher.videos.destroy', $video->id), 'id' => 'delete_form_' . $video->id)) }}
-	                        {{ Form::submit('Delete', array('class' => 'btn btn-danger delete_button', 'delete_id' => $video->id)) }}
-	                    {{ Form::close() }}
+						<td class="{{ $video->has_upload==1 ? 'confirmed' : 'unconfirmed' }}">
+							{{ $video->has_upload==1 ? 'Confirmed' : 'Unconfirmed' }}
+						</td>
+						<td>
+							{{ link_to_route('teacher.videos.show', 'Preview', array($video->id), array('class' => 'btn btn-primary')) }}
+							&nbsp;
+		                    {{ link_to_route('teacher.videos.edit', 'Edit', array($video->id), array('class' => 'btn btn-info')) }}
+		                    &nbsp;
+		                    <a class="btn btn-success" href="http://brainproject.ucdavis.edu/roboplay/video/2014/submit.php?user_id={{ Auth::user()->ID }}&video_id={{$video->id}}">Upload</a>
+		                    &nbsp;
+		                    {{ Form::open(array('method' => 'DELETE', 'route' => array('teacher.videos.destroy', $video->id), 'id' => 'delete_form_' . $video->id, 'style' => 'display: inline-block;')) }}
+		                        {{ Form::submit('Delete', array('class' => 'btn btn-danger delete_button', 'delete_id' => $video->id)) }}
+		                    {{ Form::close() }}
 	                	</td>
 					</tr>
 				@endforeach
 			@else
-				<tr><td colspan="4">No Videos Added</td></tr>
+				<tr><td colspan="5">No Videos Added</td></tr>
 			@endif
 		</tbody>
 	</table>

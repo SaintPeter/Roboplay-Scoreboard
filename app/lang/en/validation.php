@@ -68,6 +68,9 @@ return array(
 	),
 	"unique"           => "The :attribute has already been taken.",
 	"url"              => "The :attribute format is invalid.",
+	"yt_valid"      => "The :attribute is not valid.",
+	"yt_embeddable"       => "The :attribute is not set to be embeddable.",
+	"yt_public"       => "The :attribute is not set to be public.",
 
 	/*
 	|--------------------------------------------------------------------------
@@ -93,6 +96,13 @@ return array(
 	|
 	*/
 
-	'attributes' => array(),
+	'attributes' => array(
+		"yt_code"		=>  "YouTube Code",
+		"students"		=>  "Students",
+		"division_id"	=>  "Division",
+		"vid_division_id"	=>  "Video Division",
+		"school_id"			=>	"School",
+		"name"				=>	"Name",
+	),
 
 );

@@ -2,11 +2,11 @@
 
 @section('script')
 	$(function() {
-		$("#delete_button").click(function(e) { 
+		$("#delete_button").click(function(e) {
 			e.preventDefault();
 			$("#dialog-confirm").dialog('open');
 		});
-	
+
 		$( "#dialog-confirm" ).dialog({
 			resizable: false,
 			autoOpen: false,
@@ -30,25 +30,47 @@
 
 <h1>Show Video</h1>
 {{ Breadcrumbs::render() }}
+<table class="table table-striped table-bordered">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Students</th>
+			<th>Custom Parts</th>
+			<th>County/District/School</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
 
-<p><strong>School:</strong> {{{ $video->school->name }}} </p>
+	<tbody>
+		<tr>
+			<td>{{{ $video->name }}}</td>
+			<td>{{ nl2br($video->students) }}</td>
+			<td>{{{ $video->has_custom==1 ? 'Has Custom Parts' : 'No Custom Parts' }}}</td>
+			<td>
+				@if(isset($video->school))
+					<strong>C:</strong> {{ $video->school->district->county->name }}<br />
+					<strong>D:</strong> {{ $video->school->district->name }}<br />
+					<strong>S:</strong> {{ $video->school->name }}
+				@else
+					Not Set
+				@endif
+			</td>
+            <td>
+            	{{ link_to_route('teacher.videos.edit', 'Edit', array($video->id), array('class' => 'btn btn-info')) }}
+				&nbsp;
+                <a class="btn btn-success" href="http://brainproject.ucdavis.edu/roboplay/video/2014/submit.php?user_id={{ Auth::user()->ID }}&video_id={{$video->id}}">Upload</a>
+				&nbsp;
+                {{ Form::open(array('method' => 'DELETE', 'route' => array('teacher.videos.destroy', $video->id), 'id' => 'delete_form_' . $video->id, 'style' => 'display: inline-block;')) }}
+                    {{ Form::submit('Delete', array('class' => 'btn btn-danger delete_button', 'delete_id' => $video->id)) }}
+                {{ Form::close() }}
+            </td>
+		</tr>
+	</tbody>
+</table>
 
-<h3>{{{ $video->name }}}</h3>
-<iframe id="ytplayer" type="text/html" width="640" height="390" src="http://www.youtube.com/embed/{{{ $video->yt_code }}}" frameborder="0"></iframe>
+<h3>Preview</h3>
+<iframe style="border: 1px solid black" id="ytplayer" type="text/html" width="640" height="390" src="http://www.youtube.com/embed/{{{ $video->yt_code }}}" frameborder="0"></iframe>
 
-<h3>Students:</h3>
-<p>{{ nl2br($video->students) }}</p>
-@if($video->has_custom)
-	<p>Video Features Custom Parts</p>
-@else
-	<p>Video Does not have Custom Parts</p>
-@endif
-
-{{ link_to_route('teacher.videos.edit', 'Edit', array($video->id), array('class' => 'btn btn-info')) }}
-&nbsp;
-{{ Form::open(array('method' => 'DELETE', 'route' => array('teacher.videos.destroy', $video->id), 'style' => 'display: inline-block;', 'id' => 'delete_form' )) }}
-	{{ Form::submit('Delete', array('class' => 'btn btn-danger', 'id' => 'delete_button')) }}
-{{ Form::close() }}
 
 <div id="dialog-confirm" title="Delete video?">
 <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>

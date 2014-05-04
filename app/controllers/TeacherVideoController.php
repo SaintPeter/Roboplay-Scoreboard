@@ -2,13 +2,13 @@
 
 class TeacherVideoController extends BaseController {
 
-	public function __construct() 
+	public function __construct()
 	{
 		parent::__construct();
-		
+
 		Breadcrumbs::addCrumb('Videos', 'teacher/videos');
 	}
-	
+
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -19,11 +19,11 @@ class TeacherVideoController extends BaseController {
 		$school_id = Usermeta::getSchoolId();
 		$school = Schools::find($school_id);
 		$invoice = Wp_invoice::with('vid_division')->where('school_id', $school_id)->first();
-		
+
 		if(!isset($invoice)) {
 			return View::make('error', [ 'message' => 'No invoice found for this School.']);
 		}
-		
+
 		$paid = $invoice->paid==1 ? 'Paid' : 'Unpaid';
 
 		$videos = Video::with('school', 'vid_division')->where('school_id',$school_id)->get();
@@ -54,7 +54,7 @@ class TeacherVideoController extends BaseController {
 		$input['school_id'] = Usermeta::getSchoolId();
 		$invoice = Wp_invoice::where('school_id', $input['school_id'])->first();
 		$input['vid_division_id'] = $invoice->vid_division_id;
-		
+
 		$validation = Validator::make($input, Video::$rules);
 
 		if ($validation->passes())
@@ -79,7 +79,7 @@ class TeacherVideoController extends BaseController {
 	public function show($id)
 	{
 		Breadcrumbs::addCrumb('Video Preview', 'teacher/videos/create');
-		$video = Video::findOrFail($id);
+		$video = Video::with('school', 'school.district', 'school.district.county')->findOrFail($id);
 
 		return View::make('teacher.videos.show', compact('video'));
 	}
@@ -115,7 +115,7 @@ class TeacherVideoController extends BaseController {
 		$input['school_id'] = Usermeta::getSchoolId();
 		$invoice = Wp_invoice::where('school_id', $input['school_id'])->first();
 		$input['vid_division_id'] = $invoice->vid_division_id;
-		
+
 		$validation = Validator::make($input, Video::$rules);
 
 		if ($validation->passes())

@@ -10,7 +10,7 @@
 }
 
 .ui-widget-overlay {
-    background: url('images/ui-bg_flat_0_aaaaaa_40x100.png') repeat-x scroll 100% 100% #AAA;
+    background: url('http://code.jquery.com/ui/1.10.4/themes/smoothness/images/ui-bg_flat_0_aaaaaa_40x100.png') repeat-x scroll 100% 100% #AAA;
     opacity: 0.3;
 }
 
@@ -26,12 +26,12 @@
 @section('script')
 	var delete_id = 0;
 	$(function() {
-		$(".delete_button").click(function(e) { 
+		$(".delete_button").click(function(e) {
 			e.preventDefault();
 			delete_id = $(this).attr('delete_id');
-			$("#dialog-confirm").dialog('open');		
+			$("#dialog-confirm").dialog('open');
 		});
-	
+
 		$( "#dialog-confirm" ).dialog({
 			resizable: false,
 			autoOpen: false,
@@ -81,7 +81,7 @@
 			</tbody>
 		</table>
 	</div>
-	
+
 	<h1>Challenge Teams</h1>
 	<h2>{{ $school->name }}</h2>
 	<div class="clear"></div>

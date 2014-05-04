@@ -2,17 +2,9 @@
 
 class TeamsController extends BaseController {
 
-	/**
-	 * Team Repository
-	 *
-	 * @var Team
-	 */
-	protected $team;
-
-	public function __construct(Team $team)
+	public function __construct()
 	{
 		parent::__construct();
-		$this->team = $team;
 		Breadcrumbs::addCrumb('Teams', 'teams');
 	}
 
@@ -23,7 +15,7 @@ class TeamsController extends BaseController {
 	 */
 	public function index()
 	{
-		$teams = $this->team->with('division')->get();
+		$teams = Team::with('division', 'school', 'school.district', 'school.district.county')->get();
 
 		return View::make('teams.index', compact('teams'));
 	}
@@ -37,11 +29,9 @@ class TeamsController extends BaseController {
 	{
 		Breadcrumbs::addCrumb('Add Team', 'create');
 		$divisions = Division::longname_array();
-		$vid_divisions = Vid_division::longname_array();
 
 		return View::make('teams.create')
-				   ->with('divisions', $divisions)
-				   ->with('vid_divisions', $vid_divisions);
+				   ->with('divisions', $divisions);
 	}
 
 	/**
@@ -51,12 +41,13 @@ class TeamsController extends BaseController {
 	 */
 	public function store()
 	{
-		$input = Input::all();
+		$input = array_except(Input::all(), ['_method', 'select_county', 'select_district' ]);
+
 		$validation = Validator::make($input, Team::$rules);
 
 		if ($validation->passes())
 		{
-			$this->team->create($input);
+			Team::create($input);
 
 			return Redirect::route('teams.index');
 		}
@@ -76,7 +67,7 @@ class TeamsController extends BaseController {
 	public function show($id)
 	{
 		Breadcrumbs::addCrumb('Show Team', $id);
-		$team = $this->team->findOrFail($id);
+		$team = Team::with('school', 'school.district', 'school.district.county')->findOrFail($id);
 
 		return View::make('teams.show', compact('team'));
 	}
@@ -90,7 +81,11 @@ class TeamsController extends BaseController {
 	public function edit($id)
 	{
 		Breadcrumbs::addCrumb('Edit Team', $id);
-		$team = $this->team->find($id);
+		$team = Team::with('school', 'school.district', 'school.district.county')->find($id);
+
+		$starting_school = isset($team->school) ? $team->school->school_id : 0;
+		$starting_district = isset($team->school) ? $team->school->district->district_id : 0;
+		$starting_county = isset($team->school) ? $team->school->district->county->county_id : 0;
 
 		if (is_null($team))
 		{
@@ -100,7 +95,7 @@ class TeamsController extends BaseController {
 		$divisions = Division::longname_array();
 		$vid_divisions = Vid_division::longname_array();
 
-		return View::make('teams.edit', compact('team'))
+		return View::make('teams.edit', compact('team', 'starting_county', 'starting_district', 'starting_school'))
 				   ->with('divisions', $divisions)
 				   ->with('vid_divisions', $vid_divisions);
 	}
@@ -113,12 +108,13 @@ class TeamsController extends BaseController {
 	 */
 	public function update($id)
 	{
-		$input = array_except(Input::all(), '_method');
+		$input = array_except(Input::all(), ['_method', 'select_county', 'select_district' ]);
+
 		$validation = Validator::make($input, Team::$rules);
 
 		if ($validation->passes())
 		{
-			$team = $this->team->find($id);
+			$team = Team::find($id);
 			$team->update($input);
 
 			return Redirect::route('teams.show', $id);
@@ -138,7 +134,7 @@ class TeamsController extends BaseController {
 	 */
 	public function destroy($id)
 	{
-		$this->team->find($id)->delete();
+		Team::find($id)->delete();
 
 		Session::forget('currentCompetition');
 		Session::forget('currentDivision');

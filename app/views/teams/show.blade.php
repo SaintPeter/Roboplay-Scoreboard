@@ -10,22 +10,28 @@
 	<thead>
 		<tr>
 			<th>Name</th>
+			<th>Students</th>
 			<th>Division</th>
-			<th>School</th>
+			<th>County/District/School</th>
+			<th>Actions</th>
 		</tr>
 	</thead>
 
 	<tbody>
 		<tr>
 			<td>{{{ $team->name }}}</td>
+			<td>{{ nl2br($team->students) }}</td>
 			<td>{{{ $team->division->longname() }}}</td>
-			<td>{{{ $team->school->name }}}</td>
-            <td>{{ link_to_route('teams.edit', 'Edit', array($team->id), array('class' => 'btn btn-info')) }}</td>
-            <td>
-                {{ Form::open(array('method' => 'DELETE', 'route' => array('teams.destroy', $team->id))) }}
-                    {{ Form::submit('Delete', array('class' => 'btn btn-danger')) }}
-                {{ Form::close() }}
-            </td>
+			<td>
+				@if(isset($team->school))
+					<strong>C:</strong> {{ $team->school->district->county->name }}<br />
+					<strong>D:</strong> {{ $team->school->district->name }}<br />
+					<strong>S:</strong> {{ $team->school->name }}
+				@else
+					Not Set
+				@endif
+			</td>
+    	    <td>{{ link_to_route('teams.edit', 'Edit', array($team->id), array('class' => 'btn btn-info')) }}</td>
 		</tr>
 	</tbody>
 </table>

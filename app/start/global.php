@@ -18,6 +18,7 @@ ClassLoader::addDirectories(array(
 	app_path().'/models',
 	app_path().'/database/seeds',
 	app_path().'/classes',
+	app_path().'/validation',
 
 ));
 
@@ -80,3 +81,8 @@ App::down(function()
 */
 
 require app_path().'/filters.php';
+
+
+// Require other stuff
+
+require app_path().'/validation/validators.php';

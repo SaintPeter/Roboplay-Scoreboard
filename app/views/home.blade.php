@@ -47,12 +47,16 @@
 @if(Roles::isAdmin())
 <h2>Admin Menu</h2>
 <ul data-role="listview" data-inset="true">
+	<li data-role="list-divider">Challenge Competition</li>
 	<li>{{ link_to('competitions', 'Competitions', $noajax) }}</li>
 	<li>{{ link_to('divisions', 'Competition Divisions', $noajax) }}</li>
+	<li>{{ link_to('challenges', 'Manage Challenges', $noajax) }}</li>
+	<li>{{ link_to('teams', 'Manage Teams', $noajax) }}</li>
+	<li data-role="list-divider">Video Competition</li>
 	<li>{{ link_to('vid_competitions', 'Video Competitions', $noajax) }}</li>
 	<li>{{ link_to('vid_divisions', 'Video Competition Divisions', $noajax) }}</li>
-	<li>{{ link_to('teams', 'Manage Teams', $noajax) }}</li>
-	<li>{{ link_to('challenges', 'Manage Challenges', $noajax) }}</li>
+	<li>{{ link_to('videos', 'Manage Videos', $noajax) }}</li>
+	<li data-role="list-divider">Other Management</li>
 	<li>{{ link_to('invoice_management', 'Invoice Payment Management', $noajax) }}</li>
 </ul>
 @endif
