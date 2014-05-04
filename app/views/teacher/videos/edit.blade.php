@@ -8,7 +8,7 @@
 	    {{ Form::label('name', 'Name:') }}
 	    {{ Form::text('name', $video->name, [ 'class'=>'form-control col-md-4' ]) }}
 	</div>
-	
+
 	<div class="form-group">
 	    {{ Form::label('yt_code', 'YouTube URL or Code:') }}
 	    {{ Form::text('yt_code', $video->yt_code, [ 'class'=>'form-control col-md-4' ]) }}
@@ -26,24 +26,27 @@
 	    {{ Form::textarea('students', $video->students) }}
 	    <p>One Student Per Line</p>
 	</div>
-	
+
 	<div class="form-group">
 	    {{ Form::label('has_custom', 'Has a Custom Part:') }}
 	    {{ Form::select('has_custom', [ 0 => 'No', 1 => 'Yes' ], $video->has_custom) }}
 	</div>
-	
+
 	<div class="form-group">
 		{{ Form::submit('Update', array('class' => 'btn btn-primary')) }}
 		 		&nbsp;
 		{{ link_to_route('teacher.videos.index', 'Cancel', [], ['class' => 'btn btn-info']) }}
-	
+
 	</div>
 {{ Form::close() }}
 
 @if ($errors->any())
+<div class="col-md-6">
+	<h3>Validation Errors</h3>
 	<ul>
 		{{ implode('', $errors->all('<li class="error">:message</li>')) }}
 	</ul>
+</div>
 @endif
 
 @stop

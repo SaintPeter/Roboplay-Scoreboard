@@ -2,23 +2,23 @@
 
 Validator::extend('yt_valid', function($attribute, $value, $parameters)
 {
-	if(preg_match("/[A-Za-z0-9_-]{5,11}/", $value)) return true;
+	if(preg_match("#(\.be/|/embed/|/v/|/watch\?v=)([A-Za-z0-9_-]{5,11})#", $value)) return true;
 
     return false;
 });
 
 Validator::extend('yt_embeddable', function($attribute, $value, $parameters)
 {
-	if(preg_match("/[A-Za-z0-9_-]{5,11}/", $value, $matches)) {
-		return yt_check($matches[0], 'embeddable');
+	if(preg_match("#(\.be/|/embed/|/v/|/watch\?v=)([A-Za-z0-9_-]{5,11})#", $value, $matches)) {
+		return yt_check($matches[2], 'embeddable');
 	}
     return false;
 });
 
 Validator::extend('yt_public', function($attribute, $value, $parameters)
 {
-	if(preg_match("/[A-Za-z0-9_-]{5,11}/", $value, $matches)) {
-		return yt_check($matches[0], 'privacyStatus');
+	if(preg_match("#(\.be/|/embed/|/v/|/watch\?v=)([A-Za-z0-9_-]{5,11})#", $value, $matches)) {
+		return yt_check($matches[2], 'privacyStatus');
 	}
     return false;
 });

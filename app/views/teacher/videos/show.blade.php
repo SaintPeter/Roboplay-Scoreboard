@@ -30,12 +30,14 @@
 
 <h1>Show Video</h1>
 {{ Breadcrumbs::render() }}
+<p>{{ link_to_route('teacher.videos.index', 'Return to Videos' ,[], ['class' => 'btn btn-info']) }}</p>
 <table class="table table-striped table-bordered">
 	<thead>
 		<tr>
 			<th>Name</th>
 			<th>Students</th>
 			<th>Custom Parts</th>
+			<th>Upload</th>
 			<th>County/District/School</th>
 			<th>Actions</th>
 		</tr>
@@ -46,6 +48,9 @@
 			<td>{{{ $video->name }}}</td>
 			<td>{{ nl2br($video->students) }}</td>
 			<td>{{{ $video->has_custom==1 ? 'Has Custom Parts' : 'No Custom Parts' }}}</td>
+			<td class="{{ $video->has_upload==1 ? 'confirmed' : 'unconfirmed' }}">
+				{{ $video->has_upload==1 ? 'Confirmed' : 'Unconfirmed' }}
+			</td>
 			<td>
 				@if(isset($video->school))
 					<strong>C:</strong> {{ $video->school->district->county->name }}<br />

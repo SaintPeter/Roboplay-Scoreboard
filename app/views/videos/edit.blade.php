@@ -69,6 +69,11 @@ $(function() {
 	</div>
 
 	<div class="form-group">
+	    {{ Form::label('has_upload', 'Has a upload Part:') }}
+	    {{ Form::select('has_upload', [ 0 => 'No', 1 => 'Yes' ], Input::old('has_upload', $video->has_upload)) }}
+	</div>
+
+	<div class="form-group">
 		{{ Form::submit('Submit', array('class' => 'btn btn-primary')) }}
 		 		&nbsp;
 		{{ link_to_route('videos.index', 'Cancel', [], ['class' => 'btn btn-info']) }}

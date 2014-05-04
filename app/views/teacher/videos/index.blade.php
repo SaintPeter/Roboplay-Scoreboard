@@ -90,7 +90,7 @@
 		</table>
 	</div>
 
-	<h1>Challenge videos</h1>
+	<h1>Challenge Videos</h1>
 	<h2>{{ $school->name }}</h2>
 	<div class="clear"></div>
 </div>
