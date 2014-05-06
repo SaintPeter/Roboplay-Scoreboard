@@ -2,7 +2,7 @@
 
 class Team extends Eloquent {
 	protected $guarded = array();
-	protected $with = [ 'school', 'school.district', 'school.district.county' ];
+	protected $with = [ 'school', 'school.district', 'school.district.county', 'division', 'division.competition' ];
 
 	public static $rules = array(
 		'name' => 'required',
@@ -28,7 +28,11 @@ class Team extends Eloquent {
 
 	public function longname()
 	{
-		return $this->name . ' (' . $this->school->name . ')';
+		if(isset($this->school)) {
+			return $this->name . ' (' . $this->school->name . ')';
+		} else {
+			return $this->name . ' (Unknown School)';
+		}
 	}
 
 	public function student_count()

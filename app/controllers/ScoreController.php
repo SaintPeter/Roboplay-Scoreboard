@@ -100,12 +100,12 @@ class ScoreController extends BaseController {
 
 	public function save($team_id, $challenge_id)
 	{
+		$team = Team::find($team_id);
 		if(Input::has('cancel')) {
-			return Redirect::route('score.index')
+			return Redirect::route('score.score_team', ['team_id' => $team_id, 'competition_id' => $team->division->competition->id, 'divison_id' => $team->division_id])
 				->with('message', 'Did not Score');
 		}
 		$challenge = Challenge::with('score_elements','divisions')->find($challenge_id);
-		$team = Team::find($team_id);
 
 		if(!$challenge->divisions->contains($team->division_id)) {
 			return View::make('score.doscore')
@@ -119,53 +119,20 @@ class ScoreController extends BaseController {
 		list($scores, $total) = $this->calculate_scores($value_list, $challenge_id);
 
 		$run_number = Score_run::where('team_id',  $team_id)->where('challenge_id', $challenge_id)->count() + 1;
-
+		
+		$date = new DateTime();
+		
 		$newRun = array('run_number' => $run_number,
 						'scores' => $scores,
 						'total' => $total,
 						'team_id' => $team_id,
 						'judge_id' => Auth::user()->ID,
 						'challenge_id' => $challenge_id,
-						'division_id' => $team->division_id);
+						'division_id' => $team->division_id,
+						'run_time' => $date->format('H:i:s'));
 
 		Score_run::create($newRun);
 
-		return Redirect::route('score.index');
-	}
-
-	public function competition($competition_id)
-	{
-		if(Competition::find($competition_id)->count() > 0) {
-			Session::put('currentCompetition', $competition_id);
-			Session::forget('currentDivision');
-			Session::forget('currentTeam');
-			return Redirect::route('score.index');
-		} else {
-			return Redirect::route('divisions.index')
-							->with('message', 'Unable to find specified Competition');
-		}
-	}
-
-	public function division($division_id)
-	{
-		if(Division::find($division_id)->count() > 0) {
-			Session::put('currentDivision', $division_id);
-			Session::forget('currentTeam');
-			return Redirect::route('score.index');
-		} else {
-			return Redirect::route('divisions.index')
-							->with('message', 'Unable to find specified Division');
-		}
-	}
-
-	public function team($team_id)
-	{
-		if(Team::find($team_id)->count() > 0) {
-			Session::put('currentTeam', $team_id);
-			return Redirect::route('score.index');
-		} else {
-			return Redirect::route('teams.index')
-							->with('message', 'Unable to find specified Team');
-		}
+		return Redirect::route('score.score_team', ['team_id' => $team_id, 'competition_id' => $team->division->competition->id, 'divison_id' => $team->division_id]);
 	}
 }
