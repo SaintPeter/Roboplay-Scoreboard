@@ -127,6 +127,12 @@ Route::group(array('before' => 'auth'), function() {
 		Route::resource('teacher/teams', 'TeacherTeamsController');
 		Route::resource('teacher/videos', 'TeacherVideoController');
 
+		Route::get('teacher/video/{video_id}/delete/{file_id}', [
+					'as' => 'teacher.video.delete_file',
+					'uses' => 'TeacherVideoController@delete_file' ])
+					->where('video_id', '\d+')
+					->where('file_id', '\d+');
+
 		Route::get('uploader/{video_id}', [
 				   'as' => 'uploader.index',
 				   'uses' => 'UploadController@index' ])

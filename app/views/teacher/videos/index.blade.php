@@ -117,6 +117,7 @@
 				<th>Students</th>
 				<th>YouTube</th>
 				<th>Custom Parts</th>
+				<th>Files</th>
 				<th>Upload</th>
 				<th class="narrow">Actions</th>
 			</tr>
@@ -130,6 +131,7 @@
 						<td>{{ $video->student_count() }}</td>
 						<td><a href="http://youtube.com/watch?v={{{ $video->yt_code }}}" target="_new">YouTube</a></td>
 						<td>{{{ $video->has_custom==1 ? 'Yes' : 'No' }}}</td>
+						<td>{{ count($video->files) }}</td>
 						<td class="{{ $video->has_upload==1 ? 'confirmed' : 'unconfirmed' }}">
 							{{ $video->has_upload==1 ? 'Confirmed' : 'Unconfirmed' }}
 						</td>

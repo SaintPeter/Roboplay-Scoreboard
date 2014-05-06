@@ -2,7 +2,7 @@
 
 class Video extends Eloquent {
 	protected $guarded = array();
-	protected $with = [ 'school', 'school.district', 'school.district.county' ];
+	protected $with = [ 'school', 'school.district', 'school.district.county', 'files' ];
 
 	public static $rules = array(
 		'name' => 'required',
@@ -16,6 +16,23 @@ class Video extends Eloquent {
   		'has_custom' => false,
   		'has_upload' => false
 	);
+
+	public static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function($video)
+        {
+        	foreach($video->files as $file) {
+        		$file->delete();
+        	}
+
+           if(is_dir(public_path() . '/uploads/video_' . $video->id)) {
+            	rmdir(public_path() . '/uploads/video_' . $video->id);
+            }
+        });
+    }
+
 
 	public function setYtCodeAttribute($code)
 	{
