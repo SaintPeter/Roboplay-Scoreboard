@@ -86,6 +86,8 @@
                 	&nbsp;
                 	{{ link_to_route('videos.edit', 'Edit', array($video->id), array('class' => 'btn btn-info')) }}
 					&nbsp;
+					{{ link_to_route('uploader.index', 'Upload', array($video->id), array('class' => 'btn btn-success')) }}
+					&nbsp;
                     {{ Form::open(array('method' => 'DELETE', 'route' => array('videos.destroy', $video->id), 'id' => 'delete_form_' . $video->id, 'style' => 'display: inline-block;')) }}
                         {{ Form::submit('Delete', array('class' => 'btn btn-danger delete_button', 'delete_id' => $video->id)) }}
                     {{ Form::close() }}

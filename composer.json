@@ -8,7 +8,8 @@
 		"hampel/wordpress-auth-laravel": "dev-master",
 		"way/generators": "dev-master",
 		"creitive/breadcrumbs": "dev-master",
-		"nesbot/Carbon": "*"
+		"nesbot/Carbon": "*",
+		"easybook/geshi": "dev-master"
 	},
 	"autoload": {
 		"classmap": [

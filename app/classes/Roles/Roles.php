@@ -4,12 +4,6 @@ namespace Roles;
 
 class Roles {
 
-	public static function test()
-	{
-		dd(\Auth::guest());
-
-	}
-
 	public static function isAdmin()
 	{
 		return Roles::is('administrator');

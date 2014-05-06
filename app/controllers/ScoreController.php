@@ -20,18 +20,18 @@ class ScoreController extends BaseController {
 		}
 
 		if($team_id == 0) {
-			$teams = Team::with('school')->where('division_id', $division_id)->get();
+			$teams = Team::where('division_id', $division_id)->get();
 			return View::make('score.team_list', compact('teams', 'division_id', 'competition_id'));
 		}
 
 		$challenges = Division::with('challenges', 'challenges.score_elements')
 								->find($division_id)->challenges;
-		$team = Team::with('school')->find($team_id);
+		$team = Team::find($team_id);
 		$judge = Judge::find(Auth::user()->ID);
 
 		if(empty($team))
 		{
-			$teams = Team::with('school')->where('division_id', $division_id)->get();
+			$teams = Team::where('division_id', $division_id)->get();
 			return View::make('score.team_list', compact('teams', 'division_id', 'competition_id'));
 		}
 
@@ -42,7 +42,7 @@ class ScoreController extends BaseController {
 	public function doscore($team_id, $challenge_id)
 	{
 		$challenge = Challenge::with('score_elements','divisions')->find($challenge_id);
-		$team = Team::with('school')->with('division', 'division.competition')->find($team_id);
+		$team = Team::with('division', 'division.competition')->find($team_id);
 		$judge = Judge::find(Auth::user()->ID);
 
 		if(!$challenge->divisions->contains($team->division_id)) {
@@ -62,7 +62,7 @@ class ScoreController extends BaseController {
 	public function preview($team_id, $challenge_id)
 	{
 		$challenge = Challenge::with('score_elements','divisions')->find($challenge_id);
-		$team = Team::with('school')->find($team_id);
+		$team = Team::find($team_id);
 
 		if(!$challenge->divisions->contains($team->division_id)) {
 			return View::make('score.doscore')
@@ -105,7 +105,7 @@ class ScoreController extends BaseController {
 				->with('message', 'Did not Score');
 		}
 		$challenge = Challenge::with('score_elements','divisions')->find($challenge_id);
-		$team = Team::with('school')->find($team_id);
+		$team = Team::find($team_id);
 
 		if(!$challenge->divisions->contains($team->division_id)) {
 			return View::make('score.doscore')
@@ -160,7 +160,7 @@ class ScoreController extends BaseController {
 
 	public function team($team_id)
 	{
-		if(Team::with('school')->find($team_id)->count() > 0) {
+		if(Team::find($team_id)->count() > 0) {
 			Session::put('currentTeam', $team_id);
 			return Redirect::route('score.index');
 		} else {

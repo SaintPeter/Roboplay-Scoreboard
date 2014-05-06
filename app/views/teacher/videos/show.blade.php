@@ -63,7 +63,7 @@
             <td>
             	{{ link_to_route('teacher.videos.edit', 'Edit', array($video->id), array('class' => 'btn btn-info')) }}
 				&nbsp;
-                <a class="btn btn-success" href="http://brainproject.ucdavis.edu/roboplay/video/2014/submit.php?user_id={{ Auth::user()->ID }}&video_id={{$video->id}}">Upload</a>
+                {{ link_to_route('uploader.index', 'Upload', array($video->id), array('class' => 'btn btn-success')) }}
 				&nbsp;
                 {{ Form::open(array('method' => 'DELETE', 'route' => array('teacher.videos.destroy', $video->id), 'id' => 'delete_form_' . $video->id, 'style' => 'display: inline-block;')) }}
                     {{ Form::submit('Delete', array('class' => 'btn btn-danger delete_button', 'delete_id' => $video->id)) }}

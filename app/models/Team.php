@@ -2,6 +2,7 @@
 
 class Team extends Eloquent {
 	protected $guarded = array();
+	protected $with = [ 'school', 'school.district', 'school.district.county' ];
 
 	public static $rules = array(
 		'name' => 'required',

@@ -126,6 +126,18 @@ Route::group(array('before' => 'auth'), function() {
 	{
 		Route::resource('teacher/teams', 'TeacherTeamsController');
 		Route::resource('teacher/videos', 'TeacherVideoController');
+
+		Route::get('uploader/{video_id}', [
+				   'as' => 'uploader.index',
+				   'uses' => 'UploadController@index' ])
+				   ->where('video_id', '\d+');
+		Route::post('uploader/handler/{video_id}', [
+				   'as' => 'uploader.handler',
+				   'uses' => 'UploadController@handler' ])
+				   ->where('video_id', '\d+');;
+		Route::get('uploader/progress', [
+				   'as' => 'uploader.progress',
+				   'uses' => 'UploadController@progress' ]);
 	});
 
 });

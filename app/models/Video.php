@@ -2,6 +2,7 @@
 
 class Video extends Eloquent {
 	protected $guarded = array();
+	protected $with = [ 'school', 'school.district', 'school.district.county' ];
 
 	public static $rules = array(
 		'name' => 'required',
@@ -37,6 +38,11 @@ class Video extends Eloquent {
 	public function school()
 	{
 		return $this->hasOne('Schools', 'school_id', 'school_id');
+	}
+
+	public function files()
+	{
+		return $this->hasMany('Files');
 	}
 
 	public function student_count()
