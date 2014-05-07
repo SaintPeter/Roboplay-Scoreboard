@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder {
 		Eloquent::unguard();
 
 		$this->call('FiletypeTableSeeder');
+		$this->call('Vid_score_typeTableSeeder');
 	}
 
 }

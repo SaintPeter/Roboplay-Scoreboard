@@ -14,6 +14,16 @@ class Vid_division extends Eloquent {
 		return $this->belongsTo('Vid_competition');
 	}
 
+	public function scores()
+	{
+		return $this->hasMany('Video_scores');
+	}
+
+	public function videos()
+	{
+		return $this->hasMany('Videos');
+	}
+
 	/**
 	 * Return a list of id => long name keypairs
 	 *

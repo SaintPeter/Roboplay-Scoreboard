@@ -62,6 +62,12 @@ class Video extends Eloquent {
 		return $this->hasMany('Files');
 	}
 
+	public function scores()
+	{
+		return $this->hasMany('Video_scores');
+	}
+
+
 	public function student_count()
 	{
 		return count(explode("\n",trim($this->students)));

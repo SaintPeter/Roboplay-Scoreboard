@@ -1,0 +1,1 @@
+/var/scoreboard/app/views/video_scores/edit.blade.php
