@@ -120,6 +120,11 @@ Route::group(array('before' => 'auth'), function() {
 		Route::get('score/team/{team_id}', array(
 				   'as' => 'score.team',
 				   'uses' =>'ScoreController@team'));
+
+		Route::resource('video/judge', 'ScoreVideosController');
+		Route::get('video/judge/score/{video_group}', [
+					'as' => 'video.judge.score',
+					'uses' => 'ScoreVideosController@score' ]);
 	});
 
 	Route::group(array('before' => 'teacher'), function ()
