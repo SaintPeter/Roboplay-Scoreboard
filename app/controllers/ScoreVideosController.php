@@ -32,6 +32,27 @@ class ScoreVideosController extends \BaseController {
 	public function score($video_group)
 	{
 		Breadcrumbs::addCrumb('Score Video', 'score');
+		
+		// Get the first video with the lowest number of 
+		// scores, not scored by the current user.
+		// If scores are present, discount
+		$video_list = DB::table('videos')
+					 ->leftJoin('video_scores', 'videos.id', '=', 'video_scores.video_id')
+					 ->leftJoin('vid_score_types', 'video_scores.vid_score_type_id', '=', 'vid_score_types.id')
+					 ->whereNull('video_scores.judge_id')
+					 ->orWhere(function($q) use ($video_group) {
+					 		$q->where('video_scores.judge_id', '<>', Auth::user()->ID)
+					 		  ->where('vid_score_types.group', $video_group);
+					 	})
+					 ->select(DB::raw('videos.id, COUNT(*) as score_count'))
+					 ->orderBy('score_count', 'ASC')
+					 ->groupBy('videos.id')
+					 ->get();
+
+		$video = Video::find($video_list[0]->id);
+		$types = Vid_score_type::where('group', $video_group)->with('Rubric')->get();
+				
+		return View::make('video_scores.create', compact('video', 'types'));
 
 	}
 

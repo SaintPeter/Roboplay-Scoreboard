@@ -82,6 +82,7 @@ Route::group(array('before' => 'auth'), function() {
 
 	Route::group(array('before' => 'judge'), function () {
 
+		// Challenge Scoring
 		Route::get('score', array(
 				   'as' => 'score.choose_competition',
 				   'uses' =>'ScoreController@index'));
@@ -108,19 +109,8 @@ Route::group(array('before' => 'auth'), function() {
 		Route::post('score/save/{team_id}/{challenge_id}', array(
 				   'as' => 'score.save',
 				   'uses' =>'ScoreController@save'));
-		Route::post('score/preview/{team_id}/{challenge_id}', array(
-				   'as' => 'score.preview',
-				   'uses' =>'ScoreController@preview'));
-		Route::get('score/competition/{competition_id}', array(
-				   'as' => 'score.competition',
-				   'uses' =>'ScoreController@competition'));
-		Route::get('score/division/{division_id}', array(
-				   'as' => 'score.division',
-				   'uses' =>'ScoreController@division'));
-		Route::get('score/team/{team_id}', array(
-				   'as' => 'score.team',
-				   'uses' =>'ScoreController@team'));
 
+		// Video Judging
 		Route::resource('video/judge', 'ScoreVideosController');
 		Route::get('video/judge/score/{video_group}', [
 					'as' => 'video.judge.score',

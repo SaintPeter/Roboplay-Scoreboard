@@ -1,8 +1,10 @@
 <?php
 
 class Rubric extends \Eloquent {
+	protected $table = 'rubric';
 	protected $guarded = [ 'id' ];
 	public $timestamps = false;
+	
 
 	public function vid_score_type()
 	{

@@ -59,29 +59,6 @@ class ScoreController extends BaseController {
 
 	}
 
-	public function preview($team_id, $challenge_id)
-	{
-		$challenge = Challenge::with('score_elements','divisions')->find($challenge_id);
-		$team = Team::find($team_id);
-
-		if(!$challenge->divisions->contains($team->division_id)) {
-			return View::make('score.doscore')
-					->with(compact('challenge', 'team', 'run_number'))
-					->with('score_elements', $challenge->score_elements)
-					->with('message', "Cannot find that Division/Team Combination")
-					->withInput();
-		}
-
-		$value_list = Input::get('scores', array());
-		list($scores, $total) = $this->calculate_scores($value_list, $challenge_id);
-
-		$run_number = Score_run::where('team_id',  $team_id)->where('challenge_id', $challenge_id)->count() + 1;
-
-		return View::make('score.preview')
-					->with(compact('challenge', 'team', 'run_number', 'scores', 'total'))
-					->with('score_elements', $challenge->score_elements);
-	}
-
 	function calculate_scores($value_list, $challenge_id)
 	{
 		$challenge = Challenge::with('score_elements')->find($challenge_id);

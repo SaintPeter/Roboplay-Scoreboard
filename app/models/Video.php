@@ -2,7 +2,7 @@
 
 class Video extends Eloquent {
 	protected $guarded = array();
-	protected $with = [ 'school', 'school.district', 'school.district.county', 'files' ];
+	protected $with = [ 'school', 'school.district', 'school.district.county', 'files', 'vid_division' ];
 
 	public static $rules = array(
 		'name' => 'required',
