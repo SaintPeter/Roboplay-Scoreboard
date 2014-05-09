@@ -1,9 +1,21 @@
 @extends('layouts.scaffold')
 
 @section('style')
-.score_col {
-	width: 18%
+.score_col, .cb_col, .rubric_text {
+	width: 18%;
 }
+
+.name_col, .cat_col, .blank_col {
+	width:28%;
+}
+
+.score_table {
+	width: 800px;
+	table-layout: fixed;
+	margin-left: auto;
+	margin-right: auto;
+}
+
 .title_row td, .score_row td {
 	text-align: center;
 }
@@ -11,11 +23,19 @@
 	background-color: #428BCA;
 	color: white;
 	font-weight: bold;
-	padding: 2px;
+	padding: 4px;
 }
-.title_row {
-	width:1000px;
+
+.title_row td:first-child {
+	border-top-left-radius: 4px;
+	border-bottom-left-radius: 4px;
 }
+.title_row td:last-child {
+	border-top-right-radius: 4px;
+	border-bottom-right-radius: 4px;
+}
+
+
 .name_col {
 	text-align: left !important;
 }
@@ -32,7 +52,7 @@
 
 @section('script')
 	$(function() {
-		$( ".rubric_switcher" ).click(function(e) { 
+		$( ".rubric_switcher" ).click(function(e) {
 			e.preventDefault();
 			var rubric_id = $(this).attr('rubric_id');
 			if( $( '#rubric_' + rubric_id ).hasClass('hidden')) {
@@ -52,16 +72,14 @@
 @section('main')
 <h1>Score Video</h1>
 {{ Breadcrumbs::render() }}
-
-<h4>Division</h4>
-<p>{{ $video->vid_division->name }}</p>
-
 <div style="width:640px" class="center-block">
-	<h4>{{ $video->name }}</h4>
+	<span class="pull-right">{{ $video->vid_division->name }}</span>
+	<h4>{{ $video->name }} </h4>
 	<iframe  style="border: 1px solid black" id="ytplayer" type="text/html" width="640" height="390" src="http://www.youtube.com/embed/{{{ $video->yt_code }}}" frameborder="0"></iframe>
 </div>
 
-<table style="width:1000px" class="center-block">
+{{ Form::open(['route' => [ 'video.judge.store', $video->id ] ]) }}
+<table class="score_table">
 	@foreach($types as $type)
 		<tr class="title_row">
 			<td class="name_col">{{ $type->display_name }}</td>
@@ -78,13 +96,13 @@
 							{{ $rubric->element_name }}
 						</a>
 				</td>
-				<td>{{ Form::radio('scores[' . $type->name .  '][' . $rubric->element . ']', '1', true) }}</td>
-				<td>{{ Form::radio('scores[' . $type->name .  '][' . $rubric->element . ']', '2', false) }}</td>
-				<td>{{ Form::radio('scores[' . $type->name .  '][' . $rubric->element . ']', '3', false) }}</td>
-				<td>{{ Form::radio('scores[' . $type->name .  '][' . $rubric->element . ']', '4', false) }}</td>
+				<td class="cb_col">{{ Form::radio('scores[' . $type->id .  '][' . $rubric->element . ']', '1', true) }}</td>
+				<td class="cb_col">{{ Form::radio('scores[' . $type->id .  '][' . $rubric->element . ']', '2', false) }}</td>
+				<td class="cb_col">{{ Form::radio('scores[' . $type->id .  '][' . $rubric->element . ']', '3', false) }}</td>
+				<td class="cb_col">{{ Form::radio('scores[' . $type->id .  '][' . $rubric->element . ']', '4', false) }}</td>
 			</tr>
 			<tr class="rubric_row hidden" id="rubric_{{ $rubric->id }}">
-				<td></td>
+				<td class="blank_col"></td>
 				<td class="rubric_text">{{ $rubric->one }}</td>
 				<td class="rubric_text">{{ $rubric->two }}</td>
 				<td class="rubric_text">{{ $rubric->three }}</td>
@@ -92,5 +110,14 @@
 			</tr>
 		@endforeach
 	@endforeach
+	<tr>
+		<td colspan="5" style="text-align: center">
+			{{ Form::submit('Save', ['class' => 'btn btn-success']) }}
+		</td>
+	</tr>
 </table>
+{{ Form::close() }}
+<br />
+<br />
+<br />
 @stop

@@ -23,8 +23,13 @@ class ScoreVideosController extends \BaseController {
 		$video_scores = Video_scores::where('judge_id', Auth::user()->ID)
 								  ->orderBy('total', 'desc')
 								  ->get();
+		foreach($video_scores as $score) {
+			$videos[$score->video->name][] = $score;
+		}
 
-		return View::make('video_scores.index', compact('video_scores'));
+		//dd(DB::getQueryLog());
+
+		return View::make('video_scores.index', compact('videos'));
 	}
 
 	// Choose an appopriate video for judging
@@ -32,8 +37,8 @@ class ScoreVideosController extends \BaseController {
 	public function score($video_group)
 	{
 		Breadcrumbs::addCrumb('Score Video', 'score');
-		
-		// Get the first video with the lowest number of 
+
+		// Get the first video with the lowest number of
 		// scores, not scored by the current user.
 		// If scores are present, discount
 		$video_list = DB::table('videos')
@@ -51,7 +56,7 @@ class ScoreVideosController extends \BaseController {
 
 		$video = Video::find($video_list[0]->id);
 		$types = Vid_score_type::where('group', $video_group)->with('Rubric')->get();
-				
+
 		return View::make('video_scores.create', compact('video', 'types'));
 
 	}
@@ -63,7 +68,34 @@ class ScoreVideosController extends \BaseController {
 	 */
 	public function create()
 	{
+
+
 		return View::make('video_scores.create');
+	}
+
+	// Take an individual raw score from the form and turn it into
+	// something which can be used to create or update
+	// a score record
+	private function calculate_score($type, $score)
+	{
+		$total = 0;
+		$score_count = count($score);
+		// Loop through s1..s5, totalling or creating the index
+		for($i = 1; $i < 6; $i++)
+		{
+			$index = 's' . $i;
+			if(array_key_exists($index, $score)) {
+				$total += $score[$index];
+			} else {
+				$score[$index] = 0;
+			}
+		}
+		$score['total'] = $total;
+		$score['average'] = $total / $score_count;
+		$score['norm_avg'] = $score['average'];
+		$score['vid_score_type_id'] = $type;
+
+		return $score;
 	}
 
 	/**
@@ -71,18 +103,20 @@ class ScoreVideosController extends \BaseController {
 	 *
 	 * @return Response
 	 */
-	public function store()
+	public function store($video_id)
 	{
-		$validator = Validator::make($data = Input::all(), Video_scores::$rules);
+		$input = Input::all();
+		$video = Video::find($video_id);
 
-		if ($validator->fails())
-		{
-			return Redirect::back()->withErrors($validator)->withInput();
+		foreach($input['scores'] as $type => $score) {
+			$score = $this->calculate_score($type, $score);
+			$score['video_id'] = $video_id;
+			$score['vid_division_id'] = $video->vid_division_id;
+			$score['judge_id'] = Auth::user()->ID;
+			Video_scores::create($score);
 		}
 
-		Video_scores::create($data);
-
-		return Redirect::route('video_scores.index');
+		return Redirect::route('video.judge.index');
 	}
 
 	/**

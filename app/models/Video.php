@@ -64,7 +64,7 @@ class Video extends Eloquent {
 
 	public function scores()
 	{
-		return $this->hasMany('Video_scores');
+		return $this->belongsTo('Video_scores');
 	}
 
 

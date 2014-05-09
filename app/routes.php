@@ -115,6 +115,9 @@ Route::group(array('before' => 'auth'), function() {
 		Route::get('video/judge/score/{video_group}', [
 					'as' => 'video.judge.score',
 					'uses' => 'ScoreVideosController@score' ]);
+		Route::post('video/judge/store/{video_id}', [
+					'as' => 'video.judge.store',
+					'uses' => 'ScoreVideosController@store' ]);
 	});
 
 	Route::group(array('before' => 'teacher'), function ()

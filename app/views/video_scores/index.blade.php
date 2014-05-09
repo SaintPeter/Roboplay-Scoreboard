@@ -81,15 +81,31 @@
 </div>
 
 <h2>Previously Scored Videos</h2>
-<table class="table table-striped table-bordered">
+<table class="table-striped table-bordered">
 	<thead>
 		<th>Video Name</th>
 		<th>Total Score</th>
 		<th>Action</th>
 	</thead>
 	<tbody>
-		<tr>No Videos Scored</tr>
-
+		@if(count($videos))
+			@foreach($videos as $title => $scores)
+				<tr class="title_row">
+					<td><strong>{{ $title }}</strong></td>
+					<td>0</td>
+					<td><a href="#" class="btn btn-primary btn-xs">Edit</a></td>
+				</tr>
+				@foreach($scores as $score)
+					<tr class="score_row">
+						<td class="type">{{ $score->type->display_name }}</td>
+						<td>{{$score->total }}</td>
+						<td>{{ $score->average }}</td>
+					</tr>
+				@endforeach
+			@endforeach
+		@else
+			<tr><td>No Videos Scored</td></tr>
+		@endif
 	</tbody>
 
 </table>
