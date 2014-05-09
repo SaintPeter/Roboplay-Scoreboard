@@ -49,12 +49,12 @@ class Video extends Eloquent {
 
 	public function vid_division()
 	{
-		return $this->belongsTo('Vid_division')->orderBy('display_order', 'asc');
+		return $this->belongsTo('Vid_division');
 	}
 
 	public function school()
 	{
-		return $this->hasOne('Schools', 'school_id', 'school_id');
+		return $this->belongsTo('Schools', 'school_id', 'school_id');
 	}
 
 	public function files()
@@ -64,7 +64,7 @@ class Video extends Eloquent {
 
 	public function scores()
 	{
-		return $this->belongsTo('Video_scores');
+		return $this->hasMany('Video_scores');
 	}
 
 

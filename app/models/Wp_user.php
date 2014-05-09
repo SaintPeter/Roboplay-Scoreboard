@@ -5,6 +5,7 @@ class Wp_user extends Eloquent {
 	protected $table = 'users';
 	protected $primaryKey = 'ID';
 	protected $guarded = array('ID');
+	public $timestamps = false;
 
 	public static $rules = array();
 

@@ -23,6 +23,7 @@ class ScoreVideosController extends \BaseController {
 		$video_scores = Video_scores::where('judge_id', Auth::user()->ID)
 								  ->orderBy('total', 'desc')
 								  ->get();
+		$videos = [];
 		foreach($video_scores as $score) {
 			$videos[$score->video->name][] = $score;
 		}
@@ -38,23 +39,53 @@ class ScoreVideosController extends \BaseController {
 	{
 		Breadcrumbs::addCrumb('Score Video', 'score');
 
-		// Get the first video with the lowest number of
-		// scores, not scored by the current user.
-		// If scores are present, discount
-		$video_list = DB::table('videos')
-					 ->leftJoin('video_scores', 'videos.id', '=', 'video_scores.video_id')
-					 ->leftJoin('vid_score_types', 'video_scores.vid_score_type_id', '=', 'vid_score_types.id')
-					 ->whereNull('video_scores.judge_id')
-					 ->orWhere(function($q) use ($video_group) {
-					 		$q->where('video_scores.judge_id', '<>', Auth::user()->ID)
-					 		  ->where('vid_score_types.group', $video_group);
-					 	})
-					 ->select(DB::raw('videos.id, COUNT(*) as score_count'))
-					 ->orderBy('score_count', 'ASC')
-					 ->groupBy('videos.id')
-					 ->get();
-
-		$video = Video::find($video_list[0]->id);
+		// Get all the videos and any comments for this score group
+		$all_videos = Video::with([ 'scores' => function($q) use ($video_group) { 
+							$q->where('video_scores.score_group', $video_group);
+						}])->get();
+		//dd(DB::getQueryLog());
+//		echo "<pre>";
+//		foreach($all_videos as $video) {
+//			echo $video->id . " - scores: " . count($video->scores) . "<br />";
+//		}
+//		echo "</pre>";
+		
+		$filtered = $all_videos->filter(function($video) {
+			if(count($video->scores) == 0) {
+				// Videos with no scores stay on the list
+				return true;
+			} else {
+				foreach($video->scores as $score) {
+					if($score->judge_id == Auth::user()->ID) {
+						return false;
+					}	
+				}
+				return true;
+			}			
+		});
+		
+//		echo "<pre>";
+//		foreach($filtered as $video) {
+//			echo $video->id . " - scores: " . count($video->scores) . "<br />";
+//		}
+//		echo "</pre>";
+		
+		if(count($filtered) == 0) {
+			return Redirect::route('video.judge.index')->with('message', 'You cannot judge any more of this type of video.');
+		}
+		
+		$sorted = $filtered->sort( function ($a, $b) {
+				$count_a = count($a->scores);
+				$count_b = count($b->scores);
+			    if ($count_a == $count_b) {
+			        return 0;
+			    }
+			    return ($count_a < $count_b) ? -1 : 1;
+			});
+		
+		
+		//$video = Video::find($video_list[0]->id);
+		$video = $sorted->first();
 		$types = Vid_score_type::where('group', $video_group)->with('Rubric')->get();
 
 		return View::make('video_scores.create', compact('video', 'types'));
@@ -78,6 +109,7 @@ class ScoreVideosController extends \BaseController {
 	// a score record
 	private function calculate_score($type, $score)
 	{
+		$group = Vid_score_type::whereId($type)->pluck('group');
 		$total = 0;
 		$score_count = count($score);
 		// Loop through s1..s5, totalling or creating the index
@@ -94,6 +126,7 @@ class ScoreVideosController extends \BaseController {
 		$score['average'] = $total / $score_count;
 		$score['norm_avg'] = $score['average'];
 		$score['vid_score_type_id'] = $type;
+		$score['score_group'] = $group;
 
 		return $score;
 	}

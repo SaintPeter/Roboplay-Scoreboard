@@ -7,12 +7,14 @@
 <a class="ui-btn-right"
 	data-icon="lock"
    data-iconpos="notext"
+   data-ajax="false"
    href="/scoreboard/login">Login</a>
 @else
 <a class="ui-btn-right"
 	data-icon="lock"
    data-iconpos="notext"
    data-theme="b"
+   data-ajax="false"
    href="/scoreboard/logout">Logout</a>
 
 @endif

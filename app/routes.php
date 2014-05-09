@@ -165,11 +165,12 @@ Route::post('login', function() {
 	    'user_pass' => Input::get('password')
 	);
 
-	if (Auth::attempt($userdata))
+	if (Auth::attempt($userdata, false))
 	{
 		// Update Judge Info
 		Judge::do_sync();
 
+		//dd(Redirect::intended('/'));
 	    // Go where we intended to go, or back to the home page
 		return Redirect::intended('/');
 	}
