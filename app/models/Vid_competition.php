@@ -10,6 +10,6 @@ class Vid_competition extends Eloquent {
 	);
 
 	public function divisions() {
-		return $this->hasMany('Vid_division');
+		return $this->hasMany('Vid_division', 'competition_id', 'id');
 	}
 }

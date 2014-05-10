@@ -48,7 +48,10 @@ class VideosController extends BaseController {
 	public function store()
 	{
 		$input = array_except(Input::all(), ['select_county', 'select_district' ]);
-		$validation = Validator::make($input, Video::$rules);
+		// Skip check on video
+		$rules = Video::$rules;
+		unset($rules['yt_code']);
+		$validation = Validator::make($input, $rules);
 
 		if ($validation->passes())
 		{
@@ -106,7 +109,11 @@ class VideosController extends BaseController {
 	public function update($id)
 	{
 		$input = array_except(Input::all(), ['_method', 'select_county', 'select_district' ]);
-		$validation = Validator::make($input, Video::$rules);
+
+		// Skip check on video
+		$rules = Video::$rules;
+		unset($rules['yt_code']);
+		$validation = Validator::make($input, $rules);
 
 		if ($validation->passes())
 		{

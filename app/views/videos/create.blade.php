@@ -71,8 +71,13 @@ $(function() {
 	</div>
 
 	<div class="form-group">
-	    {{ Form::label('has_upload', 'Has a upload Part:') }}
-	    {{ Form::select('has_upload', [ 0 => 'No', 1 => 'Yes' ], Input::old('has_upload')) }}
+	    {{ Form::label('has_vid', 'Has a Video:') }}
+	    {{ Form::select('has_vid', [ 0 => 'No', 1 => 'Yes' ], Input::old('has_upload')) }}
+	</div>
+
+	<div class="form-group">
+	    {{ Form::label('has_vid', 'Has a Code File:') }}
+	    {{ Form::select('has_vid', [ 0 => 'No', 1 => 'Yes' ], Input::old('has_upload')) }}
 	</div>
 
 	<div class="form-group">
