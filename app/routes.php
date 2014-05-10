@@ -82,6 +82,17 @@ Route::group(array('before' => 'auth'), function() {
 
 	Route::group(array('before' => 'judge'), function () {
 
+		// Video Scores management
+		Route::get('video_scores', [
+				   'as' => 'video_scores.manage.index',
+				   'uses' => 'VideoManagementController@index' ]);
+		Route::post('video_scores/process', [
+				    'as' => 'video_scores.manage.process',
+				    'uses' => 'VideoManagementController@process' ]);
+		Route::get('video_scores/scores_csv', [
+				    'as' => 'video_scores.manage.scores_csv',
+				    'uses' => 'VideoManagementController@scores_csv' ]);
+
 		// Challenge Scoring
 		Route::get('score', array(
 				   'as' => 'score.choose_competition',

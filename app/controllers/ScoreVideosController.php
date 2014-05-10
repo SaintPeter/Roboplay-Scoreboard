@@ -39,13 +39,19 @@ class ScoreVideosController extends \BaseController {
 							->get();
 		$videos = [];
 		//dd(DB::getQueryLog());
+		$types = Vid_score_type::orderBy('id')->lists('name', 'id');
+		$blank = array_combine(array_keys($types), array_fill(0, count($types), '-'));
 		foreach($video_scores as $score) {
-			$videos[$score->division->longname()][$score->video->name][] = $score;
+			$videos[$score->division->longname()][$score->video->name] = $blank;
 		}
 
-		//dd(DB::getQueryLog());
+		foreach($video_scores as $score) {
+			$videos[$score->division->longname()][$score->video->name][$score->vid_score_type_id] = $score->total;
+		}
 
-		return View::make('video_scores.index', compact('videos', 'comp_list'));
+		//dd($videos);
+
+		return View::make('video_scores.index', compact('videos', 'comp_list', 'types'));
 	}
 
 	// Choose an appopriate video for judging

@@ -35,7 +35,7 @@
 	background-color: #5CB85C
 }
 .scored_container {
-	width: 400px;
+	width: 700px;
 	margin-left: auto;
 	margin-right: auto;
 	margin-top: 15px;
@@ -44,27 +44,34 @@
 .scored_table {
 	width: 100%;
 }
-.comp_row td {
-	background-color: #5CB85C;
+.comp_row td:first-child {
 	font-size: 1.1em;
-	font-weight: bold;
-	padding: 2px;
-	color: white;
+	padding: 3px;
+	text-align: left !important;
 }
-.title_row td {
+.comp_row td {
 	background-color: #428BCA;
 	color: white;
-	padding: 2px;
-	padding-left: 5px;
-}
-.title_row td:last-child {
 	text-align: center;
 }
+
 .score_row td:first-child {
 	padding-left: 20px;
+	width: 250px;
+	text-align: left !important;
 }
-.score_row td:last-child {
+.score_row td {
 	text-align: center;
+	width: 70px;
+	text-align: center;
+	border: 1px solid lightgray;
+}
+
+.score {
+
+}
+td.score:nth-child(odd) {
+	background-color: rgb(245, 245, 245);
 }
 
 
@@ -81,7 +88,7 @@
 @else
 	<h4 style="color: red;">No Open Video Competitions</h4>
 @endif
-	<div class=" col-md-4">
+	<div class="col-s-6 col-md-4">
 		<div class="holder">
 			<div class="header general">General Videos</div>
 			<div class="inner">
@@ -100,7 +107,7 @@
 		</div>
 	</div>
 
-<div class=" col-md-4">
+<div class="col-s-6 col-md-4">
 	<div class="holder">
 		<div class="header part">Custom Part Videos</div>
 		<div class="inner">
@@ -113,7 +120,7 @@
 	</div>
 </div>
 
-<div class=" col-md-4">
+<div class="col-s-6 col-md-4">
 	<div class="holder">
 		<div class="header compute">Computational Thinking Videos</div>
 		<div class="inner">
@@ -136,19 +143,18 @@
 			@if(count($videos))
 				@foreach($videos as $comp => $video_list)
 					<tr class="comp_row">
-						<td colspan="2">{{ $comp }}</td>
+						<td>{{ $comp }}</td>
+						@foreach($types as $type)
+							<td class="type">{{ $type }}</td>
+						@endforeach
 					</tr>
 					@foreach($video_list as $title => $scores)
-						<tr class="title_row">
+						<tr class="score_row">
 							<td><strong>{{ $title }}</strong></td>
-							<td>Score</td>
+							@foreach($types as $index => $type)
+								<td class="score">{{ $scores[$index] }}</td>
+							@endforeach
 						</tr>
-						@foreach($scores as $score)
-							<tr class="score_row">
-								<td class="type">{{ $score->type->display_name }}</td>
-								<td>{{$score->total }}</td>
-							</tr>
-						@endforeach
 					@endforeach
 				@endforeach
 			@else

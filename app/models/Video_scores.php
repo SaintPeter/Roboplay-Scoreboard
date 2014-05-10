@@ -16,4 +16,8 @@ class Video_scores extends \Eloquent {
 		return $this->hasOne('Vid_score_type', 'id', 'vid_score_type_id');
 	}
 
+	public function judge() {
+		return $this->belongsTo('Judge');
+	}
+
 }
