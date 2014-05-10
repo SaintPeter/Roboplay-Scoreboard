@@ -31,17 +31,17 @@ $(function() {
 {{ Form::open(array('route' => 'videos.store', 'role'=>"form", 'class' => 'col-md-6' )) }}
 	<div class="form-group">
 	    {{ Form::label('name', 'Name:') }}
-	    {{ Form::text('name', Input::old('name'), [ 'class'=>'form-control col-md-4' ]) }}
+	    {{ Form::text('name', null, [ 'class'=>'form-control col-md-4' ]) }}
 	</div>
 
 	<div class="form-group">
 	    {{ Form::label('yt_code', 'YouTube URL or Code:') }}
-	    {{ Form::text('yt_code', Input::old('yt_code'), [ 'class'=>'form-control col-md-4' ]) }}
+	    {{ Form::text('yt_code', null, [ 'class'=>'form-control col-md-4' ]) }}
 	</div>
 
 	<div class="form-group">
 		{{ Form::label('vid_division_id', 'Division:') }}
-		{{ Form::select('vid_division_id', $vid_divisions, Input::old('vid_division_id'), [ 'class'=>'form-control col-md-4' ]) }}
+		{{ Form::select('vid_division_id', $vid_divisions, null, [ 'class'=>'form-control col-md-4' ]) }}
 	</div>
 
     <div class="form-group">
@@ -61,23 +61,23 @@ $(function() {
 
 	<div class="form-group">
 	    {{ Form::label('students', 'Students:') }}
-	    {{ Form::textarea('students', Input::old('students')) }}
+	    {{ Form::textarea('students') }}
 	    <p>One Student Per Line</p>
 	</div>
 
 	<div class="form-group">
 	    {{ Form::label('has_custom', 'Has a Custom Part:') }}
-	    {{ Form::select('has_custom', [ 0 => 'No', 1 => 'Yes' ], Input::old('has_custom')) }}
+	    {{ Form::select('has_custom', [ 0 => 'No', 1 => 'Yes' ]) }}
 	</div>
 
 	<div class="form-group">
 	    {{ Form::label('has_vid', 'Has a Video:') }}
-	    {{ Form::select('has_vid', [ 0 => 'No', 1 => 'Yes' ], Input::old('has_upload')) }}
+	    {{ Form::select('has_vid', [ 0 => 'No', 1 => 'Yes' ]) }}
 	</div>
 
 	<div class="form-group">
-	    {{ Form::label('has_vid', 'Has a Code File:') }}
-	    {{ Form::select('has_vid', [ 0 => 'No', 1 => 'Yes' ], Input::old('has_upload')) }}
+	    {{ Form::label('has_code', 'Has a Code File:') }}
+	    {{ Form::select('has_code', [ 0 => 'No', 1 => 'Yes' ]) }}
 	</div>
 
 	<div class="form-group">

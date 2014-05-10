@@ -74,8 +74,8 @@ $(function() {
 	</div>
 
 	<div class="form-group">
-	    {{ Form::label('has_vid', 'Has a Code File:') }}
-	    {{ Form::select('has_vid', [ 0 => 'No', 1 => 'Yes' ]) }}
+	    {{ Form::label('has_code', 'Has a Code File:') }}
+	    {{ Form::select('has_code', [ 0 => 'No', 1 => 'Yes' ]) }}
 	</div>
 
 	<div class="form-group">
