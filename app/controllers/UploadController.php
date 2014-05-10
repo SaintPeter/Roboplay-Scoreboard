@@ -77,7 +77,7 @@ class UploadController extends BaseController {
 
 	public function handler($video_id)
 	{
-		$base_dir = '/var/scoreboard/public/uploads/';
+		$base_dir = public_path() . '/uploads/';
 		$file_dir = $base_dir . 'video_' . $video_id;
 
 		$valid_ext = Filetype::lists('ext');
