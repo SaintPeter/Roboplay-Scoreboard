@@ -68,14 +68,11 @@
 					return false;
 				}
 				else {
-					// unhide upload button
-					//var noupload = document.getElementById('noupload');
-					//noupload.style.display = 'inline-block';
-
-					// set output message alert
 					var output = document.getElementById('output');
-					output.className = 'alert alert-success';
-					output.innerHTML = 'Thank you for uploading ' + response.file;
+					var message = document.createElement('div');
+					message.className = 'alert alert-success';
+					message.innerHTML = 'Thank you for uploading ' + response.file;
+					output.appendChild(message);
 					return true;
 				}
 			}
