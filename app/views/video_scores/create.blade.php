@@ -72,10 +72,28 @@
 @section('main')
 <h1>Score Video</h1>
 {{ Breadcrumbs::render() }}
-<div style="width:640px" class="center-block">
-	<span class="pull-right">{{ $video->vid_division->name }}</span>
-	<h4>{{ $video->name }} </h4>
-	<iframe  style="border: 1px solid black" id="ytplayer" type="text/html" width="640" height="390" src="http://www.youtube.com/embed/{{{ $video->yt_code }}}" frameborder="0"></iframe>
+<div style="width:850px" class="center-block">
+	<div class="pull-right">
+	<h4>Files</h4>
+	<table class="table">
+		@if(count($video->files))
+			@foreach($video->files as $file)
+			<tr>
+				<td>{{ $file->filetype->name }}</td>
+				<td>{{ link_to($file->path(), $file->filename, [ 'target' => '_blank' ]) }}</td>
+			</tr>
+			@endforeach
+		@else
+			<tr><td>No Files</td></tr>
+		@endif
+	</table>
+	</div>
+
+	<div style="width:640px">
+		<span class="pull-right">{{ $video->vid_division->name }}</span>
+		<h4>{{ $video->name }} </h4>
+		<iframe  style="border: 1px solid black" id="ytplayer" type="text/html" width="640" height="390" src="http://www.youtube.com/embed/{{{ $video->yt_code }}}" frameborder="0"></iframe>
+	</div>
 </div>
 
 {{ Form::open(['route' => [ 'video.judge.store', $video->id ] ]) }}

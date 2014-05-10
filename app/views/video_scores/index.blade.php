@@ -34,6 +34,24 @@
 .compute {
 	background-color: #5CB85C
 }
+.scored_container {
+	width: 400px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 15px;
+	clear:both;
+}
+.scored_table {
+	width: 100%;
+}
+.title_row td {
+	background-color: #428BCA;
+	color: white;
+	padding: 2px;
+}
+.score_row td:first-child {
+	padding-left: 15px;
+}
 
 
 @stop
@@ -45,7 +63,13 @@
 		<div class="holder">
 			<div class="header general">General Videos</div>
 			<div class="inner">
-				<p>General vidoes will be scored on Storyline, Choreography, and Interesting Task. <br /><br />
+				<p>General vidoes will be scored on:
+					<ul>
+						<li>Storyline</li>
+						<li>Choreography</li>
+						<li>Interesting Task</li>
+					</ul>
+					<br />
 				All judges may judge these videos.</p>
 				<div class="text-center">
 					<a class="btn btn-primary" href="{{ route('video.judge.score', [ VG_GENERAL ]) }}">Score</a>
@@ -80,36 +104,32 @@
 	</div>
 </div>
 
-<h2>Previously Scored Videos</h2>
-<table class="table-striped table-bordered">
-	<thead>
-		<th>Video Name</th>
-		<th>Total Score</th>
-		<th>Action</th>
-	</thead>
-	<tbody>
-		@if(count($videos))
-			@foreach($videos as $title => $scores)
-				<tr class="title_row">
-					<td><strong>{{ $title }}</strong></td>
-					<td>0</td>
-					<td><a href="#" class="btn btn-primary btn-xs">Edit</a></td>
-				</tr>
-				@foreach($scores as $score)
-					<tr class="score_row">
-						<td class="type">{{ $score->type->display_name }}</td>
-						<td>{{$score->total }}</td>
-						<td>{{ $score->average }}</td>
+<div class="scored_container">
+	<br />
+	<h3>Previously Scored Videos</h3>
+	<table class="scored_table">
+		<thead>
+		</thead>
+		<tbody>
+			@if(count($videos))
+				@foreach($videos as $title => $scores)
+					<tr class="title_row">
+						<td><strong>{{ $title }}</strong></td>
+						<td>Score</td>
 					</tr>
+					@foreach($scores as $score)
+						<tr class="score_row">
+							<td class="type">{{ $score->type->display_name }}</td>
+							<td>{{$score->total }}</td>
+						</tr>
+					@endforeach
 				@endforeach
-			@endforeach
-		@else
-			<tr><td>No Videos Scored</td></tr>
-		@endif
-	</tbody>
-
-</table>
-
+			@else
+				<tr><td>No Videos Scored</td></tr>
+			@endif
+		</tbody>
+	</table>
+</div>
 
 
 

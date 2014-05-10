@@ -40,16 +40,23 @@ class ScoreVideosController extends \BaseController {
 		Breadcrumbs::addCrumb('Score Video', 'score');
 
 		// Get all the videos and any comments for this score group
-		$all_videos = Video::with([ 'scores' => function($q) use ($video_group) { 
+		$video_query = Video::with([ 'scores' => function($q) use ($video_group) {
 							$q->where('video_scores.score_group', $video_group);
-						}])->get();
+						}]);
+		if($video_group == VG_PART) {
+			$all_videos = $video_query->where('has_custom', 1)->get();
+		} elseif ($video_group == VG_COMPUTE) {
+			$all_videos = $video_query->where('has_code', 1)->get();
+		} else {
+		 	$all_videos = $video_query->get();
+		}
 		//dd(DB::getQueryLog());
 //		echo "<pre>";
 //		foreach($all_videos as $video) {
 //			echo $video->id . " - scores: " . count($video->scores) . "<br />";
 //		}
 //		echo "</pre>";
-		
+
 		$filtered = $all_videos->filter(function($video) {
 			if(count($video->scores) == 0) {
 				// Videos with no scores stay on the list
@@ -58,22 +65,22 @@ class ScoreVideosController extends \BaseController {
 				foreach($video->scores as $score) {
 					if($score->judge_id == Auth::user()->ID) {
 						return false;
-					}	
+					}
 				}
 				return true;
-			}			
+			}
 		});
-		
+
 //		echo "<pre>";
 //		foreach($filtered as $video) {
 //			echo $video->id . " - scores: " . count($video->scores) . "<br />";
 //		}
 //		echo "</pre>";
-		
+
 		if(count($filtered) == 0) {
 			return Redirect::route('video.judge.index')->with('message', 'You cannot judge any more of this type of video.');
 		}
-		
+
 		$sorted = $filtered->sort( function ($a, $b) {
 				$count_a = count($a->scores);
 				$count_b = count($b->scores);
@@ -82,8 +89,8 @@ class ScoreVideosController extends \BaseController {
 			    }
 			    return ($count_a < $count_b) ? -1 : 1;
 			});
-		
-		
+
+
 		//$video = Video::find($video_list[0]->id);
 		$video = $sorted->first();
 		$types = Vid_score_type::where('group', $video_group)->with('Rubric')->get();
