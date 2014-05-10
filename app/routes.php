@@ -38,10 +38,10 @@ Route::group(array('before' => 'auth'), function() {
 	});
 
 	// Logout Page
-	Route::get('logout', function() {
+	Route::get('logout', [ 'as' => 'logout', function() {
 		Auth::logout();
 		return Redirect::to('/');
-	});
+	}]);
 
 	Route::group(array('before' => 'admin'), function () {
 		Route::resource('competitions', 'CompetitionsController');
@@ -159,14 +159,14 @@ Route::group(array('before' => 'auth'), function() {
 
 
 // Basic Login Page
-Route::get('login', function()
+Route::get('login', [ 'as' => 'login', function()
 {
 	if(Auth::check()) {
 		return Redirect::to('/');
 	} else {
 		return View::make('login');
 	}
-});
+}]);
 
 // Post Login Page
 Route::post('login', function() {

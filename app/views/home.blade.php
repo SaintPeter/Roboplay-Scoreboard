@@ -36,6 +36,10 @@
 	<li>{{ link_to('score', 'Score Challenges', $noajax) }}</li>
 	<li>{{ link_to_route('video.judge.index', 'Score Videos', [], $noajax) }}</li>
 </ul>
+<h2>Development</h2>
+<ul data-role="listview" data-inset="true">
+	<li>{{ link_to_route('video_scores.manage.index', 'Manage Video Scores', [], $noajax) }}</li>
+</ul>
 @endif
 
 @if(Roles::isTeacher())
@@ -62,6 +66,16 @@
 	<li data-role="list-divider">Other Management</li>
 	<li>{{ link_to('invoice_management', 'Invoice Payment Management', $noajax) }}</li>
 </ul>
+@endif
+
+@if(Auth::guest())
+<div class="ui-body ui-body-a ui-corner-all">
+	<a href="{{ route('login') }}" class="ui-btn" data-ajax="false">Login</a>
+</div>
+@else
+<div class="ui-body ui-body-a ui-corner-all">
+	<a href="{{ route('logout') }}" class="ui-btn" data-ajax="false">Logout</a>
+</div>
 @endif
 
 @stop
