@@ -16,7 +16,7 @@
 			form>ul { margin-left: 0; list-style: none; }
 			.error { color: red; font-style: italic; }
 			label { display: block; }
-			body { padding-top: 20px; }
+			body { padding-top: 20px; padding-bottom: 50px;}
 			.breadcrumbs {
 				list-style: none;
 				overflow: hidden;

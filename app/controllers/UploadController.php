@@ -113,7 +113,7 @@ class UploadController extends BaseController {
 				$type = $filetype->type;
 				if ( $type == 'video' ) {
 					$mimetype = explode('/', mime_content_type($path));
-					if ( ($mimetype[0] !== 'video') || (filesize($path) <= 5000000) )
+					if ( ($mimetype[0] !== 'video') || (filesize($path) <= 1500000) )
 						return json_encode(array('success' => '3', 'msg' => 'Invalid Video'));
 				}
 			} else {

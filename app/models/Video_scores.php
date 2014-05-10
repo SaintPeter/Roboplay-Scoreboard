@@ -1,11 +1,11 @@
 <?php
 
 class Video_scores extends \Eloquent {
-	protected $with = [ 'type' ]; // 'video', 
+	protected $with = [ 'type' ]; // 'video',
 	protected $guarded = [ 'id' ];
 
 	public function division() {
-		return $this->hasOne('Vid_division');
+		return $this->belongsTo('Vid_division', 'vid_division_id', 'id');
 	}
 
 	public function video() {

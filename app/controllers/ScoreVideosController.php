@@ -26,17 +26,26 @@ class ScoreVideosController extends \BaseController {
 								->where('event_end', '>=', date('Y-m-d'))
 								->get();
 
-		$video_scores = Video_scores::where('judge_id', Auth::user()->ID)
-								  ->orderBy('total', 'desc')
-								  ->get();
+		$comp_list = [];
+		foreach($competiton as $comp) {
+			foreach($comp->divisions as $div) {
+				$comp_list[$comp->name][] = $div->name;
+			}
+		}
+
+		$video_scores = Video_scores::with('division', 'division.competition')
+							->where('judge_id', Auth::user()->ID)
+							->orderBy('total', 'desc')
+							->get();
 		$videos = [];
+		//dd(DB::getQueryLog());
 		foreach($video_scores as $score) {
-			$videos[$score->video->name][] = $score;
+			$videos[$score->division->longname()][$score->video->name][] = $score;
 		}
 
 		//dd(DB::getQueryLog());
 
-		return View::make('video_scores.index', compact('videos'));
+		return View::make('video_scores.index', compact('videos', 'comp_list'));
 	}
 
 	// Choose an appopriate video for judging
@@ -50,7 +59,7 @@ class ScoreVideosController extends \BaseController {
 								->where('event_start', '<=', date('Y-m-d'))
 								->where('event_end', '>=', date('Y-m-d'))
 								->get();
-		$divs = [];
+		$divs = [0];
 		foreach($comps as $comp) {
 			$divs = array_merge($divs, $comp->divisions->lists('id'));
 		}

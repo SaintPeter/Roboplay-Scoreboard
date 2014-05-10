@@ -44,13 +44,27 @@
 .scored_table {
 	width: 100%;
 }
+.comp_row td {
+	background-color: #5CB85C;
+	font-size: 1.1em;
+	font-weight: bold;
+	padding: 2px;
+	color: white;
+}
 .title_row td {
 	background-color: #428BCA;
 	color: white;
 	padding: 2px;
+	padding-left: 5px;
+}
+.title_row td:last-child {
+	text-align: center;
 }
 .score_row td:first-child {
-	padding-left: 15px;
+	padding-left: 20px;
+}
+.score_row td:last-child {
+	text-align: center;
 }
 
 
@@ -59,6 +73,14 @@
 @section('main')
 <h1>Score Videos</h1>
 {{ Breadcrumbs::render() }}
+@if(count($comp_list))
+	<h4>Open Video Competitions</h4>
+	@foreach($comp_list as $comp => $divs)
+		<p><strong>{{$comp}}:</strong> {{ join(', ', $divs) }} </p>
+	@endforeach
+@else
+	<h4 style="color: red;">No Open Video Competitions</h4>
+@endif
 	<div class=" col-md-4">
 		<div class="holder">
 			<div class="header general">General Videos</div>
@@ -112,16 +134,21 @@
 		</thead>
 		<tbody>
 			@if(count($videos))
-				@foreach($videos as $title => $scores)
-					<tr class="title_row">
-						<td><strong>{{ $title }}</strong></td>
-						<td>Score</td>
+				@foreach($videos as $comp => $video_list)
+					<tr class="comp_row">
+						<td colspan="2">{{ $comp }}</td>
 					</tr>
-					@foreach($scores as $score)
-						<tr class="score_row">
-							<td class="type">{{ $score->type->display_name }}</td>
-							<td>{{$score->total }}</td>
+					@foreach($video_list as $title => $scores)
+						<tr class="title_row">
+							<td><strong>{{ $title }}</strong></td>
+							<td>Score</td>
 						</tr>
+						@foreach($scores as $score)
+							<tr class="score_row">
+								<td class="type">{{ $score->type->display_name }}</td>
+								<td>{{$score->total }}</td>
+							</tr>
+						@endforeach
 					@endforeach
 				@endforeach
 			@else
