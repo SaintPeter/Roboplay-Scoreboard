@@ -124,24 +124,18 @@ class UploadController extends BaseController {
 									'filetype_id' => isset($filetype->id) ? $filetype->id: 0,
 									'filename' => $file,
 									'desc' => '' ] );
-//			// write to csv only if identical file hasn't been uploaded already
-//			$wdata = array($video_id, $type, $file);
-//			$redo = FALSE;
-//			if (($fp = fopen($base_dir . 'roboplayvideo2014.csv', 'r')) !== FALSE) {
-//				while (($rdata = fgetcsv($fp, 1024, ',')) !== FALSE) {
-//					if ($rdata == $wdata) {
-//						$redo = TRUE;
-//						break;
-//					}
-//				}
-//				fclose($fp);
-//			}
-//			if ($redo !== TRUE) {
-//				if (($fp = fopen($base_dir . 'roboplayvideo2014.csv', 'a')) !== FALSE) {
-//					fputcsv($fp, $wdata);
-//					fclose($fp);
-//				}
-//			}
+
+			if($filetype->type == "video") {
+				$video = Video::find($video_id);
+				$video->has_vid = true;
+				$video->save();
+			}
+
+			if($filetype->type == "code") {
+				$video = Video::find($video_id);
+				$video->has_code = true;
+				$video->save();
+			}
 
 			// send response
 			return json_encode(array('success' => '0', 'msg' => 'Success', 'file' => $file));

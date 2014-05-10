@@ -1,7 +1,7 @@
 <?php
 
 class Filetype extends \Eloquent {
-	protected $fillable = [];
+	protected $guarded = [];
 	protected $table = 'filetype';
 	public $timestamps = false;
 

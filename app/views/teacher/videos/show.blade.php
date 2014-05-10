@@ -47,7 +47,7 @@
 			<th>Name</th>
 			<th>Students</th>
 			<th>Custom Parts</th>
-			<th>Upload</th>
+			<th>Uploads</th>
 			<th>County/District/School</th>
 			<th>Actions</th>
 		</tr>
@@ -58,9 +58,11 @@
 			<td>{{{ $video->name }}}</td>
 			<td>{{ nl2br($video->students) }}</td>
 			<td>{{{ $video->has_custom==1 ? 'Has Custom Parts' : 'No Custom Parts' }}}</td>
-			<td class="{{ $video->has_upload==1 ? 'confirmed' : 'unconfirmed' }}">
-				{{ $video->has_upload==1 ? 'Confirmed' : 'Unconfirmed' }}
-			</td>
+			<td class="{{ $video->has_vid==1 ? 'confirmed' : 'unconfirmed' }}">
+					{{ $video->has_vid==1 ? 'Video File' : 'No Video' }} <br />
+					{{ $video->has_code==1 ? 'Code File' : 'No Code' }} <br />
+				</td>
+
 			<td>
 				@if(isset($video->school))
 					<strong>C:</strong> {{ $video->school->district->county->name }}<br />

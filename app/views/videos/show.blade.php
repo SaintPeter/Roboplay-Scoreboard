@@ -1,5 +1,15 @@
 @extends('layouts.scaffold')
 
+@section('style')
+.video_container {
+	float: left;
+	width: 640;
+	postition: relative;
+	padding-left: 15px;
+	padding-right: 15px;
+}
+@stop
+
 @section('script')
 	var delete_id = 0;
 	$(function() {
@@ -40,7 +50,7 @@
 			<th>YT Code</th>
 			<th>Students</th>
 			<th>Custom</th>
-			<th>Upload</th>
+			<th>Uploads</th>
 			<th>County/District/School</th>
 			<th>Challenge/Division</th>
 			<th>Actions</th>
@@ -53,9 +63,11 @@
 			<td>{{{ $video->yt_code }}}</td>
 			<td>{{ nl2br($video->students) }}</td>
 			<td>{{{ $video->has_custom==1 ? 'Yes' : 'No' }}}</td>
-			<td class="{{ $video->has_upload==1 ? 'confirmed' : 'unconfirmed' }}">
-				{{ $video->has_upload==1 ? 'Confirmed' : 'Unconfirmed' }}
-			</td>
+			<td class="{{ $video->has_vid==1 ? 'confirmed' : 'unconfirmed' }}">
+					{{ $video->has_vid==1 ? 'Video File' : 'No Video' }} <br />
+					{{ $video->has_code==1 ? 'Code File' : 'No Code' }} <br />
+				</td>
+
 			<td>
 				@if(isset($video->school))
 					<strong>C:</strong> {{ $video->school->district->county->name }}<br />
@@ -86,8 +98,28 @@
 	</tbody>
 </table>
 
+<div class="video_container">
 <h3>Preview</h3>
 <iframe style="border: 1px solid black" id="ytplayer" type="text/html" width="640" height="390" src="http://www.youtube.com/embed/{{{ $video->yt_code }}}" frameborder="0"></iframe>
+</div>
+
+<div class="col-md-4">
+	<h3>Files</h3>
+	<table class="table">
+		@if(count($video->files))
+			@foreach($video->files as $file)
+			<tr>
+				<td>{{ link_to($file->path(), $file->filename) }}</td>
+				<td>{{ $file->filetype->name }}</td>
+				<td><a href="{{ route('teacher.video.delete_file', [ 'video_id' => $video->id, 'file_id' => $file->id ]) }}"
+					class="btn btn-danger btn-xs active"><span class="glyphicon glyphicon-remove"></span> </a></td>
+			</tr>
+			@endforeach
+		@else
+			<tr><td colspan="3">No Files</td></tr>
+		@endif
+	</table>
+</div>
 
 <div id="dialog-confirm" title="Delete video?">
 <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
