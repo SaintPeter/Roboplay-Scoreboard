@@ -5,7 +5,8 @@ class Vid_competition extends Eloquent {
 
 	public static $rules = array(
 		'name' => 'required',
-		'event_date' => 'required'
+		'event_start' => 'required|date',
+		'event_end' => 'required|date'
 	);
 
 	public function divisions() {

@@ -15,7 +15,8 @@
 		"way/generators": "dev-master",
 		"creitive/breadcrumbs": "dev-master",
 		"nesbot/Carbon": "*",
-		"easybook/geshi": "dev-master"
+		"easybook/geshi": "dev-master",
+		"doctrine/dbal": "dev-master"
 	},
 	"autoload": {
 		"classmap": [

@@ -3,6 +3,7 @@
 @section('main')
 
 <h1>Edit Video Division</h1>
+{{ Breadcrumbs::render() }}
 {{ Form::model($vid_division, array('method' => 'PATCH', 'route' => array('vid_divisions.update', $vid_division->id))) }}
 	<ul>
         <li>

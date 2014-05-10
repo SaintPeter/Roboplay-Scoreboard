@@ -2,36 +2,41 @@
 
 @section('script')
 	 $(function() {
-		$( "#event_date" ).datepicker({ dateFormat: "yy-mm-dd" });
+		$( ".date" ).datepicker({ dateFormat: "yy-mm-dd" });
 	});
 @stop
 
 @section('main')
 
-<h1>Edit Vid_competition</h1>
-{{ Form::model($vid_competition, array('method' => 'PATCH', 'route' => array('vid_competitions.update', $vid_competition->id))) }}
-	<ul>
-        <li>
-            {{ Form::label('name', 'Name:') }}
-            {{ Form::text('name') }}
-        </li>
+<h1>Edit Video Competition</h1>
+{{ Breadcrumbs::render() }}
+{{ Form::model($vid_competition, array('method' => 'PATCH', 'route' => array('vid_competitions.update', $vid_competition->id),'class' => 'form-horizontal col-md-4')) }}
+	<div class="form-group">
+	    {{ Form::label('name', 'Name:') }}
+	    {{ Form::text('name', null, [ 'class'=>'form-control col-md-4' ]) }}
+	</div>
 
-        <li>
-            {{ Form::label('event_date', 'Event_date:') }}
-            {{ Form::text('event_date') }}
-        </li>
+	<div class="form-group">
+	    {{ Form::label('event_start', 'Start Date') }}
+	    {{ Form::text('event_start',null, [ 'class'=>'form-control col-md-4 date' ]) }}
+	</div>
 
-		<li>
-			{{ Form::submit('Update', array('class' => 'btn btn-info')) }}
-			{{ link_to_route('vid_competitions.show', 'Cancel', $vid_competition->id, array('class' => 'btn')) }}
-		</li>
-	</ul>
+	<div class="form-group">
+		{{ Form::label('event_end', 'End Date') }}
+	    {{ Form::text('event_end', null, [ 'class'=>'form-control col-md-4 date' ]) }}
+	</div>
+
+	{{ Form::submit('Update', array('class' => 'btn btn-primary btn-margin')) }}
+	{{ link_to_route('vid_competitions.index', 'Cancel',  null, array('class' => 'btn btn-info btn-margin')) }}
 {{ Form::close() }}
 
 @if ($errors->any())
+<div class="col-md-6">
+	<h3>Validation Errors</h3>
 	<ul>
 		{{ implode('', $errors->all('<li class="error">:message</li>')) }}
 	</ul>
+</div>
 @endif
 
 @stop

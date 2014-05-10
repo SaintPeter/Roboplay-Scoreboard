@@ -3,8 +3,8 @@
 @section('main')
 
 <h1>Show Vid_division</h1>
-
-<p>{{ link_to_route('vid_divisions.index', 'Return to all vid_divisions') }}</p>
+{{ Breadcrumbs::render() }}
+<p>{{ link_to_route('vid_divisions.index', 'Return to all vid_divisions', ['class' => 'btn btn-primary']) }}</p>
 
 <table class="table table-striped table-bordered">
 	<thead>

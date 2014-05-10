@@ -3,7 +3,7 @@
 @section('main')
 
 <h1>Create Video Division</h1>
-
+{{ Breadcrumbs::render() }}
 {{ Form::open(array('route' => 'vid_divisions.store')) }}
 	<ul>
         <li>

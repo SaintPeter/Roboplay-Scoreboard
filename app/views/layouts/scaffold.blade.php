@@ -24,6 +24,9 @@
 			.breadcrumbs li {
 				float: left;
 			}
+			.btn-margin {
+				margin: 2px;
+			}
 			@yield('style')
 		</style>
 
