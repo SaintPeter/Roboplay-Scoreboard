@@ -20,6 +20,12 @@ class ScoreVideosController extends \BaseController {
 	 */
 	public function index()
 	{
+		// Get a list of active Video Competitions
+		$competiton = Vid_competition::with('divisions')
+								->where('event_start', '<=', date('Y-m-d'))
+								->where('event_end', '>=', date('Y-m-d'))
+								->get();
+
 		$video_scores = Video_scores::where('judge_id', Auth::user()->ID)
 								  ->orderBy('total', 'desc')
 								  ->get();
@@ -39,10 +45,21 @@ class ScoreVideosController extends \BaseController {
 	{
 		Breadcrumbs::addCrumb('Score Video', 'score');
 
+		// Get a list of active Video Competitions
+		$comps = Vid_competition::with('divisions')
+								->where('event_start', '<=', date('Y-m-d'))
+								->where('event_end', '>=', date('Y-m-d'))
+								->get();
+		$divs = [];
+		foreach($comps as $comp) {
+			$divs = array_merge($divs, $comp->divisions->lists('id'));
+		}
+
 		// Get all the videos and any comments for this score group
 		$video_query = Video::with([ 'scores' => function($q) use ($video_group) {
 							$q->where('video_scores.score_group', $video_group);
-						}]);
+						}])
+						->whereIn('vid_division_id', $divs);
 		if($video_group == VG_PART) {
 			$all_videos = $video_query->where('has_custom', 1)->get();
 		} elseif ($video_group == VG_COMPUTE) {
