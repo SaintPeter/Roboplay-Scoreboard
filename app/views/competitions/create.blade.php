@@ -9,44 +9,46 @@
 @section('main')
 
 <h1>Create Competition</h1>
+{{ Breadcrumbs::render() }}
 
-{{ Form::open(array('route' => 'competitions.store')) }}
-	<ul>
-        <li>
-            {{ Form::label('name', 'Name:') }}
-            {{ Form::text('name') }}
-        </li>
+{{ Form::open(array('route' => 'competitions.store', 'class' => 'col-md-6')) }}
+	<div class="form-group">
+	    {{ Form::label('name', 'Name:') }}
+	    {{ Form::text('name', null, [ 'class'=>'form-control col-md-4' ]) }}
+	</div>
 
-        <li>
-            {{ Form::label('description', 'Description:') }}
-            {{ Form::textarea('description') }}
-        </li>
+	<div class="form-group">
+	    {{ Form::label('description', 'Description:') }}
+	    {{ Form::textarea('description', null, [ 'class'=>'form-control col-md-4' ]) }}
+	</div>
 
-        <li>
-            {{ Form::label('location', 'Location:') }}
-            {{ Form::text('location') }}
-        </li>
+	<div class="form-group">
+	    {{ Form::label('location', 'Location:') }}
+	    {{ Form::text('location', null, [ 'class'=>'form-control col-md-4' ]) }}
+	</div>
 
-        <li>
-            {{ Form::label('address', 'Address:') }}
-            {{ Form::textarea('address') }}
-        </li>
+	<div class="form-group">
+	    {{ Form::label('address', 'Address:') }}
+	    {{ Form::textarea('address', null, [ 'class'=>'form-control col-md-4' ]) }}
+	</div>
 
-        <li>
-            {{ Form::label('event_date', 'Event_date:') }}
-            {{ Form::text('event_date') }}
-        </li>
+	<div class="form-group">
+	    {{ Form::label('event_date', 'Event Date:') }}
+	    {{ Form::text('event_date', null, [ 'class'=>'form-control col-md-2 date' ]) }}
+	</div>
 
-		<li>
-			{{ Form::submit('Submit', array('class' => 'btn btn-info')) }}
-		</li>
-	</ul>
+	{{ Form::submit('Submit', array('class' => 'btn btn-primary btn-margin')) }}
+	{{ link_to_route('competitions.index', 'Cancel', null, [ 'class'=>'btn btn-info btn-margin' ]) }}
+
 {{ Form::close() }}
 
 @if ($errors->any())
+<div class="col-md-6">
+	<h3>Validation Errors</h3>
 	<ul>
-		{{ implode('', $errors->all('<li class="error">:message</li>')) }}
+		{{ implode('', $errors->all('<li class="error">:message</div>')) }}
 	</ul>
+</div>
 @endif
 
 @stop

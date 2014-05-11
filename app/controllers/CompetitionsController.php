@@ -11,7 +11,9 @@ class CompetitionsController extends BaseController {
 
 	public function __construct(Competition $competition)
 	{
+		parent::__construct();
 		$this->competition = $competition;
+		Breadcrumbs::addCrumb('Manage Competitions', 'competitions');
 	}
 
 	/**
@@ -33,6 +35,7 @@ class CompetitionsController extends BaseController {
 	 */
 	public function create()
 	{
+		Breadcrumbs::addCrumb('Add Competition', 'create');
 		return View::make('competitions.create');
 	}
 
@@ -80,6 +83,7 @@ class CompetitionsController extends BaseController {
 	 */
 	public function edit($id)
 	{
+		Breadcrumbs::addCrumb('Edit Competition', 'edit');
 		$competition = $this->competition->find($id);
 
 		if (is_null($competition))
