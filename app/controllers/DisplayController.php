@@ -9,6 +9,7 @@ class DisplayController extends BaseController {
 	 */
 	public function teamscore($team_id)
 	{
+		Breadcrumbs::addCrumb('Team Score', 'teamscore');
 		$team = Team::with('division')->find($team_id);
 		$division_id = $team->division->id;
 
@@ -54,6 +55,7 @@ class DisplayController extends BaseController {
 
 	public function compscore($competition_id)
 	{
+		Breadcrumbs::addCrumb('Competition Score', 'compscore');
 		$comp = Competition::with('divisions', 'divisions.teams')->find($competition_id);
 		$divisions = $comp->divisions;
 

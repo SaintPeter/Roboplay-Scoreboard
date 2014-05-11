@@ -2,14 +2,14 @@
 
 @section('script')
 $(function() {
-	$( "#dialog" ).clone().dialog({ autoOpen: false });
+	$( "#dialog" ).clone().attr('id', 'active_dialog').dialog({ autoOpen: false });
 
 	// Add Score Element Button
 	$("#add_score_element").click(function() {
 		$.get("{{ route('score_elements.create', $challenge->id) }}",
 			function( data ) {
-				$( "#dialog" ).html(data);
-				$( "#dialog" ).dialog("open");
+				$( "#active_dialog" ).html(data);
+				$( "#active_dialog" ).dialog("open");
 			}, "html" ).done(setup_form_handler);
 	});
 
@@ -18,8 +18,8 @@ $(function() {
 		event.preventDefault();
 		$.get( $(this).attr('href'),
 			function( data ) {
-			$( "#dialog" ).html( data );
-			$( "#dialog" ).dialog("open");
+			$( "#active_dialog" ).html( data );
+			$( "#active_dialog" ).dialog("open");
 			}, "html" ).done(setup_form_handler);
 	});
 });
@@ -31,14 +31,16 @@ function setup_form_handler() {
 			if(data == "true") {
 				location.reload(true);
 			} else {
-				jQuery("#dialog").html(data);
+				jQuery("#active_dialog").html(data);
 				setup_form_handler();
 			}
 		}, "html" );
 	});
 	jQuery( ".se_close" ).click( function( event ) {
 		event.preventDefault();
-		jQuery( "#dialog" ).dialog("close");
+		jQuery( "#active_dialog" ).dialog("close");
+		jQuery( "#active_dialog" ).remove();
+		$( "#dialog" ).clone().attr('id', 'active_dialog').dialog({ autoOpen: false });
 	});
 }
 
@@ -116,7 +118,7 @@ function setup_form_handler() {
 </table>
 {{ Form::button('Add Score Element', array('class' => 'btn', 'id' => 'add_score_element')) }}
 
-<div id="dialog" title="Basic dialog">
+<div id="dialog" title="Score Elements">
 
 </div>
 

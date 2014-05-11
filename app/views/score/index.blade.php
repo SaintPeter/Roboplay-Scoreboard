@@ -19,7 +19,7 @@
 	<strong>Judge: </strong>{{ $judge->display_name }}<br />
 	<strong>Team: </strong>{{{ $team->longname() }}}
 </div>
-<ul class="ui-listview ui-listview-inset ui-corner-all" data-role="listview" data-filter="true">
+<ul class="ui-listview ui-listview-inset ui-corner-all" data-role="listview">
 	@foreach($challenges as $challenge)
 		<li>
 			<a href="{{ route('score.doscore', array($team_id, $challenge->id)) }}" data-ajax="false">

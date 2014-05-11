@@ -10,6 +10,7 @@
 
 @section('main')
 <h1>Team Score</h1>
+{{ Breadcrumbs::render() }}
 <strong>Team: </strong>{{ $team->name }}
 <table class="table table-striped table-bordered">
 	<thead>
@@ -63,6 +64,6 @@
 		</tr>
 	</tbody>
 </table>
-
+{{ link_to(URL::previous(), 'Return', [ 'class' => 'btn btn-primary btn-margin']) }}
 
 @stop

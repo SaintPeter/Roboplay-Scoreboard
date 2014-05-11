@@ -37,7 +37,7 @@
 
         <li>
             {{ Form::label('type', 'Input Type') }}
-            {{ Form::select('type', $input_types) }}
+            {{ Form::select('type', $input_types, $score_element->type) }}
         </li>
 
 		<li>
