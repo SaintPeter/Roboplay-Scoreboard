@@ -24,23 +24,22 @@ class VideoManagementController extends \BaseController {
 
 	}
 
+	public function summary()
+	{
+		Breadcrumbs::addCrumb('Scoring Summary');
+		$videos = Video::with('scores')->get();
+
+		foreach($videos as $video) {
+			$output[$video->vid_division->competition->name][$video->vid_division->name][] = $video;
+		}
+
+		return View::make('video_scores.manage.summary', compact('output'));
+	}
+
 	public function scores_csv() {
 		$content = 'Name,County,School,"Challenge Teams","Video Teams","Competition","Division"' . "\n";
 
-		$invoices = Wp_invoice::with('user', 'school', 'challenge_division', 'challenge_division.competition')->get();
-
-		foreach($invoices as $invoice) {
-			$invoice->user->metadata = $invoice->user->usermeta()->lists('meta_value', 'meta_key');
-			$content .= '"' . join('","', [ $invoice->user->metadata['first_name'] . " " . $invoice->user->metadata['last_name'],
-										   $invoice->school->district->county->name,
-										   $invoice->school->name,
-										   $invoice->team_count,
-										   $invoice->video_count
-										   ,
-										   isset($invoice->challenge_division) ? $invoice->challenge_division->competition->name : 'Not Set',
-										   isset($invoice->challenge_division) ? $invoice->challenge_division->name : 'Not Set'
-										   ]) . '"' . "\n";
-		}
+		$videos = Video::with('scores')->get();
 
 
 		// return an string as a file to the user

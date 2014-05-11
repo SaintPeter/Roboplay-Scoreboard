@@ -92,6 +92,9 @@ Route::group(array('before' => 'auth'), function() {
 		Route::get('video_scores/scores_csv', [
 				    'as' => 'video_scores.manage.scores_csv',
 				    'uses' => 'VideoManagementController@scores_csv' ]);
+		Route::get('video_scores/summary', [
+				    'as' => 'video_scores.manage.summary',
+				    'uses' => 'VideoManagementController@summary' ]);
 
 		// Challenge Scoring
 		Route::get('score', array(

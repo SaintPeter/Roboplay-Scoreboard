@@ -39,6 +39,7 @@
 <h2>Development</h2>
 <ul data-role="listview" data-inset="true">
 	<li>{{ link_to_route('video_scores.manage.index', 'Manage Video Scores', [], $noajax) }}</li>
+	<li>{{ link_to_route('video_scores.manage.summary', 'Video Score Summary', [], $noajax) }}</li>
 </ul>
 @endif
 
