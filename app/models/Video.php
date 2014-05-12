@@ -14,7 +14,8 @@ class Video extends Eloquent {
 
 	protected $attributes = array(
   		'has_custom' => false,
-  		'has_upload' => false
+  		'has_vid' => false,
+  		'has_code' => false
 	);
 
 	public static function boot()
