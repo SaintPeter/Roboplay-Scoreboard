@@ -82,7 +82,7 @@
 		</table>
 	</div>
 
-	<h1>Challenge Teams</h1>
+	<h1>Manage Challenge Teams</h1>
 	<h2>{{ $school->name }}</h2>
 	<div class="clear"></div>
 </div>

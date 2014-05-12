@@ -46,7 +46,7 @@
 @if(Roles::isTeacher())
 <h2>Teacher Menu</h2>
 <ul data-role="listview" data-inset="true">
-	<li>{{ link_to_route('teacher.teams.index', 'Manage Teams',array(),  $noajax) }}</li>
+	<li>{{ link_to_route('teacher.teams.index', 'Manage Challenge Teams',array(),  $noajax) }}</li>
 	<li>{{ link_to_route('teacher.videos.index', 'Manage Videos', [], $noajax) }}</li>
 </ul>
 @endif
