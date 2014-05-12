@@ -7,6 +7,7 @@
 	padding: 0px;
 	background-color: rgb(245, 245, 245);
 	height: 250px;
+	margin: 10px 0 10px 0;
 }
 
 .inner {
@@ -88,7 +89,7 @@ td.score:nth-child(odd) {
 @else
 	<h4 style="color: red;">No Open Video Competitions</h4>
 @endif
-	<div class="col-s-6 col-md-4">
+	<div class="col-sm-6 col-md-4">
 		<div class="holder">
 			<div class="header general">General Videos</div>
 			<div class="inner">
@@ -107,7 +108,7 @@ td.score:nth-child(odd) {
 		</div>
 	</div>
 
-<div class="col-s-6 col-md-4">
+<div class="col-sm-6 col-md-4">
 	<div class="holder">
 		<div class="header part">Custom Part Videos</div>
 		<div class="inner">
@@ -120,7 +121,7 @@ td.score:nth-child(odd) {
 	</div>
 </div>
 
-<div class="col-s-6 col-md-4">
+<div class="col-sm-6 col-md-4">
 	<div class="holder">
 		<div class="header compute">Computational Thinking Videos</div>
 		<div class="inner">
@@ -132,9 +133,9 @@ td.score:nth-child(odd) {
 		</div>
 	</div>
 </div>
+<div class="text-center"><br /><strong>Note:</strong> Each video should be scored on its own merits as compared to the rubric, rather than in comparison to other videos.</div>
 
 <div class="scored_container">
-	<br />
 	<h3>Previously Scored Videos</h3>
 	<table class="scored_table">
 		<thead>
