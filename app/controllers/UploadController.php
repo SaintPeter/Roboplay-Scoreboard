@@ -30,8 +30,10 @@ class UploadController extends BaseController {
 			$filetypes[$filetype->name][] = $filetype->ext;
 		}
 
+		$ext_list = json_encode(array_values($filetype_list->lists('ext')));
+
 		if(Video::find($video_id)) {
-			return View::make('uploader.index', compact('video_id', 'filetypes'));
+			return View::make('uploader.index', compact('video_id', 'filetypes', 'ext_list'));
 		} else {
 			return Redirect::route('teacher.videos.index')->with('message', 'Video not found');
 		}
@@ -114,8 +116,12 @@ class UploadController extends BaseController {
 				$type = $filetype->type;
 				if ( $type == 'video' ) {
 					$mimetype = explode('/', mime_content_type($path));
-					if ( ($mimetype[0] !== 'video') || (filesize($path) <= 1500000) )
+					if ($mimetype[0] !== 'video' ) {
 						return json_encode(array('success' => '3', 'msg' => 'Invalid Video'));
+					}
+					if (filesize($path) <= 15000000) {
+						return json_encode(array('success' => '3', 'msg' => 'File Too Small.  Videos must be at least 15MB.'));
+					}
 				}
 			} else {
 			 	$type = 'other';

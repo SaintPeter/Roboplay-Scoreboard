@@ -17,7 +17,7 @@
 			multiple: true,
 			maxUploads: 3,
 			queue: true,
-			//allowedExtensions: $ext_list,
+			allowedExtensions: {{ $ext_list }},
 			hoverClass: 'ui-state-hover',
 			focusClass: 'ui-state-focus',
 			disabledClass: 'ui-state-disabled',
@@ -25,7 +25,7 @@
 				var output = document.getElementById('output');
 				var message = document.createElement('div');
 				message.className = 'alert alert-danger';
-				message.innerHTML = '<strong>Error:</strong> File does not match one of the valid formats.';
+				message.innerHTML = '<strong>Error:</strong> File "' + filename + '" does not match one of the valid formats.';
 				output.appendChild(message);
 				return true;
 			},
@@ -33,7 +33,7 @@
 				var output = document.getElementById('output');
 				var message = document.createElement('div');
 				message.className = 'alert alert-danger';
-				message.innerHTML = '<strong>Error:</strong> File size exceeds limit of 500 MegaBytes.';
+				message.innerHTML = '<strong>Error:</strong> File "' + filename + '" file size exceeds limit of 500 MegaBytes.';
 				output.appendChild(message);
 				return true;
 			},
@@ -80,7 +80,7 @@
 					var output = document.getElementById('output');
 					var message = document.createElement('div');
 					message.className = 'alert alert-danger';
-					message.innerHTML = 'Upload failed ' + response.success + ': ' + response.msg;
+					message.innerHTML = 'Upload of file "' + filename + '" failed ' + response.success + ': ' + response.msg;
 					output.appendChild(message);
 					return false;
 				}
@@ -88,7 +88,7 @@
 					var output = document.getElementById('output');
 					var message = document.createElement('div');
 					message.className = 'alert alert-success alert-dismissable';
-					message.innerHTML = 'Thank you for uploading ' + response.file;
+					message.innerHTML = 'Thank you for uploading "' + response.file + '"';
 					output.appendChild(message);
 					return true;
 				}
@@ -97,15 +97,27 @@
 	});
 @stop
 
+@section('style')
+.filetypes {
+	margin: 10px 15px;
+}
+@stop
+
 @section('main')
 <h1>File Uploads</h1>
 {{ Breadcrumbs::render() }}
-<div class="col-md-6">
-	<h4>Known File Types</h4>
-	@foreach($filetypes as $type => $ext_list)
-		<strong>{{ $type }}</strong>
-		<p>{{ join(', ', $ext_list) }}</p>
-	@endforeach
+<div class="col-md-8">
+	<div class="clearfix">
+		<h4>Known File Types</h4>
+		@foreach($filetypes as $type => $ext_list)
+			<div class="pull-left filetypes">
+				<strong>{{ $type }}</strong>
+				<p style="margin-left: 10px;">{{ join(', ', $ext_list) }}</p>
+			</div>
+		@endforeach
+	</div>
+	<h4>File Size Limits</h4>
+	<p style="margin-left: 10px;">Files may be up to 500MB. <br />Video Files must be at least 15MB.</p>
 	<br />
 	<div id="uploads">
 		<div id="noupload">
