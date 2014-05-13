@@ -48,17 +48,18 @@
 
 				// Assign each element its corresponding class
 				progress.className = 'progress';
-				bar.className = 'bar';
+				bar.className = 'progress-bar';
 				perc.className = 'perc';
 				fileSize.className = 'size';
 				wrapper.className = 'wrapper';
 
 				// Assemble the progress bar and add it to the page
-				//progress.appendChild(bar);
+				bar.appendChild(perc);
+				progress.appendChild(bar);
 				wrapper.innerHTML = '<div class="name">'+filename+'</div>';
 				wrapper.appendChild(fileSize);
-				//wrapper.appendChild(progress);
-				wrapper.appendChild(perc);
+				wrapper.appendChild(progress);
+				
 				progressBox.appendChild(wrapper);
 
 				// Assign roles to the elements of the progress bar
