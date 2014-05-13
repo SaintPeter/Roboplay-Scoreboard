@@ -84,6 +84,7 @@ class UploadController extends BaseController {
 
 		// get upload file
 		$Upload = new Uploader\FileUpload('uploadfile');
+		$Upload->sizeLimit = 500000000;
 
 		// make directory for uploads
 		if(!is_dir($file_dir)) {

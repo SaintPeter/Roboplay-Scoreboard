@@ -17,60 +17,77 @@
 			multiple: true,
 			maxUploads: 3,
 			queue: true,
+			//allowedExtensions: $ext_list,
 			hoverClass: 'ui-state-hover',
 			focusClass: 'ui-state-focus',
 			disabledClass: 'ui-state-disabled',
+			onExtError: function(filename, ext) {
+				var output = document.getElementById('output');
+				var message = document.createElement('div');
+				message.className = 'alert alert-danger';
+				message.innerHTML = '<strong>Error:</strong> File does not match one of the valid formats.';
+				output.appendChild(message);
+				return true;
+			},
 			onSizeError: function(filename, fileSize) {
 				var output = document.getElementById('output');
-				output.className = 'alert alert-warning';
-				output.innerHTML = '<strong>Warning:</strong> File size exceeds upload limit.';
+				var message = document.createElement('div');
+				message.className = 'alert alert-danger';
+				message.innerHTML = '<strong>Error:</strong> File size exceeds limit of 500 MegaBytes.';
+				output.appendChild(message);
+				return true;
 			},
 			onSubmit: function(filename, extension) {
-				// hide upload button
-				//var noupload = document.getElementById('noupload');
-				//noupload.style.display = 'none';
-
 				// Create the elements of our progress bar
 				var progress = document.createElement('div'),
 					bar = document.createElement('div'),
 					fileSize = document.createElement('div'),
+					perc = document.createElement('div'),
 					wrapper = document.createElement('div'),
 					progressBox = document.getElementById('progressBox');
 
 				// Assign each element its corresponding class
 				progress.className = 'progress';
 				bar.className = 'bar';
+				perc.className = 'perc';
 				fileSize.className = 'size';
 				wrapper.className = 'wrapper';
 
 				// Assemble the progress bar and add it to the page
-				progress.appendChild(bar);
+				//progress.appendChild(bar);
 				wrapper.innerHTML = '<div class="name">'+filename+'</div>';
 				wrapper.appendChild(fileSize);
-				wrapper.appendChild(progress);
+				//wrapper.appendChild(progress);
+				wrapper.appendChild(perc);
 				progressBox.appendChild(wrapper);
 
 				// Assign roles to the elements of the progress bar
 				this.setProgressBar(bar);
+				this.setPctBox(perc);
 				this.setFileSizeBox(fileSize);
 				this.setProgressContainer(wrapper);
 			},
+			onError: function(filename, errorType, status, statusText, response, uploadBtn) {
+				var output = document.getElementById('output');
+				var message = document.createElement('div');
+				message.className = 'alert alert-danger';
+				message.innerHTML = 'Upload failed: ' + statusText;
+				output.appendChild(message);
+				return true;
+			},
 			onComplete: function(filename, response) {
 				if (!response || response.success != 0) {
-					// unhide upload button
-					//var noupload = document.getElementById('noupload');
-					//noupload.style.display = 'inline-block';
-
-					// set output message alert
 					var output = document.getElementById('output');
-					output.className = 'alert alert-danger';
-					output.innerHTML = 'Upload failed: ' + response.msg;
+					var message = document.createElement('div');
+					message.className = 'alert alert-danger';
+					message.innerHTML = 'Upload failed ' + response.success + ': ' + response.msg;
+					output.appendChild(message);
 					return false;
 				}
 				else {
 					var output = document.getElementById('output');
 					var message = document.createElement('div');
-					message.className = 'alert alert-success';
+					message.className = 'alert alert-success alert-dismissable';
 					message.innerHTML = 'Thank you for uploading ' + response.file;
 					output.appendChild(message);
 					return true;
