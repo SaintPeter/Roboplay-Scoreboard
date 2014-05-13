@@ -10,8 +10,8 @@ class Files extends \Eloquent {
 
         static::deleted(function($file)
         {
-            if(is_file(public_path() . $file->path())) {
-            	unlink(public_path() . $file->path());
+            if(is_file($file->full_path())) {
+            	unlink($file->full_path());
             }
         });
     }
@@ -26,6 +26,18 @@ class Files extends \Eloquent {
 
 	public function path() {
 		return "/uploads/video_" . $this->video_id . "/" . $this->filename;
+	}
+
+	public function url() {
+		if($this->filetype->type == 'code') {
+			return route('file_viewer', [ 'file_id' => $this->id ]);
+		} else {
+		 	return $this->path();
+		}
+	}
+
+	public function full_path() {
+		return public_path() . $this->path();
 	}
 
 }
