@@ -28,8 +28,8 @@ function Lytebox(bInitialize, aHttp) {
 		this.roundedBorder		= true; 		// controls whether or not the viewer uses rounded corners (false = square corners)
 		this.innerBorder		= true;			// controls whether to show the inner border around image/html content
 		this.outerBorder		= true;			// controls whether to show the outer grey (or theme) border
-		this.resizeSpeed		= 5;			// controls the speed of the image resizing (1=slowest and 10=fastest)
-		this.maxOpacity			= 80;			// higher opacity = darker overlay, lower opacity = lighter overlay
+		this.resizeSpeed		= 10;			// controls the speed of the image resizing (1=slowest and 10=fastest)
+		this.maxOpacity			= 50;			// higher opacity = darker overlay, lower opacity = lighter overlay
 		this.borderSize			= 12;			// if you adjust the padding in the CSS, you will need to update this variable -- otherwise, leave this alone...
 		this.appendQS			= false;		// if true, will append request_from=lytebox to the QS. Use this with caution as it may cause pages to not render
 		this.fixedPosition		= this.isMobile() ? false : true;	// if true, viewer will remain in a fixed position, otherwise page scrolling will be allowed
@@ -56,7 +56,7 @@ function Lytebox(bInitialize, aHttp) {
 	/*** Configure HTML Content / Media Viewer Options ***/
 	
 		this.__width			= '80%';		// default width of content viewer
-		this.__height			= '80%';		// default height of content viewer
+		this.__height			= '95%';		// default height of content viewer
 		this.__scrolling		= 'auto';		// controls whether or not scrolling is allowed in the content viewer -- options are auto|yes|no
 		this.__loopPlayback		= false;		// controls whether or not embedded media is looped (swf, avi, mov, etc.)
 		this.__autoPlay			= true;			// controls whether or not to autoplay embedded media

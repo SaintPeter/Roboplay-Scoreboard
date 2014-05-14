@@ -148,4 +148,13 @@ class UploadController extends BaseController {
 			return json_encode(array('success' => '0', 'msg' => 'Success', 'file' => $file));
 		}
 	}
+	
+	public function delete_file($video_id, $file_id)
+	{
+		$file = Files::find($file_id);
+		if($file) {
+			$file->delete();
+		}
+		return Redirect::to(URL::previous());
+	}
 }

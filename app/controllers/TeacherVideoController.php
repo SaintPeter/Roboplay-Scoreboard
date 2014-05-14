@@ -6,7 +6,7 @@ class TeacherVideoController extends BaseController {
 	{
 		parent::__construct();
 
-		Breadcrumbs::addCrumb('Videos', 'teacher/videos');
+		Breadcrumbs::addCrumb('Manage Videos', 'teacher/videos');
 	}
 
 	/**
@@ -144,12 +144,4 @@ class TeacherVideoController extends BaseController {
 
 		return Redirect::route('teacher.videos.index');
 	}
-
-	public function delete_file($video_id, $file_id)
-	{
-		$video = Video::find($video_id);
-		$video->files->find($file_id)->delete();
-		return Redirect::route('teacher.videos.show', $video_id);
-	}
-
 }

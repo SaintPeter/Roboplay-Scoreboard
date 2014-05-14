@@ -77,7 +77,7 @@ Route::group(array('before' => 'auth'), function() {
 		Route::resource('score_runs', 'Score_runsController');
 		Route::resource('judges', 'JudgesController');
 		Route::resource('videos', 'VideosController');
-
+		
 		Route::get('user_schools', [ 'as' => 'user_schools', 'uses' => 'Wp_fix@user_schools']);
 		Route::get('invoice_fix', [ 'as' => 'invoice_fix', 'uses' => 'Wp_fix@invoice_fix']);
 		Route::get('invoice_management', [ 'as' => 'invoice_set', 'uses' => 'Wp_fix@invoice_set']);
@@ -148,8 +148,8 @@ Route::group(array('before' => 'auth'), function() {
 		Route::resource('teacher/videos', 'TeacherVideoController');
 
 		Route::get('teacher/video/{video_id}/delete/{file_id}', [
-					'as' => 'teacher.video.delete_file',
-					'uses' => 'TeacherVideoController@delete_file' ])
+					'as' => 'uploader.delete_file',
+					'uses' => 'UploadController@delete_file' ])
 					->where('video_id', '\d+')
 					->where('file_id', '\d+');
 

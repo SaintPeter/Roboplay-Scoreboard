@@ -77,27 +77,15 @@
 @section('main')
 <h1>Score Video</h1>
 {{ Breadcrumbs::render() }}
-<div style="width:950px" class="center-block">
-	<div class="pull-right" style="width: 300px margin-left: 10px;">
-	<h4>Files</h4>
-	<table class="table">
-		@if(count($video->files))
-			@foreach($video->files as $file)
-			<tr>
-				<td>{{ $file->filetype->name }}</td>
-				<td>{{ link_to($file->url(), $file->filename, [ 'target' => '_blank', 'class' => 'lytebox', 'data-title' => $file->filename, "data-lyte-options" => "group:group1" ]) }}</td>
-			</tr>
-			@endforeach
-		@else
-			<tr><td>No Files</td></tr>
-		@endif
-	</table>
-	</div>
-
-	<div style="width:640px">
+<div style="width:950px" class="center-block clearfix">
+	<div class="pull-left" style="width:640px; margin: 10px;">
 		<span class="pull-right">{{ $video->vid_division->name }}</span>
 		<h4>{{ $video->name }} </h4>
 		<iframe  style="border: 1px solid black" id="ytplayer" type="text/html" width="640" height="390" src="http://www.youtube.com/embed/{{{ $video->yt_code }}}" frameborder="0"></iframe>
+	</div>
+	
+	<div class="pull-left" style="width: 250px; margin: 10px 20px;">
+		@include('partials.filelist', [ 'video' => $video, 'show_type' => false, 'show_delete' => false ])
 	</div>
 </div>
 

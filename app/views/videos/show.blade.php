@@ -1,5 +1,10 @@
 @extends('layouts.scaffold')
 
+@section('head')
+	{{ HTML::style('css/lytebox.css') }}
+	{{ HTML::script('js/lytebox.js') }}
+@stop
+
 @section('style')
 .video_container {
 	float: left;
@@ -96,27 +101,16 @@
 	</tbody>
 </table>
 
-<div class="video_container">
-<h3>Preview</h3>
-<iframe style="border: 1px solid black" id="ytplayer" type="text/html" width="640" height="390" src="http://www.youtube.com/embed/{{{ $video->yt_code }}}" frameborder="0"></iframe>
-</div>
-
-<div class="col-md-4">
-	<h3>Files</h3>
-	<table class="table">
-		@if(count($video->files))
-			@foreach($video->files as $file)
-			<tr>
-				<td>{{ link_to($file->path(), $file->filename) }}</td>
-				<td>{{ $file->filetype->name }}</td>
-				<td><a href="{{ route('teacher.video.delete_file', [ 'video_id' => $video->id, 'file_id' => $file->id ]) }}"
-					class="btn btn-danger btn-xs active"><span class="glyphicon glyphicon-remove"></span> </a></td>
-			</tr>
-			@endforeach
-		@else
-			<tr><td colspan="3">No Files</td></tr>
-		@endif
-	</table>
+<div style="width:950px" class="center-block clearfix">
+	<h3>Preview</h3>
+	<div class="pull-left" style="width:640px; margin: 10px;">
+		<h4>{{ $video->name }} </h4>
+		<iframe  style="border: 1px solid black" id="ytplayer" type="text/html" width="640" height="390" src="http://www.youtube.com/embed/{{{ $video->yt_code }}}" frameborder="0"></iframe>
+	</div>
+	
+	<div class="pull-left" style="width: 250px; margin: 10px 20px;">
+		@include('partials.filelist', [ 'video' => $video, 'show_type' => true, 'show_delete' => true ])
+	</div>
 </div>
 
 <div id="dialog-confirm" title="Delete video?">
