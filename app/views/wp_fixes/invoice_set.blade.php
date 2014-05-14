@@ -7,6 +7,14 @@ tr.done td{
 tr.done2 td{
 	background-color: LightBlue !important;
 }
+
+td.bg-success {
+	background-color: #DFF0D8 !important;
+}
+td.bg-warning {
+	background-color: #FCF8E3 !important;
+}
+
 @stop
 
 @section('script')
@@ -59,7 +67,20 @@ tr.done2 td{
 			@foreach($invoices as $invoice)
 			<tr id="invoice_row_{{ $invoice->invoice_no }}">
 				<td>{{ $invoice->invoice_no }}</td>
-				<td>{{ $invoice->user->metadata['first_name'] }} {{ $invoice->user->metadata['last_name'] }}</td>
+				@if( $invoice->user->metadata['is_teacher'])
+					<td class="bg-success">
+						{{ $invoice->user->metadata['first_name'] }} {{ $invoice->user->metadata['last_name'] }} <br />
+						{{ $invoice->user->user_login }}<br />
+						Is a Teacher
+					</td>
+				@else
+					<td class="bg-warning">
+						{{ $invoice->user->metadata['first_name'] }} {{ $invoice->user->metadata['last_name'] }} <br />
+						{{ $invoice->user->user_login }} 
+						<a href="/wp-admin/users.php?page=users-user-role-editor.php&object=user&user_id={{ $invoice->user->ID }}">Edit</a> <br />
+							Not a Teacher
+					</td>
+				@endif
 				<td><a href="mailto:{{ $invoice->user->user_email }}" class="btn btn-info btn-mini"><i class=icon-envelope>M</i> </a></td>
 				@if(isset($invoice->school))
 					<td>

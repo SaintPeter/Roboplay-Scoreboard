@@ -48,6 +48,9 @@ class Wp_fix extends BaseController {
 
 		foreach($invoices as $invoice) {
 			$invoice->user->metadata = $invoice->user->usermeta()->lists('meta_value', 'meta_key');
+			$roles = unserialize($invoice->user->metadata['wp_capabilities']);
+			//dd($roles);
+			$invoice->user->metadata['is_teacher'] = array_key_exists('teachers', $roles);
 		}
 
 		return View::make('wp_fixes.invoice_set', compact('invoices', 'divisions', 'vid_divisions'));
