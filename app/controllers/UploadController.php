@@ -115,10 +115,10 @@ class UploadController extends BaseController {
 			if(isset($filetype)) {
 				$type = $filetype->type;
 				if ( $type == 'video' ) {
-					$mimetype = explode('/', mime_content_type($path));
-					if ($mimetype[0] !== 'video' ) {
-						return json_encode(array('success' => '3', 'msg' => 'Invalid Video'));
-					}
+//					$mimetype = explode('/', mime_content_type($path));
+//					if ($mimetype[0] !== 'video' ) {
+//						return json_encode(array('success' => '3', 'msg' => 'Invalid Video'));
+//					}
 					if (filesize($path) <= 15000000) {
 						return json_encode(array('success' => '3', 'msg' => 'File Too Small.  Videos must be at least 15MB.'));
 					}

@@ -24,7 +24,7 @@ function Lytebox(bInitialize, aHttp) {
 	
 	/*** Configure Lytebox ***/
 	
-		this.theme   			= (typeof lyteboxTheme !== 'undefined') && /^(black|grey|red|green|blue|gold|orange)$/i.test(lyteboxTheme) ? lyteboxTheme : 'black'; // themes: black (default), grey, red, green, blue, gold, orange
+		this.theme   			= 'grey'; //(typeof lyteboxTheme !== 'undefined') && /^(black|grey|red|green|blue|gold|orange)$/i.test(lyteboxTheme) ? lyteboxTheme : 'black'; // themes: black (default), grey, red, green, blue, gold, orange
 		this.roundedBorder		= true; 		// controls whether or not the viewer uses rounded corners (false = square corners)
 		this.innerBorder		= true;			// controls whether to show the inner border around image/html content
 		this.outerBorder		= true;			// controls whether to show the outer grey (or theme) border
