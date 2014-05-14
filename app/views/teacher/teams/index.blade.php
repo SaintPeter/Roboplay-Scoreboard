@@ -128,9 +128,14 @@
 	</tbody>
 </table>
 
+<p><strong>Note:</strong> You do not need to create a challenge team to add a video.  <br />
+		Videos may be added here: {{ link_to_route('teacher.videos.index', 'Manage Videos') }}</p>
+
 <div id="dialog-confirm" title="Delete Team?">
 <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
 	This team and all scores will be permanently deleted and cannot be recovered. Are you sure?</p>
 </div>
+
+
 
 @stop
