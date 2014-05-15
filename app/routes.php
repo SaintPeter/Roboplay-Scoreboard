@@ -14,7 +14,7 @@
 Route::get('file_viewer/{file_id}', [ 'as' => 'file_viewer', function($file_id) {
 	$file = Files::find($file_id);
 	$source = file_get_contents($file->full_path());
-	$geshi = new Geshi\GeSHI($source, $file->filetype->language);
+	$geshi = new Geshi\Geshi($source, $file->filetype->language);
 	echo $geshi->parse_code();
 	//geshi_highlight($source, $file->filetype->language);
 }]);
