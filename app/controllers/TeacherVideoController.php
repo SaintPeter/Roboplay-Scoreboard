@@ -18,7 +18,7 @@ class TeacherVideoController extends BaseController {
 	{
 		$school_id = Usermeta::getSchoolId();
 		$school = Schools::find($school_id);
-		$invoice = Wp_invoice::with('vid_division')->where('school_id', $school_id)->first();
+		$invoice = Wp_invoice::with('vid_division')->where('user_id', Auth::user()->ID)->first();
 
 		if(!isset($invoice)) {
 			return View::make('error', [ 'message' => 'No invoice found for this School.']);
@@ -52,7 +52,7 @@ class TeacherVideoController extends BaseController {
 	{
 		$input = Input::all();
 		$input['school_id'] = Usermeta::getSchoolId();
-		$invoice = Wp_invoice::where('school_id', $input['school_id'])->first();
+		$invoice = Wp_invoice::where('user_id', Auth::user()->ID)->first();
 		$input['vid_division_id'] = $invoice->vid_division_id;
 
 		$validation = Validator::make($input, Video::$rules);
@@ -113,7 +113,7 @@ class TeacherVideoController extends BaseController {
 	{
 		$input = array_except(Input::all(), '_method');
 		$input['school_id'] = Usermeta::getSchoolId();
-		$invoice = Wp_invoice::where('school_id', $input['school_id'])->first();
+		$invoice = Wp_invoice::where('user_id', Auth::user()->ID)->first();
 		$input['vid_division_id'] = $invoice->vid_division_id;
 
 		$validation = Validator::make($input, Video::$rules);

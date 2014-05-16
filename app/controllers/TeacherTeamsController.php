@@ -12,7 +12,7 @@ class TeacherTeamsController extends BaseController {
 		Breadcrumbs::addCrumb('Manage Challenge Teams', 'teacher/teams');
 		$school_id = Usermeta::getSchoolId();
 		$school = Schools::find($school_id);
-		$invoice = Wp_invoice::with('challenge_division')->where('school_id', $school_id)->first();
+		$invoice = Wp_invoice::with('challenge_division')->where('user_id', Auth::user()->ID)->first();
 		
 		if(!isset($invoice)) {
 			return View::make('error', [ 'message' => 'No invoice found for this School']);
@@ -49,7 +49,7 @@ class TeacherTeamsController extends BaseController {
 	{
 		$input = Input::all();
 		$input['school_id'] = Usermeta::getSchoolId();
-		$invoice = Wp_invoice::with('challenge_division')->where('school_id', $input['school_id'])->first();
+		$invoice = Wp_invoice::with('challenge_division')->where('user_id', Auth::user()->ID)->first();
 		$input['division_id'] = $invoice->challenge_division->id;
 		
 		$validation = Validator::make($input, Team::$rules);
@@ -100,7 +100,7 @@ class TeacherTeamsController extends BaseController {
 	{
 		$input = array_except(Input::all(), '_method');
 		$input['school_id'] = Usermeta::getSchoolId();
-		$invoice = Wp_invoice::with('challenge_division')->where('school_id', $input['school_id'])->first();
+		$invoice = Wp_invoice::with('challenge_division')->where('user_id', Auth::user()->ID)->first();
 		$input['division_id'] = $invoice->challenge_division->id;
 
 		$validation = Validator::make($input, Team::$rules);
