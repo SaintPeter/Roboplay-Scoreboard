@@ -60,14 +60,14 @@
 		$( ".rubric_switcher" ).click(function(e) {
 			e.preventDefault();
 			var rubric_id = $(this).attr('rubric_id');
-			if( $( '#rubric_' + rubric_id ).hasClass('hidden')) {
+			if( $( '.rubric_' + rubric_id ).hasClass('hidden')) {
 				$( '#icon_' + rubric_id ).removeClass('glyphicon-chevron-right');
 				$( '#icon_' + rubric_id ).addClass('glyphicon-chevron-down');
-				$( '#rubric_' + rubric_id ).removeClass('hidden');
+				$( '.rubric_' + rubric_id ).removeClass('hidden');
 			} else {
 				$( '#icon_' + rubric_id ).removeClass('glyphicon-chevron-down');
 				$( '#icon_' + rubric_id ).addClass('glyphicon-chevron-right');
-				$( '#rubric_' + rubric_id ).addClass('hidden');
+				$( '.rubric_' + rubric_id ).addClass('hidden');
 			}
 		});
 	});
@@ -81,9 +81,9 @@
 	<div class="pull-left" style="width:640px; margin: 10px;">
 		<span class="pull-right">{{ $video->vid_division->name }}</span>
 		<h4>{{ $video->name }} </h4>
-		<iframe  style="border: 1px solid black" id="ytplayer" type="text/html" width="640" height="390" src="http://www.youtube.com/embed/{{{ $video->yt_code }}}" frameborder="0"></iframe>
+		<iframe  style="border: 1px solid black" id="ytplayer" type="text/html" width="640" height="390" src="http://www.youtube.com/embed/{{{ $video->yt_code }}}?rel=0" frameborder="0"></iframe>
 	</div>
-	
+
 	<div class="pull-left" style="width: 250px; margin: 10px 20px;">
 		@include('partials.filelist', [ 'video' => $video, 'show_type' => false, 'show_delete' => false ])
 	</div>
@@ -112,12 +112,15 @@
 				<td class="cb_col">{{ Form::radio('scores[' . $type->id .  '][' . $rubric->element . ']', '3', false) }}</td>
 				<td class="cb_col">{{ Form::radio('scores[' . $type->id .  '][' . $rubric->element . ']', '4', false) }}</td>
 			</tr>
-			<tr class="rubric_row hidden" id="rubric_{{ $rubric->id }}">
+			<tr class="rubric_row hidden rubric_{{ $rubric->id }}">
 				<td class="blank_col"></td>
 				<td class="rubric_text">{{ $rubric->one }}</td>
 				<td class="rubric_text">{{ $rubric->two }}</td>
 				<td class="rubric_text">{{ $rubric->three }}</td>
 				<td class="rubric_text">{{ $rubric->four }}</td>
+			</tr>
+			<tr class="blank_row hidden rubric_{{ $rubric->id }}">
+				<td colspan="5">&nbsp</td>
 			</tr>
 		@endforeach
 	@endforeach

@@ -5,6 +5,9 @@ define('VG_PART', 2);
 define('VG_COMPUTE', 3);
 
 class ScoreVideosController extends \BaseController {
+	public $group_names = [ VG_GENERAL => "General",
+							VG_PART    => "Custom Part",
+							VG_COMPUTE => "Computational Thinking" ];
 
 	public function __construct()
 	{
@@ -38,28 +41,24 @@ class ScoreVideosController extends \BaseController {
 							->orderBy('total', 'desc')
 							->get();
 		$videos = [];
-		//dd(DB::getQueryLog());
 		$types = Vid_score_type::orderBy('id')->lists('name', 'id');
+
 		$blank = array_combine(array_keys($types), array_fill(0, count($types), '-'));
 		foreach($video_scores as $score) {
 			$videos[$score->division->longname()][$score->video->name] = $blank;
 		}
 
 		foreach($video_scores as $score) {
-			$videos[$score->division->longname()][$score->video->name][$score->vid_score_type_id] = $score->total;
+			$videos[$score->division->longname()][$score->video->name][$score->vid_score_type_id] = $score;
 		}
-
-		//dd($videos);
 
 		return View::make('video_scores.index', compact('videos', 'comp_list', 'types'));
 	}
 
 	// Choose an appopriate video for judging
 	// Display video to be judged
-	public function score($video_group)
+	public function dispatch($video_group)
 	{
-		Breadcrumbs::addCrumb('Score Video', 'score');
-
 		// Get a list of active Video Competitions
 		$comps = Vid_competition::with('divisions')
 								->where('event_start', '<=', date('Y-m-d'))
@@ -125,10 +124,36 @@ class ScoreVideosController extends \BaseController {
 
 		//$video = Video::find($video_list[0]->id);
 		$video = $sorted->first();
+		//$types = Vid_score_type::where('group', $video_group)->with('Rubric')->get();
+
+		//return View::make('video_scores.create', compact('video', 'types'));
+		return Redirect::route('video.judge.score', [ 'video_id' => $video->id, 'video_group' => $video_group ] );
+
+	}
+
+	// Score a Specific Video/Video Group combination
+	public function score($video_id, $video_group) {
+		Breadcrumbs::addCrumb('Score Video', 'score');
+
+		$video = Video::find($video_id);
+		if(empty($video)) {
+			// Invalid video
+			return Redirect::route('video.judge.index')
+							->with('message', "Invalid video id '$video_id'.  Video no longer exists or another error occured.");
+		}
+
+		$score_count = Video_scores::where('video_id', $video_id)
+								   ->where('score_group', $video_group)
+								   ->where('judge_id', Auth::user()->ID)
+								   ->count();
+		if($score_count > 0) {
+			return Redirect::route('video.judge.edit', [ 'video_id' => $video_id ])
+							->with('message', 'You already scored this video.  Switched to Edit Mode.');
+		}
+
 		$types = Vid_score_type::where('group', $video_group)->with('Rubric')->get();
 
 		return View::make('video_scores.create', compact('video', 'types'));
-
 	}
 
 	/**
@@ -211,12 +236,45 @@ class ScoreVideosController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function edit($id)
+	public function edit($video_id)
 	{
 		Breadcrumbs::addCrumb('Edit Scores', 'edit');
-		$video_scores.= Video_scores::find($id);
+		$video = Video::find($video_id);
+		if(empty($video)) {
+			// Invalid video
+			return Redirect::route('video.judge.index')
+							->with('message', "Invalid video id '$video_id'.  Video no longer exists or another error occured.");
+		}
 
-		return View::make('video_scores.edit', compact('video_scores'));
+		$scores = Video_scores::where('video_id', $video_id)
+								   ->where('judge_id', Auth::user()->ID)
+								   ->get();
+		if(count($scores)==0) {
+			return Redirect::route('video.judge.index')
+							->with('message', 'No scores to edit for this video.');
+		}
+		//dd($scores);
+
+		$groups = [ ];
+		$groups = array_keys($scores->lists('score_group', 'score_group'));
+
+		//$missing_groups = array_diff([ VG_COMPUTE, VG_GENERAL, VG_PART ], $groups);
+
+		$types = Vid_score_type::whereIn('group', $groups)->with('Rubric')->get();
+		//dd($types);
+
+		$video_scores = [];
+		foreach($scores as $score) {
+			$video_scores[$score->vid_score_type_id]['id'] = $score->id;
+			$video_scores[$score->vid_score_type_id]['s1'] = $score->s1;
+			$video_scores[$score->vid_score_type_id]['s2'] = $score->s2;
+			$video_scores[$score->vid_score_type_id]['s3'] = $score->s3;
+			$video_scores[$score->vid_score_type_id]['s4'] = $score->s4;
+			$video_scores[$score->vid_score_type_id]['s5'] = $score->s5;
+		}
+
+		return View::make('video_scores.edit', compact('video', 'video_scores', 'types'))
+						->with('group_names', $this->group_names);
 	}
 
 	/**
@@ -225,20 +283,21 @@ class ScoreVideosController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id)
+	public function update($video_id)
 	{
-		$video_scores.= Video_scores::findOrFail($id);
+		$input = Input::all();
+		$video = Video::find($video_id);
 
-		$validator = Validator::make($data = Input::all(), Video_scores::$rules);
-
-		if ($validator->fails())
-		{
-			return Redirect::back()->withErrors($validator)->withInput();
+		foreach($input['scores'] as $type => $score) {
+			$score = $this->calculate_score($type, $score);
+			$score['video_id'] = $video_id;
+			$score['vid_division_id'] = $video->vid_division_id;
+			$score['judge_id'] = Auth::user()->ID;
+			$this_score = Video_scores::find($score['id']);
+			$this_score->update($score);
 		}
 
-		$video_scores->update($data);
-
-		return Redirect::route('video_scores.index');
+		return Redirect::route('video.judge.index');
 	}
 
 	/**

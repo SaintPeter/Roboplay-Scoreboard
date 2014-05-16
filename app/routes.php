@@ -77,7 +77,7 @@ Route::group(array('before' => 'auth'), function() {
 		Route::resource('score_runs', 'Score_runsController');
 		Route::resource('judges', 'JudgesController');
 		Route::resource('videos', 'VideosController');
-		
+
 		Route::get('user_schools', [ 'as' => 'user_schools', 'uses' => 'Wp_fix@user_schools']);
 		Route::get('invoice_fix', [ 'as' => 'invoice_fix', 'uses' => 'Wp_fix@invoice_fix']);
 		Route::get('invoice_management', [ 'as' => 'invoice_set', 'uses' => 'Wp_fix@invoice_set']);
@@ -133,13 +133,25 @@ Route::group(array('before' => 'auth'), function() {
 				   'uses' =>'ScoreController@save'));
 
 		// Video Judging
-		Route::resource('video/judge', 'ScoreVideosController');
-		Route::get('video/judge/score/{video_group}', [
+		//Route::resource('video/judge', 'ScoreVideosController');
+		Route::get('video/judge', [
+					'as' => 'video.judge.index',
+					'uses' => 'ScoreVideosController@index' ]);
+		Route::get('video/judge/edit/{video_id}', [
+					'as' => 'video.judge.edit',
+					'uses' => 'ScoreVideosController@edit' ]);
+		Route::get('video/judge/dispatch/{video_group}', [
+					'as' => 'video.judge.dispatch',
+					'uses' => 'ScoreVideosController@dispatch' ]);
+		Route::get('video/judge/score/{video_id}/{video_group}', [
 					'as' => 'video.judge.score',
 					'uses' => 'ScoreVideosController@score' ]);
 		Route::post('video/judge/store/{video_id}', [
 					'as' => 'video.judge.store',
 					'uses' => 'ScoreVideosController@store' ]);
+		Route::post('video/judge/update/{video_id}', [
+					'as' => 'video.judge.update',
+					'uses' => 'ScoreVideosController@update' ]);
 	});
 
 	Route::group(array('before' => 'teacher'), function ()
