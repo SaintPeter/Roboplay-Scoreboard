@@ -8,8 +8,8 @@
 //**************************************************************************************************/
 function Lytebox(bInitialize, aHttp) {
 	/*** Language Configuration ***/
-	
-		// English - configure for your language or customize as needed. 
+
+		// English - configure for your language or customize as needed.
 		// Note that these values will be seen by users when mousing over buttons.
 		this.label = new Object();
 		this.label['close']		= 'Close (Esc)';
@@ -20,10 +20,10 @@ function Lytebox(bInitialize, aHttp) {
 		this.label['print'] 	= 'Print';
 		this.label['image'] 	= 'Image %1 of %2';		// %1 = active image, %2 = total images
 		this.label['page'] 		= 'Page %1 of %2'; 		// %1 = active page, %2 = total pages
-		
-	
+
+
 	/*** Configure Lytebox ***/
-	
+
 		this.theme   			= 'grey'; //(typeof lyteboxTheme !== 'undefined') && /^(black|grey|red|green|blue|gold|orange)$/i.test(lyteboxTheme) ? lyteboxTheme : 'black'; // themes: black (default), grey, red, green, blue, gold, orange
 		this.roundedBorder		= true; 		// controls whether or not the viewer uses rounded corners (false = square corners)
 		this.innerBorder		= true;			// controls whether to show the inner border around image/html content
@@ -34,7 +34,7 @@ function Lytebox(bInitialize, aHttp) {
 		this.appendQS			= false;		// if true, will append request_from=lytebox to the QS. Use this with caution as it may cause pages to not render
 		this.fixedPosition		= this.isMobile() ? false : true;	// if true, viewer will remain in a fixed position, otherwise page scrolling will be allowed
 		this.inherit			= true;			// controls whether or not data-lyte-options are inherited from the first link in a grouped set
-		
+
 		this.__hideObjects		= true;			// controls whether or not objects (such as Flash, Java, etc.) should be hidden when the viewer opens
 		this.__autoResize		= true;			// controls whether or not images should be resized if larger than the browser window dimensions
 		this.__doAnimations		= true;			// controls ALL animation effects (i.e. overlay fade in/out, image resize transition, etc.)
@@ -45,26 +45,26 @@ function Lytebox(bInitialize, aHttp) {
 		this.__navType			= 3;			// 1 = "Prev/Next" buttons on top left and left
 												// 2 = "Prev/Next" buttons in navigation bar
 												// 3 = navType_1 + navType_2 (show both)
-													
+
 		// These two options control the position of the title/counter and navigation buttons. Note that for mobile devices,
 		// the title is displayed on top and the navigation on the bottom. This is due to the view area being limited.
 		// You can customize this for non-mobile devices by changing the 2nd condition (: false) to true (: true)
 		this.__navTop			= this.isMobile() ? false : false; // true to show the buttons on the top right, false to show them on bottom right (default)
 		this.__titleTop			= this.isMobile() ? true : false;  // true to show the title on the top left, false to show it on the bottom left (default)
-	
-	
+
+
 	/*** Configure HTML Content / Media Viewer Options ***/
-	
+
 		this.__width			= '80%';		// default width of content viewer
 		this.__height			= '95%';		// default height of content viewer
 		this.__scrolling		= 'auto';		// controls whether or not scrolling is allowed in the content viewer -- options are auto|yes|no
 		this.__loopPlayback		= false;		// controls whether or not embedded media is looped (swf, avi, mov, etc.)
 		this.__autoPlay			= true;			// controls whether or not to autoplay embedded media
 		this.__autoEmbed		= true;			// controls whether or not to automatically embed media in an object tag
-	
-	
+
+
 	/*** Configure Slideshow Options ***/
-	
+
 		this.__slideInterval	= 4000;			// change value (milliseconds) to increase/decrease the time between "slides"
 		this.__showNavigation	= false;		// true to display Next/Prev buttons/text during slideshow, false to hide
 		this.__showClose		= true;			// true to display the Close button, false to hide
@@ -74,16 +74,16 @@ function Lytebox(bInitialize, aHttp) {
 		this.__pauseOnNextClick	= false;		// true to pause the slideshow when the "Next" button is clicked
 		this.__pauseOnPrevClick = true;			// true to pause the slideshow when the "Prev" button is clicked
 		this.__loopSlideshow	= false;		// true to continuously loop through slides, false otherwise
-	
-	
+
+
 	/*** Configure Event Callbacks ***/
-	
+
 		this.__beforeStart		= '';			// function to call before the viewer starts
 		this.__afterStart		= '';			// function to call after the viewer starts
 		this.__beforeEnd		= '';			// function to call before the viewer ends (after close click)
 		this.__afterEnd			= '';			// function to call after the viewer ends
-	
-		
+
+
 	/*** Configure Lytetip (tooltips) Options ***/
 		this.__changeTipCursor 	= true; 		// true to change the cursor to 'help', false to leave default (inhereted)
 		this.__tipDecoration	= 'dotted';		// controls the text-decoration (underline) of the tip link (dotted|solid|none)
@@ -553,7 +553,7 @@ Lytebox.prototype.start = function(oLink, bSlideshow, bFrame) {
 	if (this.isEmpty(this.group)) {
 		dataOptions = String(oLink.getAttribute('data-lyte-options'));
 		dataOptions = this.isEmpty(dataOptions) ? String(oLink.getAttribute('rev')) : dataOptions;
-		if (this.isLyteframe) {			
+		if (this.isLyteframe) {
 			this.frameArray.push(new Array(oLink.getAttribute('href'), (!this.isEmpty(oLink.getAttribute('data-title')) ? oLink.getAttribute('data-title') : oLink.getAttribute('title')), oLink.getAttribute('data-description'), dataOptions));
 		} else {
 			this.imageArray.push(new Array(oLink.getAttribute('href'), (!this.isEmpty(oLink.getAttribute('data-title')) ? oLink.getAttribute('data-title') : oLink.getAttribute('title')), oLink.getAttribute('data-description'), dataOptions));
@@ -750,14 +750,14 @@ Lytebox.prototype.changeContent = function(iContentNum) {
 				var y = $lb.aPageSize[3] - 150;
 				if (imageWidth > x) {
 					imageHeight = Math.round(imageHeight * (x / imageWidth));
-					imageWidth = x; 
-					if (imageHeight > y) { 
+					imageWidth = x;
+					if (imageHeight > y) {
 						imageWidth = Math.round(imageWidth * (y / imageHeight));
-						imageHeight = y; 
+						imageHeight = y;
 					}
-				} else if (imageHeight > y) { 
+				} else if (imageHeight > y) {
 					imageWidth = Math.round(imageWidth * (y / imageHeight));
-					imageHeight = y; 
+					imageHeight = y;
 					if (imageWidth > x) {
 						imageHeight = Math.round(imageHeight * (x / imageWidth));
 						imageWidth = x;
@@ -794,7 +794,7 @@ Lytebox.prototype.resizeContainer = function(iWidth, iHeight) {
 		}
 	}
 	if ((hDiff == 0) && (wDiff == 0)) {
-		if (this.ie){ this.pause(250); } else { this.pause(100); } 
+		if (this.ie){ this.pause(250); } else { this.pause(100); }
 	}
 	this.doc.$('lbPrevHov').style.height = this.resizeHeight + "px";
 	this.doc.$('lbNextHov').style.height = this.resizeHeight + "px";
@@ -834,7 +834,7 @@ Lytebox.prototype.loadContent = function() {
 				$lb.doc.$('lbIframe').onload = null;
 			};
 		}
-		if (this.inline || (uri.match(/.mov|.avi|.wmv|.mpg|.mpeg|.swf/i))) {
+		if (this.inline || (uri.match(/\.mov|\.avi|\.wmv|\.mpg|\.mpeg|\.swf/i))) {
 			iframe.src = 'about:blank';
 			this.frameSource = '';
 			var sHtml = (this.inline) ? this.doc.$(uri.substr(uri.indexOf('#') + 1, uri.length)).innerHTML : this.buildObject(parseInt(this.width), parseInt(this.height), uri);
@@ -898,7 +898,7 @@ Lytebox.prototype.showContent = function() {
 			this.doc.$('lbNext').style.display = 'none';
 		}
 		this.doc.$('lbCloseTop').style.display = (this.navTop ? '' : 'none');
-		this.doc.$('lbClose').style.display = (!this.navTop ? '' : 'none');				
+		this.doc.$('lbClose').style.display = (!this.navTop ? '' : 'none');
 		this.doc.$('lbBottomData').style.display = '';
 		this.doc.$('lbPauseTop').style.display = 'none';
 		this.doc.$('lbPause').style.display = 'none';
@@ -1048,7 +1048,7 @@ Lytebox.prototype.updateNav = function() {
 				}
 			}
 		} else {
-			if (this.navTypeHash['Display_by_type_' + this.navType]) { 
+			if (this.navTypeHash['Display_by_type_' + this.navType]) {
 				this.doc.$(this.navTop ? 'lbNextTop' : 'lbNext').setAttribute(this.classAttribute, this.theme + 'Off');
 				this.doc.$(this.navTop ? 'lbNextTop' : 'lbNext').onclick = function() { return false; }
 			}
@@ -1112,7 +1112,7 @@ Lytebox.prototype.updateNav = function() {
 				}
 			}
 		} else {
-			if (this.navTypeHash['Display_by_type_' + this.navType]) { 
+			if (this.navTypeHash['Display_by_type_' + this.navType]) {
 				this.doc.$(this.navTop ? 'lbNextTop' : 'lbNext').setAttribute(this.classAttribute, this.theme + 'Off');
 				this.doc.$(this.navTop ? 'lbNextTop' : 'lbNext').onclick = function() { return false; }
 			}
@@ -1460,7 +1460,7 @@ Lytebox.prototype.toggleObjects = function(sState) {
 					objects[j].style.visibility = (sState == "hide") ? 'hidden' : 'visible';
 				}
 			} catch(e) {}
-			
+
 			try {
 				embeds = parent.frames[i].window.document.getElementsByTagName("embed");
 				for (var j = 0; j < embeds.length; j++) {
@@ -1647,7 +1647,7 @@ Lytebox.prototype.setOptions = function(sOptions) {
 		case '.mpg':
 		case '.mpeg':
 		case '.wmv':
-			classId = 'clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B';			
+			classId = 'clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B';
 			object 	= '<object classid="' + classId + '" width="' + w + '" height="' + h + '" codebase="' + codebase + '">'
 					+ '<param name="src" value="' + url + '">'
 					+ '<param name="autoplay" value="' + auto + '">'
@@ -1657,7 +1657,7 @@ Lytebox.prototype.setOptions = function(sOptions) {
 					+ '<param name="controller" value="false">'
 					+ '<param name="autoplay" value="' + auto + '">'
 					+ '<param name="loop" value="' + loop + '">'
-					+ '</object>' 
+					+ '</object>'
 					+ '</object>';
 			break;
 		case '.swf':
@@ -1685,7 +1685,7 @@ Lytebox.prototype.setOptions = function(sOptions) {
 	return object;
 };
 Lytebox.prototype.getQuicktimeVersion = function() {
-	var agent = navigator.userAgent.toLowerCase(); 
+	var agent = navigator.userAgent.toLowerCase();
 	var version = -1;
 	if (navigator.plugins != null && navigator.plugins.length > 0) {
 		for (i=0; i < navigator.plugins.length; i++ ) {
@@ -1701,7 +1701,7 @@ Lytebox.prototype.getQuicktimeVersion = function() {
 		} catch (e) { }
 		if (control) {
 			isInstalled = true;
-		}			
+		}
 		try {
 			control = new ActiveXObject('QuickTimeCheckObject.QuickTimeCheck');
 		} catch (e) { return; }
