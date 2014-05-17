@@ -97,7 +97,7 @@
 {{ Breadcrumbs::render() }}
 
 @if(isset($invoice->vid_division))
-	@if( $videos->count() < $invoice->video_count AND $invoice->video_count > 0)
+	@if( true ) {{-- $videos->count() < $invoice->video_count AND $invoice->video_count > 0 --}}
 		@if($invoice->paid == 1)
 			<p>{{ link_to_route('teacher.videos.create', 'Add Video', [], [ 'class' => 'btn btn-primary' ]) }}</p>
 		@else
@@ -154,7 +154,9 @@
 			@endif
 		</tbody>
 	</table>
-
+<p><strong>Note: </strong>Due to a bug, you will see all videos from your school/site.  Because of this, the video count limits have been suspended.  <br />
+	<span style="color: red">Do <strong>NOT</strong> delete vidoes which are not yours.</span>
+	</p>
 
 <div id="dialog-confirm" title="Delete video?">
 <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
