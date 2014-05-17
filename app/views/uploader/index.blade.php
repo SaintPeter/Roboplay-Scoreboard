@@ -59,7 +59,7 @@
 				wrapper.innerHTML = '<div class="name">'+filename+'</div>';
 				wrapper.appendChild(fileSize);
 				wrapper.appendChild(progress);
-				
+
 				progressBox.appendChild(wrapper);
 
 				// Assign roles to the elements of the progress bar
@@ -118,7 +118,7 @@
 		@endforeach
 	</div>
 	<h4>File Size Limits</h4>
-	<p style="margin-left: 10px;">Files may be up to 500MB. <br />Video Files must be at least 15MB.</p>
+	<p style="margin-left: 10px;">Files may be up to 500MB. <br />Video Files must be at least 10MB.</p>
 	<br />
 	<div id="uploads">
 		<div id="noupload">

@@ -119,7 +119,7 @@ class UploadController extends BaseController {
 //					if ($mimetype[0] !== 'video' ) {
 //						return json_encode(array('success' => '3', 'msg' => 'Invalid Video'));
 //					}
-					if (filesize($path) <= 15000000) {
+					if (filesize($path) <= 10000000) {
 						return json_encode(array('success' => '3', 'msg' => 'File Too Small.  Videos must be at least 15MB.'));
 					}
 				}
@@ -148,7 +148,7 @@ class UploadController extends BaseController {
 			return json_encode(array('success' => '0', 'msg' => 'Success', 'file' => $file));
 		}
 	}
-	
+
 	public function delete_file($video_id, $file_id)
 	{
 		$file = Files::find($file_id);
