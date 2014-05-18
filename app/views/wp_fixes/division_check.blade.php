@@ -39,17 +39,19 @@
 				<td>Video Name</td>
 				<td>School</td>
 				<td>Division</td>
+				<td>Upload</td>
 			</tr>
 				@foreach($invoice->videos as $video)
 				<tr>
 					<td>{{ link_to_route('videos.show', $video->name, [ $video->id ]) }}</td>
 					<td>{{ $video->school->name }}</td>
 					<td>{{ $video->vid_division->name }}</td>
+					<td>{{ $video->has_vid ? 'Has' : 'Missing' }}</td>
 				</tr>
 				@endforeach
 			@else
 				<td>0</td>
-				<td colspan="3">No Videos</td>
+				<td colspan="4">No Videos</td>
 			</tr>
 			@endif
 		@endforeach
