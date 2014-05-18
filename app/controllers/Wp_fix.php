@@ -84,6 +84,21 @@ class Wp_fix extends BaseController {
 		));
 	}
 
+	public function division_check() {
+		Breadcrumbs::addCrumb('Video Division Check','');
+		//$videos = Video::all();
+		$invoices = Wp_invoice::with('videos', 'judge', 'vid_division', 'school')
+						->where('video_count', '>', 0)
+						->where('paid', 1)
+						->orderBy('school_id')->get();
+
+		//dd(DB::getQueryLog());
+
+		View::share('title', 'Video Division Check');
+		return View::make('wp_fixes.division_check', compact('invoices'));
+
+	}
+
 	public function ajax_set_paid($invoice_no, $value) {
 		$invoice = Wp_invoice::find($invoice_no);
 		$invoice->paid = $value;

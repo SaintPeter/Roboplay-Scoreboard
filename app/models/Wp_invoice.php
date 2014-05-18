@@ -10,19 +10,27 @@ class Wp_invoice extends Eloquent {
 	public static $rules = array();
 
 	public function user() {
-		return $this->hasOne('Wp_user', 'ID', 'user_id');
+		return $this->belongsTo('Wp_user', 'user_id', 'ID');
+	}
+
+	public function judge() {
+		return $this->belongsTo('Judge', 'user_id', 'id' );
+	}
+
+	public function videos() {
+		return $this->hasMany('Video', 'school_id', 'school_id');
 	}
 
 	public function school() {
-		return $this->hasOne('Schools', 'school_id', 'school_id');
+		return $this->belongsTo('Schools', 'school_id', 'school_id');
 	}
 
 	public function challenge_division() {
 		return $this->hasOne('Division', 'id', 'division_id');
 	}
-	
+
 	public function vid_division() {
-		return $this->hasOne('Vid_division', 'id', 'vid_division_id');
+		return $this->belongsTo('Vid_division', 'vid_division_id', 'id');
 	}
 
 	public function getDateAttribute($value) {
