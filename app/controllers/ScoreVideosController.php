@@ -30,12 +30,15 @@ class ScoreVideosController extends \BaseController {
 								->get();
 
 		$comp_list = [];
+		$div_list = [];
 		foreach($competiton as $comp) {
 			foreach($comp->divisions as $div) {
 				$comp_list[$comp->name][] = $div->name;
+				$div_list[] = $div->id;
 			}
 		}
 
+		// Get a list of all videos this judge has scored
 		$video_scores = Video_scores::with('division', 'division.competition')
 							->where('judge_id', Auth::user()->ID)
 							->orderBy('total', 'desc')
@@ -48,12 +51,23 @@ class ScoreVideosController extends \BaseController {
 			$videos[$score->division->longname()][$score->video->name] = $blank;
 		}
 
+		$scored_count = array_combine(array_keys($this->group_names), array_fill(0, count($this->group_names), 0));
 		foreach($video_scores as $score) {
 			$videos[$score->division->longname()][$score->video->name][$score->vid_score_type_id] = $score;
+			$scored_count[$score->score_group]++;
 		}
 
+		// Fix category count for VG_GENERAL
+		$scored_count[VG_GENERAL] /= 3;
+
+		$total_count[VG_GENERAL] = Video::whereIn('vid_division_id', $div_list)->count();
+		$total_count[VG_PART] = Video::whereIn('vid_division_id', $div_list)->where('has_custom', true)->count();
+		$total_count[VG_COMPUTE] = Video::whereIn('vid_division_id', $div_list)->where('has_code', true)->count();
+
+		//dd($total_count);
+
 		View::share('title', 'Judge Videos');
-		return View::make('video_scores.index', compact('videos', 'comp_list', 'types'));
+		return View::make('video_scores.index', compact('videos', 'comp_list', 'types', 'total_count', 'scored_count'));
 	}
 
 	// Choose an appopriate video for judging

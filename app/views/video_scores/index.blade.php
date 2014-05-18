@@ -6,7 +6,7 @@
 	border-radius: 4px;
 	padding: 0px;
 	background-color: rgb(245, 245, 245);
-	height: 250px;
+	height: 260px;
 	margin: 10px 0 10px 0;
 }
 
@@ -22,6 +22,12 @@
 	margin: 0px;
 	padding: 6px 12px;
 	color: white;
+}
+
+.button_box {
+	position: absolute;
+	top: 200px;
+	width: 85%;
 }
 
 .general {
@@ -76,6 +82,7 @@ td.score:nth-child(odd) {
 }
 
 
+
 @stop
 
 @section('main')
@@ -99,8 +106,13 @@ td.score:nth-child(odd) {
 					</ul>
 					<br />
 				All judges may judge these videos.</p>
-				<div class="text-center">
-					<a class="btn btn-primary" href="{{ route('video.judge.dispatch', [ VG_GENERAL ]) }}">Score</a>
+				<div class="text-center button_box">
+					@if($scored_count[VG_GENERAL] >= $total_count[VG_GENERAL] AND $total_count[VG_GENERAL] > 0)
+						<a class="btn btn-primary btn-margin disabled" href="#">Score</a>
+					@else
+						<a class="btn btn-primary btn-margin" href="{{ route('video.judge.dispatch', [ VG_GENERAL ]) }}">Score</a>
+					@endif
+					<p>Scored: {{ $scored_count[VG_GENERAL] }} of {{ $total_count[VG_GENERAL] }}</p>
 				</div>
 			</div>
 		</div>
@@ -112,8 +124,13 @@ td.score:nth-child(odd) {
 		<div class="inner">
 			<p>These videos contain a custom designed part and will be scored on the design and use of that part.<br /><br />
 			Judges should have a background in mechanical design or robotics.</p>
-			<div class="text-center">
-				<a class="btn btn-info" href="{{ route('video.judge.dispatch', [ VG_PART ]) }}">Score</a>
+			<div class="text-center button_box">
+					@if($scored_count[VG_PART] >= $total_count[VG_PART] AND $total_count[VG_PART] > 0)
+						<a class="btn btn-info btn-margin disabled" href="#">Score</a>
+					@else
+						<a class="btn btn-info btn-margin" href="{{ route('video.judge.dispatch', [ VG_PART ]) }}">Score</a>
+					@endif
+				<p>Scored: {{ $scored_count[VG_PART] }} of {{ $total_count[VG_PART] }}</p>
 			</div>
 		</div>
 	</div>
@@ -125,8 +142,13 @@ td.score:nth-child(odd) {
 		<div class="inner">
 			<p>These videos will be judged primarily on the content of the source code written to produce them.<br /><br />
 			   Judges should have a background in reading source code.</p>
-			<div class="text-center">
-				<a class="btn btn-success" href="{{ route('video.judge.dispatch', [ VG_COMPUTE ]) }}">Score</a>
+			<div class="text-center button_box">
+					@if($scored_count[VG_COMPUTE] >= $total_count[VG_COMPUTE] AND $total_count[VG_COMPUTE] > 0)
+						<a class="btn btn-success btn-margin disabled" href="#">Score</a>
+					@else
+						<a class="btn btn-success btn-margin" href="{{ route('video.judge.dispatch', [ VG_COMPUTE ]) }}">Score</a>
+					@endif
+				<p>Scored: {{ $scored_count[VG_COMPUTE] }} of {{ $total_count[VG_COMPUTE] }}</p>
 			</div>
 		</div>
 	</div>
