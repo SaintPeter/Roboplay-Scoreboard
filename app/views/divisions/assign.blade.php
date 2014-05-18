@@ -15,14 +15,10 @@
 @stop
 
 @section('main')
-
-<h1>Assign Challenges</h1>
-{{ Breadcrumbs::render() }}
 {{ Form::open(array('route' =>'divisions.saveassign')) }}
 	{{ Form::select('has[]', $all_list, $selected_list, array('id' => 'has_list','multiple'=>'multiple')) }}
 	{{ Form::hidden('division_id', $division_id) }}
-	{{ Form::submit('Submit', array('class' => 'btn')) }}
+	{{ Form::submit('Submit', array('class' => 'btn btn-primary btn-margin')) }}
+	{{ link_to_route('divisions.show', 'Cancel', [ $division_id ], [ 'class' => 'btn btn-info btn-margin' ]) }}
 {{ Form::close() }}
-
-
 @stop

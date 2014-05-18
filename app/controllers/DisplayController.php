@@ -49,7 +49,7 @@ class DisplayController extends BaseController {
 		}
 
 		//dd(DB::getQueryLog());
-
+		View::share('title', $team->longname() . ' Scores');
 		return View::make('display.teamscore', compact('team','challenge_list', 'grand_total'));
 	}
 
@@ -105,6 +105,7 @@ class DisplayController extends BaseController {
 			default:
 				$col_class = "col-md-2 col-lg-2";
 		}
+		View::share('title', $comp->name . ' Scores');
 
 		return View::make('display.compscore', compact('comp', 'divisions', 'score_list', 'col_class'));
 	}

@@ -1,23 +1,21 @@
 @extends('layouts.scaffold')
 
 @section('main')
+<p>{{ link_to_route('vid_divisions.create', 'Add New Video Division', null, [ 'class' => 'btn btn-primary' ]) }}</p>
 
-<h1>All Video Divisions</h1>
-{{ Breadcrumbs::render() }}
-<p>{{ link_to_route('vid_divisions.create', 'Add New Video Division') }}</p>
+<table class="table table-striped table-bordered">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Description</th>
+			<th>Display Order</th>
+			<th>Competition</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
 
-@if ($vid_divisions->count())
-	<table class="table table-striped table-bordered">
-		<thead>
-			<tr>
-				<th>Name</th>
-				<th>Description</th>
-				<th>Display Order</th>
-				<th>Competition</th>
-			</tr>
-		</thead>
-
-		<tbody>
+	<tbody>
+		@if ($vid_divisions->count())
 			@foreach ($vid_divisions as $vid_division)
 				<tr>
 					<td>{{{ $vid_division->name }}}</td>
@@ -32,10 +30,9 @@
                     </td>
 				</tr>
 			@endforeach
-		</tbody>
-	</table>
-@else
-	There are no vid_divisions
-@endif
-
+		@else
+			<tr><td colspan="5">No Video Divisions</td></tr>
+		@endif
+	</tbody>
+</table>
 @stop

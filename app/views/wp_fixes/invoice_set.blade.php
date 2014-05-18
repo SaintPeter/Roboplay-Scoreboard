@@ -34,7 +34,7 @@ td.bg-warning {
 				$('#invoice_row_' + invoice_no).addClass('done2');
 			});
 		});
-		
+
 		$('.select_vid_div').change(function(e) {
 			var value = $(this).val();
 			var invoice_no = $(this).attr('invoice_no');
@@ -46,8 +46,6 @@ td.bg-warning {
 @stop
 
 @section('main')
-<h1>Invoice Payment Management</h1>
-{{ Breadcrumbs::render() }}
 <table class="table table-striped table-bordered">
 		<thead>
 			<tr>
@@ -76,7 +74,7 @@ td.bg-warning {
 				@else
 					<td class="bg-warning">
 						{{ $invoice->user->metadata['first_name'] }} {{ $invoice->user->metadata['last_name'] }} <br />
-						{{ $invoice->user->user_login }} 
+						{{ $invoice->user->user_login }}
 						<a href="/wp-admin/users.php?page=users-user-role-editor.php&object=user&user_id={{ $invoice->user->ID }}">Edit</a> <br />
 							Not a Teacher
 					</td>

@@ -1,7 +1,6 @@
 @extends('layouts.scaffold')
 
 @section('main')
-<h1>Invoice Fixing</h1>
 <table class="table table-striped table-bordered">
 	<thead>
 		<tr>

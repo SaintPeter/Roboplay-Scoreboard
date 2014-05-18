@@ -1,8 +1,6 @@
 @extends('layouts.scaffold')
 
 @section('main')
-
-<h1>Edit Division</h1>
 {{ Form::model($division, array('method' => 'PATCH', 'route' => array('divisions.update', $division->id))) }}
 	<ul>
         <li>

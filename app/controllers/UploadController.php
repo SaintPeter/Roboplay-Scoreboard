@@ -23,6 +23,7 @@ class UploadController extends BaseController {
 		Breadcrumbs::addCrumb('Manage Videos', 'teacher/videos');
 		Breadcrumbs::addCrumb('Show Video', $video_id);
 		Breadcrumbs::addCrumb('Upload Files');
+		View::share('title', 'Upload Files');
 
 		$filetype_list = Filetype::all();
 

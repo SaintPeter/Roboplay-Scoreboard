@@ -7,10 +7,6 @@
 @stop
 
 @section('main')
-
-<h1>Create Competition</h1>
-{{ Breadcrumbs::render() }}
-
 {{ Form::open(array('route' => 'competitions.store', 'class' => 'col-md-6')) }}
 	<div class="form-group">
 	    {{ Form::label('name', 'Name:') }}

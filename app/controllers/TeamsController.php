@@ -17,6 +17,7 @@ class TeamsController extends BaseController {
 	{
 		$teams = Team::with('division', 'school', 'school.district', 'school.district.county')->get();
 
+		View::share('title', 'Teams');
 		return View::make('teams.index', compact('teams'));
 	}
 
@@ -28,6 +29,7 @@ class TeamsController extends BaseController {
 	public function create()
 	{
 		Breadcrumbs::addCrumb('Add Team', 'create');
+		View::share('title', 'Add Team');
 		$divisions = Division::longname_array();
 
 		return View::make('teams.create')
@@ -67,6 +69,7 @@ class TeamsController extends BaseController {
 	public function show($id)
 	{
 		Breadcrumbs::addCrumb('Show Team', $id);
+		View::share('title', 'Show Team');
 		$team = Team::with('school', 'school.district', 'school.district.county')->findOrFail($id);
 
 		return View::make('teams.show', compact('team'));
@@ -81,6 +84,7 @@ class TeamsController extends BaseController {
 	public function edit($id)
 	{
 		Breadcrumbs::addCrumb('Edit Team', $id);
+		View::share('title', 'Edit Team');
 		$team = Team::with('school', 'school.district', 'school.district.county')->find($id);
 
 		$starting_school = isset($team->school) ? $team->school->school_id : 0;

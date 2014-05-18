@@ -1,9 +1,6 @@
 @extends('layouts.scaffold')
 
 @section('main')
-
-<h1>Show Competition</h1>
-
 <p>{{ link_to_route('competitions.index', 'Return To Competitions', [], [ 'class' => 'btn btn-primary' ]) }}</p>
 
 <table class="table table-striped table-bordered">

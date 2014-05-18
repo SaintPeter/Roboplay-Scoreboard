@@ -48,17 +48,12 @@ function setup_form_handler() {
 
 
 @section('main')
-
-<h1>Show Challenge</h1>
-
-{{ Breadcrumbs::render() }}
-
 <table class="table table-striped table-bordered">
 	<thead>
 		<tr>
-			<th>Internal_name</th>
-				<th>Display_name</th>
-				<th> Rules</th>
+			<th>Internal Name</th>
+				<th>Display Name</th>
+				<th>Rules</th>
 		</tr>
 	</thead>
 
@@ -66,7 +61,7 @@ function setup_form_handler() {
 		<tr>
 			<td>{{{ $challenge->internal_name }}}</td>
 					<td>{{{ $challenge->display_name }}}</td>
-					<td>{{{ $challenge-> rules }}}</td>
+					<td>{{{ $challenge->rules }}}</td>
                     <td>{{ link_to_route('challenges.edit', 'Edit', array($challenge->id), array('class' => 'btn btn-info')) }}</td>
                     <td>
                         {{ Form::open(array('method' => 'DELETE', 'route' => array('challenges.destroy', $challenge->id))) }}
@@ -81,7 +76,7 @@ function setup_form_handler() {
 	<thead>
 		<tr>
 			<th>Name</th>
-				<th>Display_text</th>
+				<th>Display Text</th>
 				<th>Order</th>
 				<th>Base</th>
 				<th>Multiplier</th>
@@ -116,7 +111,7 @@ function setup_form_handler() {
 		@endif
 	</tbody>
 </table>
-{{ Form::button('Add Score Element', array('class' => 'btn', 'id' => 'add_score_element')) }}
+{{ Form::button('Add Score Element', array('class' => 'btn btn-primary', 'id' => 'add_score_element')) }}
 
 <div id="dialog" title="Score Elements">
 

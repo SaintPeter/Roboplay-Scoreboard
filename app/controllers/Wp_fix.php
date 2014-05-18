@@ -18,7 +18,8 @@ class Wp_fix extends BaseController {
 				$user->metadata['role'] = array_key_exists('teachers',$roles) ?  'Teacher' : 'nonTeacher';
 			}
 		}
-
+		Breadcrumbs::addCrumb('Set Users School','');
+		View::share('title', 'Set Users School');
 		return View::make('wp_fixes.user_school')
 					->with(compact('users','counties'));
 	}
@@ -35,7 +36,8 @@ class Wp_fix extends BaseController {
 			}
 			$invoice->user->metadata['fullname'] = Usermeta::getFullName($invoice->user_id);
 		}
-
+		Breadcrumbs::addCrumb('Fix Invoices','');
+		View::share('title', 'Fix Invoices');
 		return View::make('wp_fixes.invoice_fix')
 					->with(compact('invoices'));
 	}
@@ -52,7 +54,7 @@ class Wp_fix extends BaseController {
 			//dd($roles);
 			$invoice->user->metadata['is_teacher'] = array_key_exists('teachers', $roles);
 		}
-
+		View::share('title', 'Invoice Management');
 		return View::make('wp_fixes.invoice_set', compact('invoices', 'divisions', 'vid_divisions'));
 	}
 

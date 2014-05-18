@@ -44,10 +44,6 @@
 @stop
 
 @section('main')
-
-<h1>Show Video</h1>
-{{ Breadcrumbs::render() }}
-
 <table class="table table-striped table-bordered">
 	<thead>
 		<tr>
@@ -107,7 +103,7 @@
 		<h4>{{ $video->name }} </h4>
 		<iframe  style="border: 1px solid black" id="ytplayer" type="text/html" width="640" height="390" src="http://www.youtube.com/embed/{{{ $video->yt_code }}}" frameborder="0"></iframe>
 	</div>
-	
+
 	<div class="pull-left" style="width: 250px; margin: 10px 20px;">
 		@include('partials.filelist', [ 'video' => $video, 'show_type' => true, 'show_delete' => true ])
 	</div>

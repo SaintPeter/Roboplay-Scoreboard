@@ -24,10 +24,6 @@ $(function() {
 @stop
 
 @section('main')
-
-<h1>Create Video</h1>
-{{ Breadcrumbs::render() }}
-
 {{ Form::open(array('route' => 'videos.store', 'role'=>"form", 'class' => 'col-md-6' )) }}
 	<div class="form-group">
 	    {{ Form::label('name', 'Name:') }}

@@ -1,9 +1,6 @@
 @extends('layouts.scaffold')
 
 @section('main')
-
-<h1>Video Competitions</h1>
-{{ Breadcrumbs::render() }}
 <p>{{ link_to_route('vid_competitions.create', 'Add Video Competition',[], ['class' => 'btn btn-primary']) }}</p>
 
 @if ($vid_competitions->count())

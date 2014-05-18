@@ -51,8 +51,9 @@
 	});
 @stop
 
-@section('main')
+<?php View::share('skip_title', 1) ?>
 
+@section('before_header')
 <div class="info_header">
 	<div class="summary_table pull-right" >
 		<table class="table table-condensed table-bordered">
@@ -82,11 +83,13 @@
 		</table>
 	</div>
 
-	<h1>Manage Challenge Teams</h1>
+	<h1>{{ $title }}</h1>
 	<h2>{{ $school->name }}</h2>
 	<div class="clear"></div>
 </div>
-{{ Breadcrumbs::render() }}
+@stop
+
+@section('main')
 
 @if( $teams->count() < $invoice->team_count AND $invoice->team_count > 0)
 	@if($invoice->paid == 1)

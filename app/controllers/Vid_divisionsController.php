@@ -11,6 +11,8 @@ class Vid_divisionsController extends BaseController {
 
 	public function __construct(Vid_division $vid_division)
 	{
+		parent::__construct();
+		Breadcrumbs::addCrumb('Video Divisions', 'vid_division');
 		$this->vid_division = $vid_division;
 	}
 
@@ -23,6 +25,7 @@ class Vid_divisionsController extends BaseController {
 	{
 		$vid_divisions = $this->vid_division->all();
 
+		View::share('title', 'Video Divisions');
 		return View::make('vid_divisions.index', compact('vid_divisions'));
 	}
 
@@ -33,6 +36,8 @@ class Vid_divisionsController extends BaseController {
 	 */
 	public function create()
 	{
+		Breadcrumbs::addCrumb('Add Division', 'create');
+		View::share('title', 'Add Division');
 		$competitions = Vid_competition::lists('name','id');
 
 		return View::make('vid_divisions.create')
@@ -70,6 +75,8 @@ class Vid_divisionsController extends BaseController {
 	 */
 	public function show($id)
 	{
+		Breadcrumbs::addCrumb('Show Division', 'create');
+		View::share('title', 'Show Division');
 		$vid_division = $this->vid_division->findOrFail($id);
 
 		return View::make('vid_divisions.show', compact('vid_division'));
@@ -83,6 +90,8 @@ class Vid_divisionsController extends BaseController {
 	 */
 	public function edit($id)
 	{
+		Breadcrumbs::addCrumb('Edit Division', 'create');
+		View::share('title', 'Edit Division');
 		$vid_division = $this->vid_division->find($id);
 		$competitions = Vid_competition::lists('name','id');
 

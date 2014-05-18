@@ -52,6 +52,7 @@ class ScoreVideosController extends \BaseController {
 			$videos[$score->division->longname()][$score->video->name][$score->vid_score_type_id] = $score;
 		}
 
+		View::share('title', 'Judge Videos');
 		return View::make('video_scores.index', compact('videos', 'comp_list', 'types'));
 	}
 
@@ -134,6 +135,7 @@ class ScoreVideosController extends \BaseController {
 	// Score a Specific Video/Video Group combination
 	public function score($video_id, $video_group) {
 		Breadcrumbs::addCrumb('Score Video', 'score');
+		View::share('title', 'Score Video');
 
 		$video = Video::find($video_id);
 		if(empty($video)) {
@@ -238,7 +240,8 @@ class ScoreVideosController extends \BaseController {
 	 */
 	public function edit($video_id)
 	{
-		Breadcrumbs::addCrumb('Edit Scores', 'edit');
+		Breadcrumbs::addCrumb('Edit Score', 'edit');
+		View::share('title', 'Edit Video Score');
 		$video = Video::find($video_id);
 		if(empty($video)) {
 			// Invalid video

@@ -1,9 +1,6 @@
 @extends('layouts.scaffold')
 
 @section('main')
-
-<h1>Create Team - {{ $school->name }}</h1>
-{{ Breadcrumbs::render() }}
 {{ Form::open(array('route' => 'teacher.teams.store', 'role'=>"form", 'class' => 'col-md-6')) }}
         <div class="form-group">
             {{ Form::label('name', 'Team Name:') }}
@@ -13,7 +10,7 @@
         <div class="form-group">
             {{ Form::label('students', 'Students:') }}
             {{ Form::textarea('students', '' , array('class'=>'form-control col-md-4')) }}
-            <p>Enter one student per line.</p>
+            <p>Enter one student per line.  Please format names suitably for certificate printing and display.</p>
         </div>
 
  		{{ Form::submit('Submit', array('class' => 'btn btn-primary ')) }}

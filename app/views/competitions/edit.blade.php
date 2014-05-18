@@ -7,9 +7,6 @@
 @stop
 
 @section('main')
-
-<h1>Edit Competition</h1>
-{{ Breadcrumbs::render() }}
 {{ Form::model($competition, array('method' => 'PATCH', 'route' => array('competitions.update', $competition->id), 'class' => 'col-md-6')) }}
 	<div class="form-group">
 	    {{ Form::label('name', 'Name:') }}

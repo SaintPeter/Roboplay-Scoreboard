@@ -25,6 +25,7 @@ class CompetitionsController extends BaseController {
 	{
 		$competitions = $this->competition->all();
 
+		View::share('title', 'Manage Competitions');
 		return View::make('competitions.index', compact('competitions'));
 	}
 
@@ -35,6 +36,7 @@ class CompetitionsController extends BaseController {
 	 */
 	public function create()
 	{
+		View::share('title', 'Add Competition');
 		Breadcrumbs::addCrumb('Add Competition', 'create');
 		return View::make('competitions.create');
 	}
@@ -72,6 +74,7 @@ class CompetitionsController extends BaseController {
 	{
 		$competition = $this->competition->findOrFail($id);
 
+		View::share('title', 'Show Competition');
 		return View::make('competitions.show', compact('competition'));
 	}
 
@@ -84,6 +87,7 @@ class CompetitionsController extends BaseController {
 	public function edit($id)
 	{
 		Breadcrumbs::addCrumb('Edit Competition', 'edit');
+		View::share('title', 'Edit Competition');
 		$competition = $this->competition->find($id);
 
 		if (is_null($competition))

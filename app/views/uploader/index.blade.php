@@ -6,8 +6,6 @@
 
 @section('script')
 	$(function() {
-		var user_id = 'test';
-		var video_id = 'vid';
 		var uploader = new ss.SimpleUpload({
 			button: 'uploadButton',
 			url: '{{ route('uploader.handler', [ $video_id ]) }}',
@@ -105,8 +103,6 @@
 @stop
 
 @section('main')
-<h1>File Uploads</h1>
-{{ Breadcrumbs::render() }}
 <div class="col-md-8">
 	<div class="clearfix">
 		<h4>Known File Types</h4>

@@ -34,10 +34,6 @@
 @stop
 
 @section('main')
-
-<h1>Show Division</h1>
-{{ Breadcrumbs::render() }}
-
 <table class="table table-striped table-bordered">
 	<thead>
 		<tr>

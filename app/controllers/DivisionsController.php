@@ -13,7 +13,7 @@ class DivisionsController extends BaseController {
 	{
 		parent::__construct();
 		$this->division = $division;
-		Breadcrumbs::addCrumb('Divisions', route('divisions.index'));
+		Breadcrumbs::addCrumb('Competition Divisions', route('divisions.index'));
 	}
 
 	/**
@@ -27,7 +27,7 @@ class DivisionsController extends BaseController {
 						  ->orderBy('competition_id')
 						  ->orderBy('display_order')
 						  ->get();
-
+		View::share('title', 'Competition Divisions');
 		return View::make('divisions.index', compact('divisions'));
 	}
 
@@ -39,6 +39,8 @@ class DivisionsController extends BaseController {
 	public function create()
 	{
 		Breadcrumbs::addCrumb('Add Division', route('divisions.create'));
+		View::share('title', 'Add Competition Division');
+
 		$competitions = Competition::lists('name','id');
 
 		return View::make('divisions.create')
@@ -76,7 +78,8 @@ class DivisionsController extends BaseController {
 	 */
 	public function show($id)
 	{
-		Breadcrumbs::addCrumb('Show', route('divisions.show', $id));
+		Breadcrumbs::addCrumb('Show Division', route('divisions.show', $id));
+		View::share('title', 'Show Division');
 		$division = $this->division->with('competition','challenges','challenges.score_elements')->findOrFail($id);
 		$challenges = $division->challenges;
 
@@ -91,7 +94,8 @@ class DivisionsController extends BaseController {
 	 */
 	public function edit($id)
 	{
-		Breadcrumbs::addCrumb('Divisions', route('divisions.edit', $id));
+		Breadcrumbs::addCrumb('Edit Division', route('divisions.edit', $id));
+		View::share('title', 'Edit Division');
 		$division = $this->division->find($id);
 
 		if (is_null($division))
@@ -151,7 +155,9 @@ class DivisionsController extends BaseController {
 	 */
 	public function assign($division_id)
 	{
-		Breadcrumbs::addCrumb('Assign Challenges', route('divisions.assign', $division_id));
+		Breadcrumbs::addCrumb('Show Division', route('divisions.show', $division_id));
+		Breadcrumbs::addCrumb('Assign Challenges', '');
+		View::share('title', 'Assign Challenges');
 	 	$all_challenges = Challenge::with('divisions')->get();
 
 		$all_list = array();

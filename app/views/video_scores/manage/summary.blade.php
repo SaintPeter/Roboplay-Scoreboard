@@ -1,8 +1,6 @@
 @extends('layouts.scaffold')
 
 @section('main')
-<h1>Scoring Summary</h1>
-{{ Breadcrumbs::render() }}
 <table class="col-md-4">
 	@foreach($output as $comp => $divs)
 		<tr class="comp_row"><td>{{ $comp }}</td></tr>

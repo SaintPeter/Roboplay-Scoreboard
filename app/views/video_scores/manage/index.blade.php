@@ -33,8 +33,6 @@ td.score:nth-child(odd) {
 @stop
 
 @section('main')
-<h1>Manage Video Scores</h1>
-{{ Breadcrumbs::render() }}
 {{ Form::open([ 'route' => 'video_scores.manage.process' ]) }}
 <table class="scored_table">
 		<thead>

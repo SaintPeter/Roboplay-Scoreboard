@@ -35,8 +35,6 @@
 @stop
 
 @section('main')
-<h1>All Videos</h1>
-{{ Breadcrumbs::render() }}
 <p>{{ link_to_route('videos.create', 'Add Video', [],  [ 'class' => 'btn btn-primary' ]) }}</p>
 
 <table class="table table-striped table-bordered" id="video_table">

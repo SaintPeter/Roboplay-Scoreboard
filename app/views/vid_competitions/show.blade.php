@@ -1,10 +1,6 @@
 @extends('layouts.scaffold')
 
 @section('main')
-
-<h1>Show Video Competition</h1>
-{{ Breadcrumbs::render() }}
-
 <p>{{ link_to_route('vid_competitions.index', 'Return to List', [], ['class' => 'btn btn-primary'] ) }}</p>
 
 <table class="table table-striped table-bordered">

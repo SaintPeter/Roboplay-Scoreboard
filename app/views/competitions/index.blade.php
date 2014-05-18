@@ -29,9 +29,6 @@
 @stop
 
 @section('main')
-
-<h1>Manage Competitions</h1>
-{{ Breadcrumbs::render() }}
 <p>{{ link_to_route('competitions.create', 'Add Competition', [], ['class' => 'btn btn-primary']) }}</p>
 
 @if ($competitions->count())

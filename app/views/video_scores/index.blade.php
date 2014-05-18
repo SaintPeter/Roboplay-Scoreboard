@@ -79,8 +79,6 @@ td.score:nth-child(odd) {
 @stop
 
 @section('main')
-<h1>Score Videos</h1>
-{{ Breadcrumbs::render() }}
 @if(count($comp_list))
 	<h4>Open Video Competitions</h4>
 	@foreach($comp_list as $comp => $divs)
@@ -149,12 +147,12 @@ td.score:nth-child(odd) {
 							<td class="type">{{ $type }}</td>
 						@endforeach
 					</tr>
-					@foreach($video_list as $title => $scores)
+					@foreach($video_list as $vid_title => $scores)
 						<tr class="score_row">
 							<td>
 								<a href="{{ route('video.judge.edit', [ 'video_id' => reset($scores)->video_id ]) }}">
 									<span class="glyphicon glyphicon-edit"></span>
-									<strong>{{ $title }}</strong>
+									<strong>{{ $vid_title }}</strong>
 								</a>
 							</td>
 								@foreach($types as $index => $type)

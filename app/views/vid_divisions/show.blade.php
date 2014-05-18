@@ -1,9 +1,6 @@
 @extends('layouts.scaffold')
 
 @section('main')
-
-<h1>Show Vid_division</h1>
-{{ Breadcrumbs::render() }}
 <p>{{ link_to_route('vid_divisions.index', 'Return to all vid_divisions', ['class' => 'btn btn-primary']) }}</p>
 
 <table class="table table-striped table-bordered">
@@ -11,8 +8,8 @@
 		<tr>
 			<th>Name</th>
 				<th>Description</th>
-				<th>Display_order</th>
-				<th>Competition_id</th>
+				<th>Display Order</th>
+				<th>Competition</th>
 		</tr>
 	</thead>
 

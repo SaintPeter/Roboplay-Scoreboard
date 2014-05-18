@@ -75,8 +75,6 @@
 @stop
 
 @section('main')
-<h1>Score Video</h1>
-{{ Breadcrumbs::render() }}
 <div style="width:950px" class="center-block clearfix">
 	<div class="pull-left" style="width:640px; margin: 10px;">
 		<span class="pull-right">{{ $video->vid_division->name }}</span>

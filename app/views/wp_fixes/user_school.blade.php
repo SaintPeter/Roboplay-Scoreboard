@@ -53,7 +53,6 @@ html, body { position: relative }
 @stop
 
 @section('main')
-
 <table class="table table-striped table-bordered">
 	<thead>
 		<tr>

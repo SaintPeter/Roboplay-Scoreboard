@@ -20,6 +20,7 @@ class VideoManagementController extends \BaseController {
 			$videos[$score->division->longname()][$score->judge->display_name][$score->video->name][$score->vid_score_type_id] = $score->total;
 		}
 
+		View::share('title', 'Manage Scores');
 		return View::make('video_scores.manage.index', compact('videos','types'));
 
 	}
@@ -27,6 +28,7 @@ class VideoManagementController extends \BaseController {
 	public function summary()
 	{
 		Breadcrumbs::addCrumb('Scoring Summary');
+		View::share('title', 'Scoring Summary');
 		$videos = Video::with('scores')->get();
 
 		foreach($videos as $video) {

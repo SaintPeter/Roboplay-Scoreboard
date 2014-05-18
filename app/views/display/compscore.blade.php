@@ -9,10 +9,6 @@
 @stop
 
 @section('main')
-<div class="clear">
-	<h1>{{ $comp->name }} Scores</h1>
-</div>
-{{ Breadcrumbs::render() }}
 @foreach($divisions as $division)
 	<div class="{{ $col_class }}">
 		<table class="table table-striped table-bordered">

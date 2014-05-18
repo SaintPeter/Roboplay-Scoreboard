@@ -1,11 +1,6 @@
 @extends('layouts.scaffold')
 
 @section('main')
-
-<h1>All Divisions</h1>
-
-{{ Breadcrumbs::render() }}
-
 <p>{{ link_to_route('divisions.create', 'Add New Division',array(), array('class' => 'btn btn-primary')) }}</p>
 
 @if ($divisions->count())

@@ -29,12 +29,7 @@
 @stop
 
 @section('main')
-
-<h1>All Challenges</h1>
-{{ Breadcrumbs::render() }}
-
 <p>{{ link_to_route('challenges.create', 'Add Challenge', [], [ 'class' => 'btn btn-primary' ]) }}</p>
-
 
 <table class="table table-striped table-bordered">
 	<thead>

@@ -42,9 +42,6 @@
 @stop
 
 @section('main')
-
-<h1>All Teams</h1>
-{{ Breadcrumbs::render() }}
 <p>{{ link_to_route('teams.create', 'Add Team', [], [ 'class' => 'btn btn-primary' ]) }}</p>
 
 <table id="team_table" class="table table-striped table-bordered table-condensed">

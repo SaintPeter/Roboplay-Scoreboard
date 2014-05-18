@@ -1,10 +1,7 @@
 @extends('layouts.scaffold')
 
 @section('main')
-
-<h1>Show Team</h1>
-{{ Breadcrumbs::render() }}
-<p>{{ link_to_route('teams.index', 'Return to all teams') }}</p>
+<p>{{ link_to_route('teams.index', 'Return to all teams', null, [ 'class' => 'btn btn-primary' ]) }}</p>
 
 <table class="table table-striped table-bordered">
 	<thead>

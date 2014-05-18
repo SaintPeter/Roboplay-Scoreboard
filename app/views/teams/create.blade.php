@@ -22,9 +22,6 @@ $(function() {
 
 
 @section('main')
-
-<h1>Add Team</h1>
-{{ Breadcrumbs::render() }}
 {{ Form::open(array('route' => 'teams.store', 'role'=>"form", 'class' => 'col-md-6')) }}
         <div class="form-group">
             {{ Form::label('name', 'Team Name:') }}

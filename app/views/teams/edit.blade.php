@@ -24,9 +24,6 @@ $(function() {
 @stop
 
 @section('main')
-
-<h1>Edit Team</h1>
-{{ Breadcrumbs::render() }}
 {{ Form::model($team, array('method' => 'PATCH', 'route' => array('teams.update', $team->id), 'class' => 'col-md-6')) }}
         <div class="form-group">
             {{ Form::label('name', 'Team Name:') }}

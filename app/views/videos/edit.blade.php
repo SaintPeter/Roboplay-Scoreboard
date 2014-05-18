@@ -24,8 +24,6 @@ $(function() {
 @stop
 
 @section('main')
-
-<h1>Edit Video</h1>
 {{ Form::model($video, array('method' => 'PATCH', 'route' => array('videos.update', $video->id), 'role'=>"form", 'class' => 'col-md-6')) }}
 	<div class="form-group">
 	    {{ Form::label('name', 'Name:') }}

@@ -25,6 +25,7 @@ class Vid_competitionsController extends BaseController {
 	{
 		$vid_competitions = $this->vid_competition->all();
 
+		View::share('title', 'Video Competitions');
 		return View::make('vid_competitions.index', compact('vid_competitions'));
 	}
 
@@ -35,7 +36,8 @@ class Vid_competitionsController extends BaseController {
 	 */
 	public function create()
 	{
-		Breadcrumbs::addCrumb('Add Video Competitions', 'create');
+		Breadcrumbs::addCrumb('Add Video Competition', 'create');
+		View::share('title', 'Add Video Competition');
 		return View::make('vid_competitions.create');
 	}
 
@@ -70,7 +72,8 @@ class Vid_competitionsController extends BaseController {
 	 */
 	public function show($id)
 	{
-		Breadcrumbs::addCrumb('Show Video Competition', 'show');
+		Breadcrumbs::addCrumb('Show Competition', 'show');
+		View::share('title', 'Show Competition');
 		$vid_competition = $this->vid_competition->findOrFail($id);
 
 		return View::make('vid_competitions.show', compact('vid_competition'));
@@ -84,7 +87,8 @@ class Vid_competitionsController extends BaseController {
 	 */
 	public function edit($id)
 	{
-		Breadcrumbs::addCrumb('Edit Video Competition', 'edit');
+		Breadcrumbs::addCrumb('Edit Competition', 'edit');
+		View::share('title', 'Edit Competition');
 		$vid_competition = $this->vid_competition->find($id);
 
 		if (is_null($vid_competition))

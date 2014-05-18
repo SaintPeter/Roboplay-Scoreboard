@@ -13,7 +13,7 @@ class ChallengesController extends BaseController {
 	{
 		parent::__construct();
 		$this->challenge = $challenge;
-		Breadcrumbs::addCrumb('Challenges', route('challenges.index'));
+		Breadcrumbs::addCrumb('Manage Challenges', route('challenges.index'));
 	}
 
 	/**
@@ -24,7 +24,7 @@ class ChallengesController extends BaseController {
 	public function index()
 	{
 		$challenges = $this->challenge->with('score_elements')->get();
-
+		View::share('title', 'Manage Challenges');
 		return View::make('challenges.index', compact('challenges'));
 	}
 
@@ -36,6 +36,7 @@ class ChallengesController extends BaseController {
 	public function create()
 	{
 		Breadcrumbs::addCrumb('Add Challenge', route('challenges.create'));
+		View::share('title', 'Add Challenge');
 		return View::make('challenges.create');
 	}
 
@@ -70,7 +71,8 @@ class ChallengesController extends BaseController {
 	 */
 	public function show($id)
 	{
-		Breadcrumbs::addCrumb('Show', route('challenges.show', $id));
+		Breadcrumbs::addCrumb('Show Challenge', route('challenges.show', $id));
+		View::share('title', 'Show Challenge');
 		$challenge = $this->challenge->with('score_elements')->findOrFail($id);
 
 		return View::make('challenges.show', compact('challenge'));
@@ -84,7 +86,8 @@ class ChallengesController extends BaseController {
 	 */
 	public function edit($id)
 	{
-		Breadcrumbs::addCrumb('Edit', route('challenges.edit', $id));
+		Breadcrumbs::addCrumb('Edit Challenge', route('challenges.edit', $id));
+		View::share('title', 'Edit Challenge');
 		$challenge = $this->challenge->find($id);
 
 		if (is_null($challenge))

@@ -28,6 +28,7 @@ class TeacherVideoController extends BaseController {
 
 		$videos = Video::with('school', 'vid_division')->where('school_id',$school_id)->get();
 
+		View::share('title', 'Manage Videos');
 		return View::make('teacher.videos.index', compact('school', 'videos','invoice', 'paid'));
 	}
 
@@ -39,6 +40,7 @@ class TeacherVideoController extends BaseController {
 	public function create()
 	{
 		Breadcrumbs::addCrumb('Add Video', 'teacher/videos/create');
+		View::share('title', 'Add Video');
 		$vid_divisions = Vid_division::longname_array();
 		return View::make('teacher.videos.create',compact('vid_divisions'));
 	}
@@ -78,6 +80,7 @@ class TeacherVideoController extends BaseController {
 	 */
 	public function show($id)
 	{
+		View::share('title', 'Video Preview');
 		Breadcrumbs::addCrumb('Video Preview', 'teacher/videos/create');
 		$video = Video::with('school', 'school.district', 'school.district.county')->findOrFail($id);
 
@@ -93,6 +96,7 @@ class TeacherVideoController extends BaseController {
 	public function edit($id)
 	{
 		Breadcrumbs::addCrumb('Edit Video', 'teacher/videos/edit');
+		View::share('title', 'Edit Video');
 		$video = Video::with('vid_division')->find($id);
 
 		if (is_null($video))

@@ -13,15 +13,16 @@ class TeacherTeamsController extends BaseController {
 		$school_id = Usermeta::getSchoolId();
 		$school = Schools::find($school_id);
 		$invoice = Wp_invoice::with('challenge_division')->where('user_id', Auth::user()->ID)->first();
-		
+
 		if(!isset($invoice)) {
 			return View::make('error', [ 'message' => 'No invoice found for this School']);
 		}
-		
+
 		$paid = $invoice->paid==1 ? 'Paid' : 'Unpaid';
 
 		$teams = Team::with('school')->where('school_id', $school_id)->get();
 
+		View::share('title', 'Manage Challenge Teams');
         return View::make('teacher.teams.index', compact('school_id', 'teams', 'school', 'invoice', 'paid'));
 	}
 
@@ -37,6 +38,7 @@ class TeacherTeamsController extends BaseController {
 		$school_id = Usermeta::getSchoolId();
 		$school = Schools::find($school_id);
 
+		View::share('title', 'Add Team - ' . $school->name);
         return View::make('teacher.teams.create', compact('school'));
 	}
 
@@ -51,7 +53,7 @@ class TeacherTeamsController extends BaseController {
 		$input['school_id'] = Usermeta::getSchoolId();
 		$invoice = Wp_invoice::with('challenge_division')->where('user_id', Auth::user()->ID)->first();
 		$input['division_id'] = $invoice->challenge_division->id;
-		
+
 		$validation = Validator::make($input, Team::$rules);
 
 		if ($validation->passes())
@@ -77,6 +79,7 @@ class TeacherTeamsController extends BaseController {
 	{
 		Breadcrumbs::addCrumb('Manage Challenge Teams', 'teacher/teams');
 		Breadcrumbs::addCrumb('Edit Team', $id);
+		View::share('title', 'Edit Team');
 		$team = Team::find($id);
 
 		if (is_null($team))

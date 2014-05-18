@@ -1,8 +1,6 @@
 @extends('layouts.scaffold')
 
 @section('main')
-<h1>Edit Video</h1>
-{{ Breadcrumbs::render() }}
 {{ Form::model($video, array('method' => 'PATCH', 'route' => array('teacher.videos.update', $video->id), 'class' => 'col-md-6')) }}
 	<div class="form-group">
 	    {{ Form::label('name', 'Name:') }}
@@ -24,7 +22,7 @@
 	<div class="form-group">
 	    {{ Form::label('students', 'Students:') }}
 	    {{ Form::textarea('students', $video->students) }}
-	    <p>One Student Per Line</p>
+	    <p>Enter one student per line.  Please format names suitably for certificate printing and display.</p>
 	</div>
 
 	<div class="form-group">

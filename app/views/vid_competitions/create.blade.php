@@ -7,10 +7,6 @@
 @stop
 
 @section('main')
-
-<h1>Create Video Competition</h1>
-{{ Breadcrumbs::render() }}
-
 {{ Form::open(array('route' => 'vid_competitions.store', ' class' => 'form-horizontal col-md-4')) }}
 	<div class="form-group">
 	    {{ Form::label('name', 'Name:') }}

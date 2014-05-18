@@ -7,9 +7,6 @@
 @stop
 
 @section('main')
-
-<h1>Edit Video Competition</h1>
-{{ Breadcrumbs::render() }}
 {{ Form::model($vid_competition, array('method' => 'PATCH', 'route' => array('vid_competitions.update', $vid_competition->id),'class' => 'form-horizontal col-md-4')) }}
 	<div class="form-group">
 	    {{ Form::label('name', 'Name:') }}

@@ -56,7 +56,9 @@
 	});
 @stop
 
-@section('main')
+<?php View::share('skip_title', 1) ?>
+
+@section('before_header')
 <div class="info_header">
 	<div class="summary_table pull-right" >
 		<table class="table table-condensed table-bordered">
@@ -94,7 +96,10 @@
 	<h2>{{ $school->name }}</h2>
 	<div class="clear"></div>
 </div>
-{{ Breadcrumbs::render() }}
+@stop
+
+
+@section('main')
 
 @if(isset($invoice->vid_division))
 	@if( true ) {{-- $videos->count() < $invoice->video_count AND $invoice->video_count > 0 --}}
