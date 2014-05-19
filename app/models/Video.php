@@ -78,4 +78,45 @@ class Video extends Eloquent {
 	{
 		return preg_split("/\s*,\s*/", trim($this->students));
 	}
+
+	public function general_scores_count()
+	{
+		$count = 0;
+		$this->scores->map(function($score) use (&$count) {
+			if($score->score_group == 1) {
+				$count++;
+			}
+		});
+		$count /= 3;
+		return $count;
+	}
+
+	public function part_scores_count()
+	{
+		if($this->has_custom) {
+			$count = 0;
+			$this->scores->map(function($score) use (&$count) {
+				if($score->score_group == 2) {
+					$count++;
+				}
+			});
+			return $count;
+		}
+		return '-';
+	}
+
+	public function compute_scores_count()
+	{
+		if($this->has_code) {
+			$count = 0;
+			$this->scores->map(function($score) use (&$count) {
+				if($score->score_group == 3) {
+					$count++;
+				}
+			});
+			return $count;
+		}
+		return '-';
+	}
+
 }

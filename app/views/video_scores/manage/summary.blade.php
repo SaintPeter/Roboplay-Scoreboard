@@ -1,19 +1,70 @@
 @extends('layouts.scaffold')
 
+@section('head')
+	{{ HTML::script('js/jquery.tablesorter.min.js') }}
+	{{ HTML::style('css/tablesorter.css') }}
+@stop
+
+@section('style')
+.div_row th {
+	background-color: #428BCA !important;
+	color: white;
+}
+
+.div_row th:first-child {
+	font-weight: bold;
+}
+
+.score_row td {
+	text-align: center;
+}
+
+.score_row td:first-child {
+	text-align: left;
+	padding-left: 15px;
+	width: 60%;
+}
+
+@stop
+
+@section('script')
+	var myTextExtraction = function(node)
+	{
+	    // extract data from markup and return it
+	    return (node.innerHTML=='-') ? -1 : node.innerHTML ;
+	}
+	$(function() {
+		$( '.table' ).tablesorter({textExtraction: myTextExtraction});
+
+	});
+
+@stop
+
 @section('main')
-<table class="col-md-4">
+<div class="col-md-6">
 	@foreach($output as $comp => $divs)
-		<tr class="comp_row"><td>{{ $comp }}</td></tr>
 		@foreach($divs as $div => $videos)
-			<tr  class="div_row"><td>{{ $div }}</td></tr>
-			@foreach($videos as $video)
-			<tr class="score_row">
-				<td>{{ $video->name }}</td>
-				<td>{{ count($video->scores) }}</td>
-			</tr>
-			@endforeach
+		<table class="table table-striped table-bordered tablesorter">
+			<thead>
+				<tr class="div_row">
+					<th class="header">{{ $comp }} - {{ $div }}</th>
+					<th class="header">General</th>
+					<th class="header">Part</th>
+					<th class="header">Compute</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach($videos as $video)
+				<tr class="score_row">
+					<td>{{ $video->name }}</td>
+					<td>{{ $video->general_scores_count() }}</td>
+					<td>{{ $video->part_scores_count() }}</td>
+					<td>{{ $video->compute_scores_count() }}</td>
+				</tr>
+				@endforeach
+			</tbody>
+		</table>
 		@endforeach
 	@endforeach
-</table>
-
+</div>
 @stop
