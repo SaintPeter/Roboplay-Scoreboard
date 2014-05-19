@@ -172,7 +172,7 @@ td.score:nth-child(odd) {
 					@foreach($video_list as $vid_title => $scores)
 						<tr class="score_row">
 							<td>
-								<a href="{{ route('video.judge.edit', [ 'video_id' => reset($scores)->video_id ]) }}">
+								<a href="{{ route('video.judge.edit', [ $scores['video_id'] ]) }}">
 									<span class="glyphicon glyphicon-edit"></span>
 									<strong>{{ $vid_title }}</strong>
 								</a>

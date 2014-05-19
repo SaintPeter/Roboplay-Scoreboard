@@ -54,6 +54,7 @@ class ScoreVideosController extends \BaseController {
 		$scored_count = array_combine(array_keys($this->group_names), array_fill(0, count($this->group_names), 0));
 		foreach($video_scores as $score) {
 			$videos[$score->division->longname()][$score->video->name][$score->vid_score_type_id] = $score;
+			$videos[$score->division->longname()][$score->video->name]['video_id'] = $score->video_id;
 			$scored_count[$score->score_group]++;
 		}
 
