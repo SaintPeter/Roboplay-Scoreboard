@@ -2,11 +2,13 @@
 
 Validator::extend('yt_valid', function($attribute, $value, $parameters)
 {
+	$value = str_ireplace('https', 'http', $value);
 	return preg_match("#(\.be/|/embed/|/v/|/watch\?v=)([A-Za-z0-9_-]{5,11})|(^[A-Za-z0-9_-]{5,11})#", $value);
 });
 
 Validator::extend('yt_embeddable', function($attribute, $value, $parameters)
 {
+	$value = str_ireplace('https', 'http', $value);
 	if(preg_match("#(\.be/|/embed/|/v/|/watch\?v=)([A-Za-z0-9_-]{5,11})|(^[A-Za-z0-9_-]{5,11})#", $value, $matches)) {
 		return yt_check(empty($matches[2]) ? $matches[3] : $matches[2], 'embeddable');
 	}
@@ -15,6 +17,7 @@ Validator::extend('yt_embeddable', function($attribute, $value, $parameters)
 
 Validator::extend('yt_public', function($attribute, $value, $parameters)
 {
+	$value = str_ireplace('https', 'http', $value);
 	if(preg_match("#(\.be/|/embed/|/v/|/watch\?v=)([A-Za-z0-9_-]{5,11})|(^[A-Za-z0-9_-]{5,11})#", $value, $matches)) {
 		return yt_check(empty($matches[2]) ? $matches[3] : $matches[2], 'privacyStatus');
 	}
