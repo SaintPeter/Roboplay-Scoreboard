@@ -56,7 +56,11 @@
 			<tbody>
 				@foreach($videos as $video)
 				<tr class="score_row">
-					<td>{{ $video->name }}</td>
+					<td>{{ $video->name }}
+						<a href="{{ route('video.judge.show', [ $video->id ]) }}" class="pull-right">
+							<span class="glyphicon glyphicon-eye-open" title="Watch"></span>
+						</a>
+					</td>
 					<td>{{ $video->general_scores_count() }}</td>
 					<td>{{ $video->part_scores_count() }}</td>
 					<td>{{ $video->compute_scores_count() }}</td>

@@ -240,10 +240,17 @@ class ScoreVideosController extends \BaseController {
 	 */
 	public function show($video_id)
 	{
-		Breadcrumbs::addCrumb('View Scores', 'score');
-		//$video_scores.= Video_scores::findOrFail($id);
+		Breadcrumbs::addCrumb('Show Video', 'score');
+		View::share('title', 'Show Video');
 
-		return View::make('video_scores.show', compact('video_scores'));
+		$video = Video::find($video_id);
+		if(empty($video)) {
+			// Invalid video
+			return Redirect::route('video.judge.index')
+							->with('message', "Invalid video id '$video_id'.  Video no longer exists or another error occured.");
+		}
+
+		return View::make('video_scores.show', compact('video'));
 	}
 
 	/**
