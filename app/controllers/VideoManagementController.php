@@ -14,8 +14,10 @@ class VideoManagementController extends \BaseController {
 		$blank = array_combine(array_keys($types), array_fill(0, count($types), '-'));
 		foreach($video_scores as $score) {
 			$videos[$score->division->longname()][$score->judge->display_name][$score->video->name] = $blank;
+			$videos[$score->division->longname()][$score->judge->display_name][$score->video->name]['video_id'] = $score->video_id;
+			$videos[$score->division->longname()][$score->judge->display_name][$score->video->name]['judge_id'] = $score->judge_id;
 		}
-
+		
 		foreach($video_scores as $score) {
 			$videos[$score->division->longname()][$score->judge->display_name][$score->video->name][$score->vid_score_type_id] = $score->total;
 		}
@@ -36,6 +38,40 @@ class VideoManagementController extends \BaseController {
 		}
 
 		return View::make('video_scores.manage.summary', compact('output'));
+	}
+	
+	public function process()
+	{
+		$select = Input::get('select');
+		$types = Input::get('types');
+		
+		switch($types) {
+			case 1:
+				$groups = [ 1 ];
+				break;
+			case 2:
+				$groups = [ 2 ];
+				break;
+			case 3:
+				$groups = [ 3 ];
+				break;
+			case 'all': 
+				$groups = [ 1, 2, 3 ];
+				break;
+			default:
+				return Redirect::route('video_scores.manage.index')->with('message', 'No Score Type Selected');
+		}
+		
+		$affectedRows = 0;
+		foreach($select as $judge_id => $video_list) {
+			$affectedRows += Video_scores::where('judge_id', $judge_id)
+										 ->whereIn('video_id', $video_list)
+										 ->whereIn('score_group', $groups)
+										 ->delete();
+		}
+		
+		return Redirect::route('video_scores.manage.index')
+					    ->with('message', "Deleted $affectedRows scores");
 	}
 
 	public function scores_csv() {

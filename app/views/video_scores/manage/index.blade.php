@@ -12,60 +12,91 @@
 	text-align: center;
 }
 
-.score_row td:first-child {
+.judge_cell {
 	padding-left: 20px;
 	width: 250px;
 	text-align: left !important;
 }
-.score_row td {
+
+.video_cell {
+	padding-left: 5px;
+	width: 250px !important;
+	text-align: left !important;
+}
+
+.score_row td.score {
 	text-align: center;
 	width: 70px;
 	text-align: center;
+}
+
+.score_row td{
 	border: 1px solid lightgray;
+}	
+
+tr.score_row:nth-child(odd){
+	background-color: #FAFAFA;
 }
 
-.score {
+.wrapper {
+	width: 920px;
+}
 
-}
-td.score:nth-child(odd) {
-	background-color: rgb(245, 245, 245);
-}
 @stop
 
 @section('main')
 {{ Form::open([ 'route' => 'video_scores.manage.process' ]) }}
-<table class="scored_table">
-		<thead>
-		</thead>
-		<tbody>
-			@if(count($videos))
-				@foreach($videos as $comp => $judge_list)
-					<tr class="comp_row">
-						<td>{{ $comp }}</td>
-						@foreach($types as $type)
-							<td class="type">{{ $type }}</td>
-						@endforeach
-						<td>&nbsp;</td>
-					</tr>
-					@foreach($judge_list as $judge => $video_list)
-						<tr class="judge_row">
-							<td colspan="{{ count($types)+2 }}">{{$judge}}</td>
+<div class="wrapper">
+	<table class="scored_table">
+			<thead>
+			</thead>
+			<tbody>
+				@if(count($videos))
+					@foreach($videos as $comp => $judge_list)
+						<tr class="comp_row">
+							<td>{{ $comp }}</td>
+							<td>Video</td>
+							@foreach($types as $type)
+								<td class="type">{{ $type }}</td>
+							@endforeach
+							<td>&nbsp;</td>
 						</tr>
-						@foreach($video_list as $title => $scores)
+						@foreach($judge_list as $judge => $video_list)
+							<?php 
+								$first = true;
+								if(count($video_list) > 1) {
+										$rowspan = 'rowspan="' . count($video_list) . '" ';
+									} else {
+										$rowspan = '';
+									}
+								ksort($video_list);
+							?>
+							
+							@foreach($video_list as $vid_title => $scores)
 							<tr class="score_row">
-								<td><strong>{{ $title }}</strong></td>
-								@foreach($types as $index => $type)
-									<td class="score">{{ $scores[$index] }}</td>
-								@endforeach
-								<td>{{ Form::checkbox('delete',1) }}</td>
-							</tr>
+								@if($first)
+									<td {{ $rowspan }} class="judge_cell">{{$judge}}</td>
+									<?php $first = false; ?>
+								@endif
+									<td class="video_cell">{{ $vid_title }}</td>
+									@foreach($types as $index => $type)
+										<td class="score">{{ $scores[$index] }}</td>
+									@endforeach
+									<td class="score">{{ Form::checkbox('select[' . $scores['judge_id'] . '][]', $scores['video_id']) }}</td>
+								</tr>
+							@endforeach
 						@endforeach
 					@endforeach
-				@endforeach
-			@else
-				<tr><td>No Videos Scored</td></tr>
-			@endif
-		</tbody>
-	</table>
+				@else
+					<tr><td>No Videos Scored</td></tr>
+				@endif
+			</tbody>
+		</table>
+		<span class="pull-right clearfix" style="margin-top: 10px">
+			{{ Form::select('types', [ 0 => '-- Select Type --', 1 => 'General Scores', 2 => 'Custom Part', 3 => 'Computational Thinking', 'all' => 'All Types' ]) }}
+			{{ Form::submit('Clear Selected Types', [ 'class' => 'btn btn-danger btn-margin' ]) }}
+		
+		</span>
+	</div>
 {{ Form::close() }}
 @stop
