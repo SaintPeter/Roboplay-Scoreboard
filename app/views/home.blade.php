@@ -36,11 +36,6 @@
 	<li>{{ link_to('score', 'Score Challenges', $noajax) }}</li>
 	<li>{{ link_to_route('video.judge.index', 'Score Videos', [], $noajax) }}</li>
 </ul>
-<h2>Development</h2>
-<ul data-role="listview" data-inset="true">
-	<li>{{ link_to_route('video_scores.manage.index', 'Manage Video Scores', [], $noajax) }}</li>
-	<li>{{ link_to_route('video_scores.manage.summary', 'Video Score Summary', [], $noajax) }}</li>
-</ul>
 @endif
 
 @if(Roles::isTeacher())
@@ -56,8 +51,13 @@
 </ul>
 @endif
 
-
 @if(Roles::isAdmin())
+<h2>Video Admin</h2>
+<ul data-role="listview" data-inset="true">
+	<li>{{ link_to_route('video_scores.manage.index', 'Manage Video Scores', [], $noajax) }}</li>
+	<li>{{ link_to_route('video_scores.manage.summary', 'Video Score Summary', [], $noajax) }}</li>
+</ul>
+
 <h2>Admin Menu</h2>
 <ul data-role="listview" data-inset="true">
 	<li data-role="list-divider">Challenge Competition</li>

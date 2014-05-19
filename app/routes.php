@@ -78,18 +78,16 @@ Route::group(array('before' => 'auth'), function() {
 		Route::resource('judges', 'JudgesController');
 		Route::resource('videos', 'VideosController');
 
-		Route::get('user_schools', [ 'as' => 'user_schools', 'uses' => 'Wp_fix@user_schools']);
-		Route::get('division_check', [ 'as' => 'division_check', 'uses' => 'Wp_fix@division_check']);
-		Route::get('invoice_fix', [ 'as' => 'invoice_fix', 'uses' => 'Wp_fix@invoice_fix']);
-		Route::get('invoice_management', [ 'as' => 'invoice_set', 'uses' => 'Wp_fix@invoice_set']);
-		Route::get('invoice_csv', [ 'as' => 'invoice_csv', 'uses' => 'Wp_fix@invoice_csv']);
-		Route::get('ajax/set_paid/{invoice_no}/{value}', [ 'as' => 'ajax.set_paid', 'uses' => 'Wp_fix@ajax_set_paid']);
-		Route::get('ajax/set_div/{invoice_no}/{value}', [ 'as' => 'ajax.set_div', 'uses' => 'Wp_fix@ajax_set_div']);
+		// Magical WP Fix Stuff - Not for "production"
+		Route::get('user_schools', 							[ 'as' => 'user_schools', 'uses' => 'Wp_fix@user_schools']);
+		Route::get('division_check', 						[ 'as' => 'division_check', 'uses' => 'Wp_fix@division_check']);
+		Route::get('invoice_fix', 							[ 'as' => 'invoice_fix', 'uses' => 'Wp_fix@invoice_fix']);
+		Route::get('invoice_management',					[ 'as' => 'invoice_set', 'uses' => 'Wp_fix@invoice_set']);
+		Route::get('invoice_csv',							[ 'as' => 'invoice_csv', 'uses' => 'Wp_fix@invoice_csv']);
+		Route::get('ajax/set_paid/{invoice_no}/{value}', 	[ 'as' => 'ajax.set_paid', 'uses' => 'Wp_fix@ajax_set_paid']);
+		Route::get('ajax/set_div/{invoice_no}/{value}', 	[ 'as' => 'ajax.set_div', 'uses' => 'Wp_fix@ajax_set_div']);
 		Route::get('ajax/set_vid_div/{invoice_no}/{value}', [ 'as' => 'ajax.set_vid_div', 'uses' => 'Wp_fix@ajax_set_vid_div']);
-		Route::post('ajax/save_school', [ 'as' => 'ajax.save_school', 'uses' => 'Wp_fix@ajax_save_school']);
-	});
-
-	Route::group(array('before' => 'judge'), function () {
+		Route::post('ajax/save_school', 					[ 'as' => 'ajax.save_school', 'uses' => 'Wp_fix@ajax_save_school']);
 
 		// Video Scores management
 		Route::get('video_scores', [
@@ -104,6 +102,9 @@ Route::group(array('before' => 'auth'), function() {
 		Route::get('video_scores/summary', [
 				    'as' => 'video_scores.manage.summary',
 				    'uses' => 'VideoManagementController@summary' ]);
+	});
+
+	Route::group(array('before' => 'judge'), function () {
 
 		// Challenge Scoring
 		Route::get('score', array(
@@ -138,9 +139,12 @@ Route::group(array('before' => 'auth'), function() {
 		Route::get('video/judge', [
 					'as' => 'video.judge.index',
 					'uses' => 'ScoreVideosController@index' ]);
-		Route::get('video/judge/edit/{video_id}', [
+		Route::get('video/judge/{video_id}/edit', [
 					'as' => 'video.judge.edit',
 					'uses' => 'ScoreVideosController@edit' ]);
+		Route::get('video/judge/{video_id}/show', [
+					'as' => 'video.judge.show',
+					'uses' => 'ScoreVideosController@show' ]);
 		Route::get('video/judge/dispatch/{video_group}', [
 					'as' => 'video.judge.dispatch',
 					'uses' => 'ScoreVideosController@dispatch' ]);
