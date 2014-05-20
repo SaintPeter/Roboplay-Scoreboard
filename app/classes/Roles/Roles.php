@@ -43,8 +43,8 @@ class Roles {
 				$roles[] = 'empty';
 				return false;
 			} else {
-				// We have the roles, save them
-				$roles = unserialize($query->meta_value);
+				// We have the roles, make them lower case, save them
+				$roles = array_change_key_case(unserialize($query->meta_value));
 			}
 		}
 
