@@ -137,7 +137,6 @@ class ScoreVideosController extends \BaseController {
 			    return ($count_a < $count_b) ? -1 : 1;
 			});
 
-
 		//$video = Video::find($video_list[0]->id);
 		$video = $sorted->first();
 		//$types = Vid_score_type::where('group', $video_group)->with('Rubric')->get();
