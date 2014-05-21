@@ -30,7 +30,7 @@
 	text-align: center;
 }
 
-.score_row td{
+.scored_table td{
 	border: 1px solid lightgray;
 }
 
@@ -46,14 +46,14 @@ tr.score_row:nth-child(odd){
 
 @section('main')
 {{ Form::open([ 'route' => 'video_scores.manage.process' ]) }}
-@include('partials.scorenav', [ 'nav' => 'by_judge'])
+@include('partials.scorenav', [ 'nav' => 'by_video'])
 <div class="wrapper">
 	<table class="scored_table">
 			<thead>
 			</thead>
 			<tbody>
 				@if(count($videos))
-					@foreach($videos as $comp => $judge_list)
+					@foreach($videos as $comp => $video_list)
 						<tr class="comp_row">
 							<td>{{ $comp }}</td>
 							<td>Video</td>
@@ -62,24 +62,24 @@ tr.score_row:nth-child(odd){
 							@endforeach
 							<td>&nbsp;</td>
 						</tr>
-						@foreach($judge_list as $judge => $video_list)
+						@foreach($video_list as $video => $judge_list)
 							<?php
 								$first = true;
 								if(count($video_list) > 1) {
-										$rowspan = 'rowspan="' . count($video_list) . '" ';
+										$rowspan = 'rowspan="' . count($judge_list) . '" ';
 									} else {
 										$rowspan = '';
 									}
 								ksort($video_list);
 							?>
 
-							@foreach($video_list as $vid_title => $scores)
+							@foreach($judge_list as $judge_name => $scores)
 							<tr class="score_row">
 								@if($first)
-									<td {{ $rowspan }} class="judge_cell">{{$judge}}</td>
+									<td {{ $rowspan }} class="judge_cell">{{$video}}</td>
 									<?php $first = false; ?>
 								@endif
-									<td class="video_cell">{{ $vid_title }}</td>
+									<td class="video_cell">{{ $judge_name }}</td>
 									@foreach($types as $index => $type)
 										<td class="score">{{ $scores[$index] }}</td>
 									@endforeach

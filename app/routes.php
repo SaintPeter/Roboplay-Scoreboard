@@ -93,6 +93,9 @@ Route::group(array('before' => 'auth'), function() {
 		Route::get('video_scores', [
 				   'as' => 'video_scores.manage.index',
 				   'uses' => 'VideoManagementController@index' ]);
+		Route::get('video_scores/by_video', [
+				   'as' => 'video_scores.manage.by_video',
+				   'uses' => 'VideoManagementController@by_video' ]);
 		Route::post('video_scores/process', [
 				    'as' => 'video_scores.manage.process',
 				    'uses' => 'VideoManagementController@process' ]);
