@@ -9,6 +9,10 @@ class Judge extends Eloquent {
 		'display_name' => 'required',
 		'email' => 'required'
 	);
+	
+	public function video_scores() {
+		return $this->hasMany('Video_scores', 'judge_id', 'id');
+	}
 
 	public static function do_sync() {
 		$judge = Judge::firstOrNew(array('ID' => Auth::user()->ID));

@@ -38,8 +38,31 @@ class VideoManagementController extends \BaseController {
 		foreach($videos as $video) {
 			$output[$video->vid_division->competition->name][$video->vid_division->name][] = $video;
 		}
-
+		
 		return View::make('video_scores.manage.summary', compact('output'));
+	}
+	
+	// Display information about individual judges
+	// as well as overall summary info
+	public function judge_performance()
+	{
+		// Judges Scoring Count
+		$judge_list = Judge::with('video_scores')->get();
+		
+		//dd(DB::getQueryLog());
+		
+		$judge_score_count = [];
+		foreach($judge_list as $judge) {
+			if(count($judge->video_scores)) {
+				$judge_score_count[$judge->display_name][1] = $judge->video_scores->reduce(function($count, $score) { return ($score->score_group == 1) ? $count + 1 : $count; }) / 3;
+				$judge_score_count[$judge->display_name][2] = $judge->video_scores->reduce(function($count, $score) { return ($score->score_group == 2) ? $count + 1 : $count; });
+				$judge_score_count[$judge->display_name][3] = $judge->video_scores->reduce(function($count, $score) { return ($score->score_group == 3) ? $count + 1 : $count; });
+			} else {
+				echo "No Scores:  $judge->display_name<br />";
+			}
+		}
+		dd($judge_score_count);
+		return View::make('video_scores.manage.judge_performance', compact('judge_score_count'));
 	}
 
 	// Process the deletion of scores

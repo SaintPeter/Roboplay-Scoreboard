@@ -105,6 +105,9 @@ Route::group(array('before' => 'auth'), function() {
 		Route::get('video_scores/summary', [
 				    'as' => 'video_scores.manage.summary',
 				    'uses' => 'VideoManagementController@summary' ]);
+		Route::get('video_scores/judge_performance', [
+				    'as' => 'video_scores.manage.judge_performance',
+				    'uses' => 'VideoManagementController@judge_performance' ]);
 	});
 
 	Route::group(array('before' => 'judge'), function () {
