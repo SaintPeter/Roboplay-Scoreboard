@@ -17,7 +17,7 @@ class VideoManagementController extends \BaseController {
 			$videos[$score->division->longname()][$score->judge->display_name][$score->video->name]['video_id'] = $score->video_id;
 			$videos[$score->division->longname()][$score->judge->display_name][$score->video->name]['judge_id'] = $score->judge_id;
 		}
-		
+
 		foreach($video_scores as $score) {
 			$videos[$score->division->longname()][$score->judge->display_name][$score->video->name][$score->vid_score_type_id] = $score->total;
 		}
@@ -31,6 +31,8 @@ class VideoManagementController extends \BaseController {
 	{
 		Breadcrumbs::addCrumb('Scoring Summary');
 		View::share('title', 'Scoring Summary');
+
+		// Videos with score count
 		$videos = Video::with('scores')->get();
 
 		foreach($videos as $video) {
@@ -39,12 +41,15 @@ class VideoManagementController extends \BaseController {
 
 		return View::make('video_scores.manage.summary', compact('output'));
 	}
-	
+
+	// Process the deletion of scores
+	// select[judge_id] = [ video_id1, video_id2, . . . ]
+	// types = Score Group(s) = 1/2/3/all
 	public function process()
 	{
 		$select = Input::get('select');
 		$types = Input::get('types');
-		
+
 		switch($types) {
 			case 1:
 				$groups = [ 1 ];
@@ -55,13 +60,13 @@ class VideoManagementController extends \BaseController {
 			case 3:
 				$groups = [ 3 ];
 				break;
-			case 'all': 
+			case 'all':
 				$groups = [ 1, 2, 3 ];
 				break;
 			default:
-				return Redirect::route('video_scores.manage.index')->with('message', 'No Score Type Selected');
+				return Redirect::to(URL::previous())->with('message', 'No Score Type Selected');
 		}
-		
+
 		$affectedRows = 0;
 		foreach($select as $judge_id => $video_list) {
 			$affectedRows += Video_scores::where('judge_id', $judge_id)
@@ -69,9 +74,35 @@ class VideoManagementController extends \BaseController {
 										 ->whereIn('score_group', $groups)
 										 ->delete();
 		}
-		
-		return Redirect::route('video_scores.manage.index')
+
+		return Redirect::to(URL::previous())
 					    ->with('message', "Deleted $affectedRows scores");
+	}
+
+	// Displays score summary sorted by video then by judge
+	public function by_video()
+	{
+		Breadcrumbs::addCrumb('Scores By Video');
+		$video_scores = Video_scores::with('division', 'division.competition', 'judge')
+							->orderBy('total', 'desc')
+							->get();
+		$videos = [];
+		//dd(DB::getQueryLog());
+		$types = Vid_score_type::orderBy('id')->lists('name', 'id');
+		$blank = array_combine(array_keys($types), array_fill(0, count($types), '-'));
+		foreach($video_scores as $score) {
+			$videos[$score->division->longname()][$score->video->name][$score->judge->display_name] = $blank;
+			$videos[$score->division->longname()][$score->video->name][$score->judge->display_name]['video_id'] = $score->video_id;
+			$videos[$score->division->longname()][$score->video->name][$score->judge->display_name]['judge_id'] = $score->judge_id;
+		}
+
+		foreach($video_scores as $score) {
+			$videos[$score->division->longname()][$score->video->name][$score->judge->display_name][$score->vid_score_type_id] = $score->total;
+		}
+
+		View::share('title', 'Manage Scores');
+		return View::make('video_scores.manage.by_video', compact('videos','types'));
+
 	}
 
 	public function scores_csv() {
