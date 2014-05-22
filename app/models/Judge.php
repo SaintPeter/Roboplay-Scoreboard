@@ -9,7 +9,7 @@ class Judge extends Eloquent {
 		'display_name' => 'required',
 		'email' => 'required'
 	);
-	
+
 	public function video_scores() {
 		return $this->hasMany('Video_scores', 'judge_id', 'id');
 	}
@@ -21,6 +21,7 @@ class Judge extends Eloquent {
 		$judge->username = Auth::user()->user_login;
 		$judge->email = Auth::user()->user_email;
 		$judge->display_name = Usermeta::getName();
+		$judge->is_judge = Roles::is_judge();
 
 		$judge->save();
 	}

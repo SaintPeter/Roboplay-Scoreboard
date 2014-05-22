@@ -38,30 +38,37 @@ class VideoManagementController extends \BaseController {
 		foreach($videos as $video) {
 			$output[$video->vid_division->competition->name][$video->vid_division->name][] = $video;
 		}
-		
+
 		return View::make('video_scores.manage.summary', compact('output'));
 	}
-	
+
 	// Display information about individual judges
 	// as well as overall summary info
 	public function judge_performance()
 	{
+		Breadcrumbs::addCrumb('Judge Performace');
+		View::share('title', 'Judge Performance');
+
 		// Judges Scoring Count
-		$judge_list = Judge::with('video_scores')->get();
-		
+		$judge_list = Judge::with('video_scores')->where('is_judge', true)->get();
+
 		//dd(DB::getQueryLog());
-		
+
 		$judge_score_count = [];
 		foreach($judge_list as $judge) {
+			$judge_score_count[$judge->display_name] = [ 1 => 0, 2 => 0, 3 => 0, 'total' => 0 ];
 			if(count($judge->video_scores)) {
-				$judge_score_count[$judge->display_name][1] = $judge->video_scores->reduce(function($count, $score) { return ($score->score_group == 1) ? $count + 1 : $count; }) / 3;
-				$judge_score_count[$judge->display_name][2] = $judge->video_scores->reduce(function($count, $score) { return ($score->score_group == 2) ? $count + 1 : $count; });
-				$judge_score_count[$judge->display_name][3] = $judge->video_scores->reduce(function($count, $score) { return ($score->score_group == 3) ? $count + 1 : $count; });
-			} else {
-				echo "No Scores:  $judge->display_name<br />";
+				$judge_score_count[$judge->display_name][1] = $judge->video_scores->reduce(function($count, $score) { return ($score->score_group == 1) ? $count + 1 : $count; }, 0) / 3;
+				$judge_score_count[$judge->display_name][2] = $judge->video_scores->reduce(function($count, $score) { return ($score->score_group == 2) ? $count + 1 : $count; }, 0);
+				$judge_score_count[$judge->display_name][3] = $judge->video_scores->reduce(function($count, $score) { return ($score->score_group == 3) ? $count + 1 : $count; }, 0);
+				$judge_score_count[$judge->display_name]['total'] = array_sum($judge_score_count[$judge->display_name]);
 			}
 		}
-		dd($judge_score_count);
+
+		uasort($judge_score_count, function($a, $b) {
+				return $b['total'] - $a['total'];
+		});
+
 		return View::make('video_scores.manage.judge_performance', compact('judge_score_count'));
 	}
 
