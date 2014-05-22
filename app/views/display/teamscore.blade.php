@@ -1,7 +1,5 @@
 @extends('layouts.scaffold')
 
-@section('title', 'Team Score')
-
 @section('style')
 	.bold_row > td {
 		font-weight: bold;

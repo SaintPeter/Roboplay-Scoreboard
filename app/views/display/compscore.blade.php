@@ -14,10 +14,11 @@
 		<table class="table table-striped table-bordered">
 			<thead>
 				<tr class="info">
-					<th colspan="2">{{ $division->name }} Division</th>
+					<th colspan="3">{{ $division->name }} Division</th>
 				</tr>
 				<tr class="bold_row">
 					<th>Team</th>
+					<th>School</th>
 					<th>Score</th>
 				</tr>
 			</thead>
@@ -26,6 +27,9 @@
 					<tr>
 						<td>
 							{{ link_to_route('display.teamscore', $division->teams->find($team_id)->name, $team_id) }}
+						</td>
+						<td>
+							{{ $division->teams->find($team_id)->school->name }}
 						</td>
 						<td>
 							{{ $score }}
