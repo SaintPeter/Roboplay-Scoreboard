@@ -21,7 +21,7 @@ class Judge extends Eloquent {
 		$judge->username = Auth::user()->user_login;
 		$judge->email = Auth::user()->user_email;
 		$judge->display_name = Usermeta::getName();
-		$judge->is_judge = Roles::is_judge();
+		$judge->is_judge = Roles::isJudge();
 
 		$judge->save();
 	}
