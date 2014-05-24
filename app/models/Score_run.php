@@ -29,10 +29,8 @@ class Score_run extends Eloquent {
 	// Note:  run_time = RunTime
 	public function getRunTimeAttribute($value) {
 		if(isset($value)) {
-			// Get time from this event, change it to local time, return as a string
-			$dt = new Carbon($value, new DateTimeZone("UTC"));
-			$dt->setTimeZone("PST");
-			return $dt->format('g:i a');
+			// Get time from this event return as a string
+			return Carbon::parse($value)->format('g:i a');
 		} else {
 			return "Time Error";
 		}

@@ -72,7 +72,7 @@
 			@endif
 		@endforeach
 		<li>
-			Estimated Score: <span id="score"></score>
+			Estimated Score: <span id="score"></span> out of {{ $challenge->points }} points
 		</li>
 		<li>
 			<fieldset class="ui-grid-a">

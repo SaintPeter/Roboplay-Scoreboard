@@ -25,6 +25,7 @@ class DisplayController extends BaseController {
 		{
 			$challenge_number = $div_challenge->pivot->display_order;
 			$challenge_list[$challenge_number]['name'] = $div_challenge->display_name;
+			$challenge_list[$challenge_number]['points'] = $div_challenge->points;
 			if($challenges->find($div_challenge->id)->scores->count() > 0)
 			{
 				$score_runs = $challenges->find($div_challenge->id)->scores;

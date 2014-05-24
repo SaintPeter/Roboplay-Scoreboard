@@ -14,32 +14,27 @@
 	<tbody>
 		@foreach($challenge_list as $number => $challenge)
 			<tr>
-				<td colspan="13" class="info">
-					Challenge {{ $number }} - {{ $challenge['name'] }}
+				<td colspan="{{ 6 + 3 }}" class="info">
+					<strong>Challenge {{ $number }} - {{ $challenge['name'] }}
+					<span class="pull-right">{{ $challenge['points'] }} Points Possible</span>
+					</strong>
 				</td>
 			</tr>
 				@if($challenge['has_scores'])
 					<tr class="bold_row">
 						<td class="text-right">Score Elements</td>
-						<td>1</td>
-						<td>2</td>
-						<td>3</td>
-						<td>4</td>
-						<td>5</td>
-						<td>6</td>
-						<td>7</td>
-						<td>8</td>
-						<td>9</td>
-						<td>10</td>
+						@for($se = 1; $se <= 6; $se++)
+							<td>{{ $se }}</td>
+						@endfor
 						<td>Total</td>
 						<td>Score</td>
 					</tr>
 					@foreach($challenge['runs'] as $run_number => $score_run)
 					<tr>
 						<td class="text-right">Run {{ $run_number }} ({{ $score_run['run_time'] }})</td>
-						@foreach($score_run['scores'] as $score)
-							<td>{{ $score }}</td>
-						@endforeach
+						@for($se = 1; $se <= 6; $se++)
+							<td>{{ $score_run['scores'][$se] }}</td>
+						@endfor
 						<td>{{ $score_run['total'] }}</td>
 						@if($run_number == 1)
 							<td rowspan="{{ $challenge['score_count'] }}" class="text-center" style="vertical-align:middle;">
@@ -49,12 +44,12 @@
 					</tr>
 					@endforeach
 				@else
-					<tr><td colspan="13">No Runs</td></tr>
+					<tr><td colspan="{{ 6 + 3}}">No Runs</td></tr>
 				@endif
 			</tr>
 		@endforeach
 		<tr>
-			<td colspan="12" class="text-right success"><h3>Grand Total</h3></td>
+			<td colspan="{{ 6 + 2 }}" class="text-right success"><h3>Grand Total</h3></td>
 			<td class="text-center warning"><h3>{{$grand_total }}</h3></td>
 		</tr>
 	</tbody>

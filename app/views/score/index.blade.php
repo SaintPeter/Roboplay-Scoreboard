@@ -23,7 +23,7 @@
 	@foreach($challenges as $challenge)
 		<li>
 			<a href="{{ route('score.doscore', array($team_id, $challenge->id)) }}" data-ajax="false">
-			{{ $challenge->pivot->display_order }}.&nbsp;{{ $challenge->display_name }} <span class="ui-li-count">{{ $challenge->run_count($team_id) }}</span> <br />
+			{{ $challenge->pivot->display_order }}.&nbsp;{{ $challenge->display_name }} ({{ $challenge->points }} Points Possible)<span class="ui-li-count">{{ $challenge->run_count($team_id) }}</span> <br />
 			@if($challenge->run_count($team_id) > 0)
 				<p>
 					<strong>Last Score:</strong> {{ $challenge->runs($team_id)->last()->total }}

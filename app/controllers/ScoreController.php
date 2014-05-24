@@ -1,5 +1,7 @@
 <?php
 
+define('SCORE_COLUMNS', 6);
+
 class ScoreController extends BaseController {
 
 	/**
@@ -63,7 +65,7 @@ class ScoreController extends BaseController {
 	{
 		$challenge = Challenge::with('score_elements')->find($challenge_id);
 
-		$scores = array_fill(1, 10, '-');
+		$scores = array_fill(1, SCORE_COLUMNS, '-');
 		$total = 0;
 		foreach($challenge->score_elements as $se) {
 			$scores[$se->element_number] = $se->base_value + (intval($value_list[$se->id]['value']) * $se->multiplier);
@@ -96,9 +98,9 @@ class ScoreController extends BaseController {
 		list($scores, $total) = $this->calculate_scores($value_list, $challenge_id);
 
 		$run_number = Score_run::where('team_id',  $team_id)->where('challenge_id', $challenge_id)->count() + 1;
-		
-		$date = new DateTime();
-		
+
+		$date = Carbon\Carbon::now('UTC')->setTimeZone("PDT");
+
 		$newRun = array('run_number' => $run_number,
 						'scores' => $scores,
 						'total' => $total,
