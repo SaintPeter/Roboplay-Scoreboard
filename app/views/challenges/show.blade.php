@@ -54,6 +54,8 @@ function setup_form_handler() {
 			<th>Internal Name</th>
 				<th>Display Name</th>
 				<th>Rules</th>
+				<th>Points</th>
+				<th>Actions</th>
 		</tr>
 	</thead>
 
@@ -62,10 +64,10 @@ function setup_form_handler() {
 			<td>{{{ $challenge->internal_name }}}</td>
 					<td>{{{ $challenge->display_name }}}</td>
 					<td>{{{ $challenge->rules }}}</td>
-                    <td>{{ link_to_route('challenges.edit', 'Edit', array($challenge->id), array('class' => 'btn btn-info')) }}</td>
-                    <td>
-                        {{ Form::open(array('method' => 'DELETE', 'route' => array('challenges.destroy', $challenge->id))) }}
-                            {{ Form::submit('Delete', array('class' => 'btn btn-danger')) }}
+					<td>{{{ $challenge->points }}}</td>
+                    <td>{{ link_to_route('challenges.edit', 'Edit', array($challenge->id), array('class' => 'btn btn-info btn-margin')) }}
+                        {{ Form::open(array('method' => 'DELETE', 'route' => array('challenges.destroy', $challenge->id), 'style' => 'display: inline-block')) }}
+                            {{ Form::submit('Delete', array('class' => 'btn btn-danger btn-margin')) }}
                         {{ Form::close() }}
                     </td>
 		</tr>

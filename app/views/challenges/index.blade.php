@@ -36,7 +36,8 @@
 		<tr>
 			<th>Internal Name</th>
 			<th>Display Name</th>
-			<th>Rules</th>
+			<th  style="width:200px">Rules</th>
+			<th>Points</th>
 			<th>Score Elements</th>
 			<th>Actions</th>
 		</tr>
@@ -49,8 +50,9 @@
 					<td>{{{ $challenge->internal_name }}}</td>
 					<td>{{{ $challenge->display_name }}}</td>
 					<td>{{{ $challenge->rules }}}</td>
+					<td>{{{ $challenge->points }}}</td>
 					<td>{{{ $challenge->score_elements->count() }}}</td>
-                    <td>{{ link_to_route('challenges.show', 'Show', array($challenge->id), array('class' => 'btn btn-default btn-margin')) }}
+                    <td style="whitespace: nobreak;">{{ link_to_route('challenges.show', 'Show', array($challenge->id), array('class' => 'btn btn-default btn-margin')) }}
                     	{{ link_to_route('challenges.edit', 'Edit', array($challenge->id), array('class' => 'btn btn-info btn-margin')) }}
 	                    {{ Form::open(array('method' => 'DELETE', 'route' => array('challenges.destroy', $challenge->id),'style' => 'display: inline-block')) }}
 	                        {{ Form::submit('Delete', array('class' => 'btn btn-danger btn-margin')) }}
