@@ -52,9 +52,9 @@ class ChallengesController extends BaseController {
 
 		if ($validation->passes())
 		{
-			$this->challenge->create($input);
+			$challenge = $this->challenge->create($input);
 
-			return Redirect::route('challenges.index');
+			return Redirect::route('challenges.show', [ $challenge->id ]);
 		}
 
 		return Redirect::route('challenges.create')
