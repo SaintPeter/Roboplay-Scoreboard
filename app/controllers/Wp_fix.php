@@ -99,6 +99,28 @@ class Wp_fix extends BaseController {
 
 	}
 
+	public function team_division_check() {
+		Breadcrumbs::addCrumb('Team Division Check','');
+		//$videos = Video::all();
+		$invoices = Wp_invoice::with('judge', 'challenge_division', 'school')
+						->where('team_count', '>', 0)
+						->where('paid', 1)
+						->orderBy('school_id')->get();
+
+		foreach($invoices as $invoice) {
+			$div_id = $invoice->division_id;
+			$invoice->load([ 'teams' => function($q) use($div_id) {
+				return $q->where('division_id', $div_id);
+			} ], 'teams.division');
+		}
+
+		//dd(DB::getQueryLog());
+
+		View::share('title', 'Team Division Check');
+		return View::make('wp_fixes.team_division_check', compact('invoices'));
+
+	}
+
 	public function ajax_set_paid($invoice_no, $value) {
 		$invoice = Wp_invoice::find($invoice_no);
 		$invoice->paid = $value;

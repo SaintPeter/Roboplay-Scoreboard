@@ -93,6 +93,7 @@ Route::group(array('before' => 'auth'), function() {
 		// Magical WP Fix Stuff - Not for "production"
 		Route::get('user_schools', 							[ 'as' => 'user_schools', 'uses' => 'Wp_fix@user_schools']);
 		Route::get('division_check', 						[ 'as' => 'division_check', 'uses' => 'Wp_fix@division_check']);
+		Route::get('team_division_check', 						[ 'as' => 'team_division_check', 'uses' => 'Wp_fix@team_division_check']);
 		Route::get('invoice_fix', 							[ 'as' => 'invoice_fix', 'uses' => 'Wp_fix@invoice_fix']);
 		Route::get('invoice_management',					[ 'as' => 'invoice_set', 'uses' => 'Wp_fix@invoice_set']);
 		Route::get('invoice_csv',							[ 'as' => 'invoice_csv', 'uses' => 'Wp_fix@invoice_csv']);

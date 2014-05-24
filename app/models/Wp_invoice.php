@@ -21,6 +21,10 @@ class Wp_invoice extends Eloquent {
 		return $this->hasMany('Video', 'school_id', 'school_id');
 	}
 
+	public function teams() {
+		return $this->hasMany('Team', 'school_id', 'school_id');
+	}
+
 	public function school() {
 		return $this->belongsTo('Schools', 'school_id', 'school_id');
 	}
