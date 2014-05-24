@@ -26,7 +26,10 @@ class TeacherVideoController extends BaseController {
 
 		$paid = $invoice->paid==1 ? 'Paid' : 'Unpaid';
 
-		$videos = Video::with('school', 'vid_division')->where('school_id',$school_id)->get();
+		$videos = Video::with('school', 'vid_division')
+						->where('school_id',$school_id)
+						->where('vid_division_id', $invoice->vid_division_id)
+						->get();
 
 		View::share('title', 'Manage Videos');
 		return View::make('teacher.videos.index', compact('school', 'videos','invoice', 'paid'));

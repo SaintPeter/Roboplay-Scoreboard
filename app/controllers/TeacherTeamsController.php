@@ -20,7 +20,10 @@ class TeacherTeamsController extends BaseController {
 
 		$paid = $invoice->paid==1 ? 'Paid' : 'Unpaid';
 
-		$teams = Team::with('school')->where('school_id', $school_id)->get();
+		$teams = Team::with('school')
+					->where('school_id', $school_id)
+					->where('division_id', $invoice->division_id)
+					->get();
 
 		View::share('title', 'Manage Challenge Teams');
         return View::make('teacher.teams.index', compact('school_id', 'teams', 'school', 'invoice', 'paid'));
