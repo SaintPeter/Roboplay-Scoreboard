@@ -136,10 +136,43 @@ class VideoManagementController extends \BaseController {
 	}
 
 	public function scores_csv() {
-		$content = 'Name,County,School,"Challenge Teams","Video Teams","Competition","Division"' . "\n";
+		$video_scores = Video_scores::with('division', 'division.competition', 'judge')
+							->orderBy('total', 'desc')
+							->get();
+		$videos = [];
+		//dd(DB::getQueryLog());
+		$types = Vid_score_type::orderBy('id')->lists('name', 'id');
+		$blank = array_combine(array_keys($types), array_fill(0, count($types), 0));
+		foreach($video_scores as $score) {
+			$videos[$score->division->longname()][$score->video->name][$score->judge->display_name] = $blank;
+			$videos[$score->division->longname()][$score->video->name][$score->judge->display_name]['video_id'] = $score->video_id;
+			$videos[$score->division->longname()][$score->video->name][$score->judge->display_name]['judge_id'] = $score->judge_id;
+		}
 
-		$videos = Video::with('scores')->get();
+		foreach($video_scores as $score) {
+			$videos[$score->division->longname()][$score->video->name][$score->judge->display_name][$score->vid_score_type_id] = $score->total;
+		}
 
+		$content = 'Division,Video Name,ID,Judge Name,' . join(',', $types) . "\n";
+
+		$line = [];
+		foreach($videos as $video_division => $video_list) {
+			foreach($video_list as $video_name => $judge_list) {
+				foreach($judge_list as $judge_name => $scores) {
+					$line[] = $video_division;
+					$line[] = $video_name;
+					$line[] = $scores['video_id'];
+					$line[] = $judge_name;
+					foreach($types as $index => $type) {
+						$line[] = $scores[$index];
+					}
+					$content .= '"' . join('","', $line) . "\"\n";
+					$line = [];
+				}
+			}
+		}
+
+		//dd($content);
 
 		// return an string as a file to the user
 		return Response::make($content, '200', array(
