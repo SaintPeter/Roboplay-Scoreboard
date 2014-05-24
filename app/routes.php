@@ -70,7 +70,7 @@ Route::group(array('before' => 'auth'), function() {
 		Route::post('divisions/saveassign', array(
 				   'as' => 'divisions.saveassign',
 				   'uses' => 'DivisionsController@saveassign'));
-		Route::post('divisions/removeChallenge/{division_id}/{challenge_id}', array(
+		Route::get('divisions/{division_id}/remove/{challenge_id}', array(
 				   'as' => 'divisions.removeChallenge',
 				   'uses' => 'DivisionsController@removeChallenge'));
 		Route::post('divisions/updateChallengeOrder/{division_id}', array(

@@ -182,7 +182,13 @@ class DivisionsController extends BaseController {
 
 		$division = Division::with('challenges')->find($division_id);
 
-		$division->challenges()->sync($has_list);
+		$order = 1;
+		foreach($has_list as $challenge_id) {
+			$update[$challenge_id] = array('display_order' => $order);
+			$order++;
+		}
+
+		$division->challenges()->sync($update);
 
 		return Redirect::route('divisions.show', $division_id);
 	}
@@ -192,6 +198,18 @@ class DivisionsController extends BaseController {
 		$division = Division::with('challenges')->findOrFail($division_id);
 
 		$division->challenges()->detach($challenge_id);
+
+		$has_list = $division->challenges->lists('id');
+
+		$order = 1;
+		foreach($has_list as $id) {
+			if($challenge_id != $id) {
+				$update[$id] = array('display_order' => $order);
+				$order++;
+			}
+		}
+
+		$division->challenges()->sync($update);
 
 		return Redirect::route('divisions.show', $division_id);
 	}
