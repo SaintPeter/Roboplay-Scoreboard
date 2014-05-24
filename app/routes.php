@@ -21,7 +21,7 @@ Route::get('file_viewer/{file_id}', [ 'as' => 'file_viewer', function($file_id) 
 
 Route::get('/', [ 'as' => 'home', function()
 {
-	$competitions = Competition::all();
+	$competitions = Competition::where('active', true)->get();
 	$noajax = array('data-ajax' => "false");
 	return View::make('home', compact('competitions', 'noajax'));
 }]);
