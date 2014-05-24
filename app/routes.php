@@ -52,8 +52,17 @@ Route::group(array('before' => 'auth'), function() {
 	}]);
 
 	Route::group(array('before' => 'admin'), function () {
+		// Manage Competitions
 		Route::resource('competitions', 'CompetitionsController');
+		Route::get('competitions/toggle_frozen/{competition_id}', [ 'as' => 'competition.toggle_frozen', 'uses' => 'CompetitionsController@toggle_frozen' ]);
+		Route::get('competitions/freeze/all', [ 'as' => 'competitions.freeze.all', 'uses' => 'CompetitionsController@freeze_all' ]);
+		Route::get('competitions/unfreeze/all', [ 'as' => 'competitions.unfreeze.all', 'uses' => 'CompetitionsController@unfreeze_all' ]);
+		Route::get('competitions/toggle_active/{competition_id}', [ 'as' => 'competition.toggle_active', 'uses' => 'CompetitionsController@toggle_active' ]);
+
+		// Manage Challenges
 		Route::resource('challenges', 'ChallengesController');
+
+		// Manage Divisions
 		Route::resource('divisions', 'DivisionsController');
 		Route::get('divisions/assign/{division_id}', array(
 				   'as' => 'divisions.assign',
@@ -67,8 +76,11 @@ Route::group(array('before' => 'auth'), function() {
 		Route::post('divisions/updateChallengeOrder/{division_id}', array(
 				   'as' => 'divisions.updateChallengeOrder',
 				   'uses' => 'DivisionsController@updateChallengeOrder'));
+
+		//  Manage Video Competitions
 		Route::resource('vid_competitions', 'Vid_competitionsController');
 		Route::resource('vid_divisions', 'Vid_divisionsController');
+
 		Route::resource('teams', 'TeamsController');
 		Route::resource('score_elements', 'Score_elementsController');
 		Route::get('score_elements/{challenge_id}/create', array(

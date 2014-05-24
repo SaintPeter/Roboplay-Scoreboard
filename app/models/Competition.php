@@ -1,5 +1,7 @@
 <?php
 
+use \Carbon\Carbon;
+
 class Competition extends Eloquent {
 	protected $guarded = array();
 
@@ -15,4 +17,15 @@ class Competition extends Eloquent {
 	{
 		return $this->hasMany('Division')->orderBy('display_order', 'asc');
 	}
+
+	public function getFreezeTimeAttribute($value)
+	{
+		return Carbon::parse($value)->format('g:i A');
+	}
+
+	public function setFreezeTimeAttribute($value)
+	{
+		$this->attributes['freeze_time'] = Carbon::parse($value)->format('H:i');
+	}
+
 }

@@ -48,7 +48,7 @@ class CompetitionsController extends BaseController {
 	 */
 	public function store()
 	{
-		$input = Input::all();
+		$input = array_except(Input::all(), [ 'hour', 'minute', 'meridian' ]);
 		$validation = Validator::make($input, Competition::$rules);
 
 		if ($validation->passes())
@@ -106,7 +106,7 @@ class CompetitionsController extends BaseController {
 	 */
 	public function update($id)
 	{
-		$input = array_except(Input::all(), '_method');
+		$input = array_except(Input::all(), [ '_method', 'hour', 'minute', 'meridian' ]);
 		$validation = Validator::make($input, Competition::$rules);
 
 		if ($validation->passes())
@@ -114,7 +114,7 @@ class CompetitionsController extends BaseController {
 			$competition = $this->competition->find($id);
 			$competition->update($input);
 
-			return Redirect::route('competitions.show', $id);
+			return Redirect::route('competitions.index');
 		}
 
 		return Redirect::route('competitions.edit', $id)
@@ -136,4 +136,31 @@ class CompetitionsController extends BaseController {
 		return Redirect::route('competitions.index');
 	}
 
+	public function toggle_frozen($competition_id)
+	{
+		$comp = Competition::find($competition_id);
+		$comp->update(['frozen' => !$comp->frozen ]);
+
+		return Redirect::route('competitions.index');
+	}
+
+	public function toggle_active($competition_id)
+	{
+		$comp = Competition::find($competition_id);
+		$comp->update(['active' => !$comp->active ]);
+
+		return Redirect::route('competitions.index');
+	}
+
+	public function freeze_all()
+	{
+		$count = DB::table('competitions')->update( [ 'frozen' => true ]);
+		return Redirect::route('competitions.index')->with('message', "$count Competitions Frozen");
+	}
+
+	public function unfreeze_all()
+	{
+		$count = DB::table('competitions')->update( [ 'frozen' => false ]);
+		return Redirect::route('competitions.index')->with('message', "$count Competitions Unfrozen");
+	}
 }

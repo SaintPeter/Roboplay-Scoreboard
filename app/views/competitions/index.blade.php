@@ -29,7 +29,13 @@
 @stop
 
 @section('main')
-<p>{{ link_to_route('competitions.create', 'Add Competition', [], ['class' => 'btn btn-primary']) }}</p>
+<p>{{ link_to_route('competitions.create', 'Add Competition', [], ['class' => 'btn btn-primary']) }}
+	<span class="pull-right">
+		{{ link_to_route('competitions.freeze.all', 'Freeze All', [], ['class' => 'btn btn-info btn-margin']) }}
+		{{ link_to_route('competitions.unfreeze.all', 'Unfreeze All', [], ['class' => 'btn btn-warning btn-margin']) }}
+	</span>
+	</p>
+
 
 @if ($competitions->count())
 	<table class="table table-striped table-bordered">
@@ -40,6 +46,8 @@
 				<th>Location</th>
 				<th>Address</th>
 				<th>Event Date</th>
+				<th>Freeze</th>
+				<th>Active</th>
 				<th>Actions</th>
 			</tr>
 		</thead>
@@ -50,8 +58,23 @@
 					<td>{{{ $competition->name }}}</td>
 					<td>{{{ $competition->description }}}</td>
 					<td>{{{ $competition->location }}}</td>
-					<td>{{{ $competition->address }}}</td>
+					<td>{{ nl2br($competition->address) }}</td>
 					<td>{{{ $competition->event_date }}}</td>
+					<td>
+						{{{ $competition->freeze_time }}}<br />
+						@if($competition->frozen)
+							{{ link_to_route('competition.toggle_frozen', "Frozen", [ $competition->id ], ['class' => 'btn btn-xs btn-info', 'title' => 'Click to Unfreeze' ] ) }}
+						@else
+							{{ link_to_route('competition.toggle_frozen', "Unfrozen", [ $competition->id ], ['class' => 'btn btn-xs btn-warning', 'title' => 'Click to Freeze' ] ) }}
+						@endif
+					</td>
+					<td style="vertical-align: middle;">
+						@if($competition->active)
+							{{ link_to_route('competition.toggle_active', "Active", [ $competition->id ], ['class' => 'btn btn-xs btn-success', 'title' => 'Click to Deactivate' ] ) }}
+						@else
+							{{ link_to_route('competition.toggle_active', "Inactive", [ $competition->id ], ['class' => 'btn btn-xs btn-info', 'title' => 'Click to Activate' ] ) }}
+						@endif
+					</td>
                     <td>{{ link_to_route('competitions.edit', 'Edit', array($competition->id), array('class' => 'btn btn-info btn-margin')) }}
                         {{ Form::open(array('method' => 'DELETE', 'route' => array('competitions.destroy', $competition->id), 'style' => 'display: inline-block')) }}
                             {{ Form::submit('Delete', array('class' => 'btn btn-danger btn-margin')) }}
