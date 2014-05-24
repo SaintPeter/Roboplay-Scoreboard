@@ -67,6 +67,8 @@
 				@include('score.partial.low_slider', compact('score_element'))
 			@elseif ($score_element->type == 'high_slider')
 				@include('score.partial.high_slider', compact('score_element'))
+			@elseif ($score_element->type == 'score_slider')
+				@include('score.partial.score_slider', compact('score_element'))
 			@else
 				<li>Error displaying Score Element '{{ $score_element->display_text }} ({{ $score_element->element_number }})'</li>
 			@endif

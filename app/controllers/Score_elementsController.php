@@ -11,7 +11,8 @@ class Score_elementsController extends BaseController {
 	public $input_types = [ 'yesno' => 'Yes/No',
 							'noyes' => 'No/Yes',
 							'low_slider' => 'Low->High Slider',
-							'high_slider' => 'High->Low Slider' ];
+							'high_slider' => 'High->Low Slider',
+							'score_slider' => 'Score Slider' ];
 
 	public function __construct(Score_element $score_element)
 	{
