@@ -62,13 +62,14 @@ class DisplayController extends BaseController {
 	public function compscore($competition_id)
 	{
 		Breadcrumbs::addCrumb('Competition Score', 'compscore');
-		$comp = Competition::with('divisions', 'divisions.teams')->find($competition_id);
+		$comp = Competition::with('divisions', 'divisions.teams', 'divisions.challenges')->find($competition_id);
 		$divisions = $comp->divisions;
 
 		$score_list = array();
 		foreach($divisions as $division)
 		{
 			$score_list[$division->id] = array();
+			$challenge_list = $division->challenges->lists('id');
 
 			// Calculate the max score for each team and challenge
 			$scores = DB::table('score_runs')
@@ -76,6 +77,7 @@ class DisplayController extends BaseController {
 					->groupBy('team_id', 'challenge_id')
 					->orderBy('team_id', 'challenge_id')
 					->where('division_id', $division->id)
+					->whereIn('challenge_id', $challenge_list)  // Limit to currently attached challenges
 					->get();
 
 			// Sum up all of the scores by team
@@ -86,7 +88,9 @@ class DisplayController extends BaseController {
 					$score_list[$division->id][$score->team_id] = 0;
 				}
 				$score_list[$division->id][$score->team_id] += $score->chal_score;
+				//echo 'Division ID: ' . $division->id . '<br>';
 			}
+
 
 			// Find all of the teams with no scores yet and add them to the end of the list
 			$team_list = $division->teams->lists('id');
