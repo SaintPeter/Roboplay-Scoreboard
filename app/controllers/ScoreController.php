@@ -51,7 +51,7 @@ class ScoreController extends BaseController {
 			return "Could not find that challenge for that team";
 		}
 
-		$run_number = Score_run::where('team_id',  $team_id)->where('challenge_id', $challenge_id)->count() + 1;
+		$run_number = Score_run::where('team_id',  $team_id)->where('challenge_id', $challenge_id)->max('run_number') + 1;
 
 		return View::make('score.doscore')
 					->with(compact('challenge', 'team', 'run_number', 'judge'))
@@ -61,6 +61,7 @@ class ScoreController extends BaseController {
 
 	}
 
+	// Take a list of input values and turn them into scores
 	function calculate_scores($value_list, $challenge_id)
 	{
 		$challenge = Challenge::with('score_elements')->find($challenge_id);
@@ -68,7 +69,13 @@ class ScoreController extends BaseController {
 		$scores = array_fill(1, SCORE_COLUMNS, '-');
 		$total = 0;
 		foreach($challenge->score_elements as $se) {
-			$scores[$se->element_number] = $se->base_value + (intval($value_list[$se->id]['value']) * $se->multiplier);
+			if($se->type == 'score_slider') {
+				// With a score slider the multiplier is always 1
+				$scores[$se->element_number] = $se->base_value + intval($value_list[$se->id]['value']);
+			} else {
+				// Everything else uses the multiplier
+				$scores[$se->element_number] = $se->base_value + (intval($value_list[$se->id]['value']) * $se->multiplier);
+			}
 			$total += $scores[$se->element_number];
 		}
 		$total = max($total, 0);
@@ -97,7 +104,7 @@ class ScoreController extends BaseController {
 		$value_list = Input::get('scores', array());
 		list($scores, $total) = $this->calculate_scores($value_list, $challenge_id);
 
-		$run_number = Score_run::where('team_id',  $team_id)->where('challenge_id', $challenge_id)->count() + 1;
+		$run_number = Score_run::where('team_id',  $team_id)->where('challenge_id', $challenge_id)->max('run_number') + 1;
 
 		$date = Carbon\Carbon::now('UTC')->setTimeZone("PDT");
 

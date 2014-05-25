@@ -7,16 +7,18 @@ class DisplayController extends BaseController {
 	 *
 	 * @return Response
 	 */
-	public function teamscore($team_id)
+	public function teamscore($team_id, $show_judges = null)
 	{
 		Breadcrumbs::addCrumb('Team Score', 'teamscore');
-		$team = Team::with('division')->find($team_id);
+		$team = Team::with('division', 'division.competition')->find($team_id);
 		$division_id = $team->division->id;
 
 		$challenges = Challenge::with(array('scores' => function($q) use ($team_id)
 						{
 							$q->where('team_id', $team_id);
-						}))->get();
+						}))
+						->with('scores.judge')
+						->get();
 
 		$div_challenges = Division::with('challenges')->find($division_id)->challenges;
 
@@ -36,6 +38,8 @@ class DisplayController extends BaseController {
 				{
 					$challenge_list[$challenge_number]['runs'][$score_run->run_number]['run_time'] = $score_run->run_time;
 					$challenge_list[$challenge_number]['runs'][$score_run->run_number]['total'] = $score_run->total;
+					$challenge_list[$challenge_number]['runs'][$score_run->run_number]['judge'] = $score_run->judge->display_name;
+					$challenge_list[$challenge_number]['runs'][$score_run->run_number]['id'] = $score_run->id;
 					$score_index = 0;
 					foreach($score_run->scores as $score_element)
 					{
@@ -51,7 +55,7 @@ class DisplayController extends BaseController {
 
 		//dd(DB::getQueryLog());
 		View::share('title', $team->longname() . ' Scores');
-		return View::make('display.teamscore', compact('team','challenge_list', 'grand_total'));
+		return View::make('display.teamscore', compact('team','challenge_list', 'grand_total', 'show_judges'));
 	}
 
 	public function compscore($competition_id)
@@ -111,4 +115,12 @@ class DisplayController extends BaseController {
 		return View::make('display.compscore', compact('comp', 'divisions', 'score_list', 'col_class'));
 	}
 
+	public function delete_score($team_id, $score_run_id)
+	{
+		if(Roles::isAdmin()) {
+			$score_run = Score_run::find($score_run_id);
+			$score_run->delete();
+		}
+		return Redirect::route('display.teamscore', [ $team_id ]);
+	}
 }

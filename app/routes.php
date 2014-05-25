@@ -28,6 +28,12 @@ Route::get('/', [ 'as' => 'home', function()
 
 Route::get('team/{team_id}', array('as' => 'display.teamscore', 'uses' => 'DisplayController@teamscore'))
 		 ->where('team_id', '\d+');
+Route::get('team/{team_id}/{with_judges}', array('as' => 'display.teamscore', 'uses' => 'DisplayController@teamscore'))
+		 ->where('team_id', '\d+');
+Route::get('team/{team_id}/delete_score/{score_run_id}', [
+		   'as' => 'display.teamscore.delete_score',
+		   'uses' => 'DisplayController@delete_score' ] )
+		 ->where('team_id', '\d+');
 Route::get('comp/{competition_id}', array('as' => 'display.compscore', 'uses' => 'DisplayController@compscore'))
 		 ->where('competition_id', '\d+');
 

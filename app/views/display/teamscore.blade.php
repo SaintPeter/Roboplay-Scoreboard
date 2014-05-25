@@ -6,6 +6,18 @@
 	}
 @stop
 
+@section('script')
+@if(Roles::isAdmin())
+	$(function() {
+		$(".delete_button").click(function(){
+			if (!confirm("Do you want to delete")){
+				return false;
+			}
+		});
+	});
+@endif
+@stop
+
 @section('main')
 <table class="table table-striped table-bordered">
 	<thead>
@@ -29,18 +41,29 @@
 						<td>Total</td>
 						<td>Score</td>
 					</tr>
+					<?php $first = true; ?>
 					@foreach($challenge['runs'] as $run_number => $score_run)
 					<tr>
-						<td class="text-right">Run {{ $run_number }} ({{ $score_run['run_time'] }})</td>
-						@for($se = 1; $se <= 6; $se++)
+						<td class="text-right">
+							@if(Roles::isAdmin())
+								<a href="{{ route('display.teamscore.delete_score', [ $team->id, $score_run['id'] ]) }}" class="delete_button btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
+							@endif
+							Run {{ $run_number }} ({{ $score_run['run_time'] }})
+							@if(isset($show_judges))
+								<br />
+								{{ $score_run['judge'] }}
+							@endif
+						</td>
+						@for($se = 0; $se < 6; $se++)
 							<td>{{ $score_run['scores'][$se] }}</td>
 						@endfor
 						<td>{{ $score_run['total'] }}</td>
-						@if($run_number == 1)
+						@if($first)
 							<td rowspan="{{ $challenge['score_count'] }}" class="text-center" style="vertical-align:middle;">
 								<h3>{{ $challenge['score_max'] }}</h3>
 							</td>
 						@endif
+						<?php $first = false; ?>
 					</tr>
 					@endforeach
 				@else
@@ -55,5 +78,8 @@
 	</tbody>
 </table>
 {{ link_to(URL::previous(), 'Return', [ 'class' => 'btn btn-primary btn-margin']) }}
+<span class="pull-right">
+	{{ link_to_route('score.score_team', 'Score Team', [ $team->division->competition->id, $team->division->id, $team->id ], [ 'class' => 'btn btn-success btn-margin']) }}
+</span>
 
 @stop

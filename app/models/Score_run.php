@@ -52,4 +52,9 @@ class Score_run extends Eloquent {
 	{
 		return $this->hasMany('Division');
 	}
+
+	public function judge()
+	{
+		return $this->belongsTo('Judge');
+	}
 }
