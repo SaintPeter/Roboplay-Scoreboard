@@ -16,9 +16,9 @@ class DisplayController extends BaseController {
 		$challenges = Challenge::with(array('scores' => function($q) use ($team_id)
 						{
 							$q->where('team_id', $team_id);
-						}))
-						->with('scores.judge')
-						->get();
+						}, 'scores.judge'))->get();
+
+		//dd(DB::getQueryLog());
 
 		$div_challenges = Division::with('challenges')->find($division_id)->challenges;
 
@@ -31,6 +31,7 @@ class DisplayController extends BaseController {
 			if($challenges->find($div_challenge->id)->scores->count() > 0)
 			{
 				$score_runs = $challenges->find($div_challenge->id)->scores;
+				//$score_runs->load('judge');
 				$challenge_list[$challenge_number]['score_count'] = $score_runs->count();
 				$challenge_list[$challenge_number]['score_max'] = $score_runs->max('total');
 				$grand_total += $challenge_list[$challenge_number]['score_max'];
