@@ -59,12 +59,27 @@ class DisplayController extends BaseController {
 		return View::make('display.teamscore', compact('team','challenge_list', 'grand_total', 'show_judges'));
 	}
 
-	public function compscore($competition_id)
+	public function compscore($competition_id, $do_not_freeze = null)
 	{
 		Breadcrumbs::addCrumb('Competition Score', 'compscore');
+
 		$comp = Competition::with('divisions', 'divisions.teams', 'divisions.challenges')->find($competition_id);
 		$divisions = $comp->divisions;
 
+		// Event Timing
+		$now = Carbon\Carbon::now()->setTimezone('America/Los_Angeles');
+		$this_event = Schedule::where('start', '<', $now)->orderBy('start', 'DESC')->first();
+		$next_event = Schedule::where('start', '>', $now)->orderBy('start')->first();
+
+		// Frozen Calculation
+		$freeze_time = new Carbon\Carbon($comp->freeze_time);
+		if($comp->frozen AND $now->gt($freeze_time) AND !isset($do_not_freeze)) {
+			$frozen = true;
+		} else {
+			$frozen = false;
+		}
+
+		// Get score list and calculate totals
 		$score_list = array();
 		foreach($divisions as $division)
 		{
@@ -77,8 +92,14 @@ class DisplayController extends BaseController {
 					->groupBy('team_id', 'challenge_id')
 					->orderBy('team_id', 'challenge_id')
 					->where('division_id', $division->id)
-					->whereIn('challenge_id', $challenge_list)  // Limit to currently attached challenges
-					->get();
+					->whereIn('challenge_id', $challenge_list);  // Limit to currently attached challenges
+
+			// If we're frozen, limit scores we count by the freeze time
+			if($frozen) {
+				$scores = $scores->where('run_time', '<=', $freeze_time->toTimeString())->get();
+			} else {
+				$scores = $scores->get();
+			}
 
 			// Sum up all of the scores by team
 			foreach($scores as $score)
@@ -88,7 +109,6 @@ class DisplayController extends BaseController {
 					$score_list[$division->id][$score->team_id] = 0;
 				}
 				$score_list[$division->id][$score->team_id] += $score->chal_score;
-				//echo 'Division ID: ' . $division->id . '<br>';
 			}
 
 
@@ -101,6 +121,7 @@ class DisplayController extends BaseController {
 			arsort($score_list[$division->id]);
 		}
 
+		// Setup column widths depending on number of divisions
 		switch($divisions->count())
 		{
 			case 1:
@@ -115,9 +136,11 @@ class DisplayController extends BaseController {
 			default:
 				$col_class = "col-md-2 col-lg-2";
 		}
-		View::share('title', $comp->name . ' Scores');
 
-		return View::make('display.compscore', compact('comp', 'divisions', 'score_list', 'col_class'));
+
+
+		View::share('title', $comp->name . ' Scores');
+		return View::make('display.compscore', compact('comp', 'divisions', 'score_list', 'col_class', 'this_event', 'next_event', 'frozen'));
 	}
 
 	public function delete_score($team_id, $score_run_id)

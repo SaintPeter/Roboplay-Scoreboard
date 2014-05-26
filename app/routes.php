@@ -26,6 +26,7 @@ Route::get('/', [ 'as' => 'home', function()
 	return View::make('home', compact('competitions', 'noajax'));
 }]);
 
+/* ----------------------- Score Display ---------------------------- */
 Route::get('team/{team_id}', array('as' => 'display.teamscore', 'uses' => 'DisplayController@teamscore'))
 		 ->where('team_id', '\d+');
 Route::get('team/{team_id}/{with_judges}', array('as' => 'display.teamscore', 'uses' => 'DisplayController@teamscore'))
@@ -64,6 +65,10 @@ Route::group(array('before' => 'auth'), function() {
 		Route::get('competitions/freeze/all', [ 'as' => 'competitions.freeze.all', 'uses' => 'CompetitionsController@freeze_all' ]);
 		Route::get('competitions/unfreeze/all', [ 'as' => 'competitions.unfreeze.all', 'uses' => 'CompetitionsController@unfreeze_all' ]);
 		Route::get('competitions/toggle_active/{competition_id}', [ 'as' => 'competition.toggle_active', 'uses' => 'CompetitionsController@toggle_active' ]);
+
+		// Display Competition Scores Unfrozen
+		Route::get('comp/{competition_id}/{do_not_freeze}', array('as' => 'display.compscore.do_not_freeze', 'uses' => 'DisplayController@compscore'))
+		 ->where('competition_id', '\d+');
 
 		// Manage Challenges
 		Route::resource('challenges', 'ChallengesController');

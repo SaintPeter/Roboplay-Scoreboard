@@ -43,7 +43,9 @@
 			@if(isset($title) and !isset($skip_title))
 				<h1>{{ $title }}</h1>
 			@endif
-			{{ Breadcrumbs::render() }}
+			@if(!isset($skip_breadcrumbs))
+				{{ Breadcrumbs::render() }}
+			@endif
 
 @section('message')
 			@if (Session::has('message'))
