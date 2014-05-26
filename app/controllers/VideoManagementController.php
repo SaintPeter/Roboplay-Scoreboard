@@ -142,7 +142,7 @@ class VideoManagementController extends \BaseController {
 		$videos = [];
 		//dd(DB::getQueryLog());
 		$types = Vid_score_type::orderBy('id')->lists('name', 'id');
-		$blank = array_combine(array_keys($types), array_fill(0, count($types), 0));
+		$blank = array_combine(array_keys($types), array_fill(0, count($types), ''));
 		foreach($video_scores as $score) {
 			$videos[$score->division->longname()][$score->video->name][$score->judge->display_name] = $blank;
 			$videos[$score->division->longname()][$score->video->name][$score->judge->display_name]['video_id'] = $score->video_id;
