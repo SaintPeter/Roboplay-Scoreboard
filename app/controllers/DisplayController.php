@@ -67,13 +67,15 @@ class DisplayController extends BaseController {
 		$divisions = $comp->divisions;
 
 		// Event Timing
-		$now = Carbon\Carbon::now()->setTimezone('America/Los_Angeles');
-		$this_event = Schedule::where('start', '<', $now)->orderBy('start', 'DESC')->first();
-		$next_event = Schedule::where('start', '>', $now)->orderBy('start')->first();
+		$start_time = Carbon\Carbon::now()->setTimezone('America/Los_Angeles')->toTimeString();
+		$this_event = Schedule::where('start', '<', $start_time)->orderBy('start', 'DESC')->first();
+		$next_event = Schedule::where('start', '>', $start_time)->orderBy('start')->first();
+
+		//dd(DB::getQueryLog());
 
 		// Frozen Calculation
 		$freeze_time = new Carbon\Carbon($comp->freeze_time);
-		if($comp->frozen AND $now->gt($freeze_time) AND !isset($do_not_freeze)) {
+		if($comp->frozen AND $start_time->gt($freeze_time) AND !isset($do_not_freeze)) {
 			$frozen = true;
 		} else {
 			$frozen = false;
@@ -140,7 +142,7 @@ class DisplayController extends BaseController {
 
 
 		View::share('title', $comp->name . ' Scores');
-		return View::make('display.compscore', compact('comp', 'divisions', 'score_list', 'col_class', 'this_event', 'next_event', 'frozen'));
+		return View::make('display.compscore', compact('comp', 'divisions', 'score_list', 'col_class', 'this_event', 'next_event', 'frozen', 'start_time'));
 	}
 
 	public function delete_score($team_id, $score_run_id)

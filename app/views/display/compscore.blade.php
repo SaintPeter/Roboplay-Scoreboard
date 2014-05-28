@@ -6,25 +6,27 @@
 
 @section('script')
 @if(isset($next_event) AND isset($this_event))
+	var serverTime = moment("{{ $start_time }}", "hh:mm:ss");
+	var delta = moment().diff(serverTime);
 	var endTime = moment("{{ $next_event->start }}", "hh:mm:ss");
 	var clock = setInterval(function() {
 		var now =  moment();
-		$("#clock").html(now.format("h:mm:ss"));
+		$("#clock").html(now.subtract('milliseconds', delta).format("h:mm:ss"));
 	 }, 1000);
-	 var timer = setInterval(function() {
-	 	var delta = moment.duration(endTime.diff(moment()));
-	 	if(delta.asSeconds() < 60 && delta.asSeconds() > 29 && !$('#timer').hasClass('label-warning')) {
+	 var timer_function = setInterval(function() {
+	 	var timer = moment.duration(endTime.diff(moment().subtract('milliseconds', delta)));
+	 	if(timer.asSeconds() < 60 && timer.asSeconds() > 29 && !$('#timer').hasClass('label-warning')) {
 	 		$('#timer').removeClass('label-info');
 	 		$('#timer').addClass('label-warning');
 	 	}
-	 	if(delta.asSeconds() < 30  && !$('#timer').hasClass('label-danger')) {
+	 	if(timer.asSeconds() < 30  && !$('#timer').hasClass('label-danger')) {
 	 		$('#timer').removeClass('label-warning');
 	 		$('#timer').addClass('label-danger');
 	 	}
-	 	if(delta.asSeconds() < 1) {
+	 	if(timer.asSeconds() < 1) {
 	 		location.reload(true);
 	 	}
-	 	$("#timer").html(delta.hours() + ':' + prefix(delta.minutes()) + ':' + prefix(delta.seconds()));
+	 	$("#timer").html(timer.hours() + ':' + prefix(timer.minutes()) + ':' + prefix(timer.seconds()));
 	 }, 1000);
 
 
