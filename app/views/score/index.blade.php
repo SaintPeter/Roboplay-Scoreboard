@@ -17,6 +17,7 @@
 <div id="menu-anchor"></div>
 <div class="ui-body ui-body-a ui-corner-all">
 	<strong>Judge: </strong>{{ $judge->display_name }}<br />
+	<strong>Division: </strong>{{ $team->division->name }} <br />
 	<strong>Team: </strong>{{{ $team->longname() }}}
 </div>
 <ul class="ui-listview ui-listview-inset ui-corner-all" data-role="listview">

@@ -16,6 +16,19 @@
 		});
 	});
 @endif
+	var hidden = true;
+	$(function() {
+		$('#show_judge').click(function(e) {
+			e.preventDefault();
+			$(".judge_name").toggleClass('hidden');
+			hidden = !hidden;
+			if(hidden) {
+				$('#show_judge').html('Show Judges');
+			} else {
+				$('#show_judge').html('Hide Judges');
+			}
+		})
+	});
 @stop
 
 @section('main')
@@ -49,10 +62,7 @@
 								<a href="{{ route('display.teamscore.delete_score', [ $team->id, $score_run['id'] ]) }}" class="delete_button btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
 							@endif
 							Run {{ $run_number }} ({{ $score_run['run_time'] }})
-							@if(isset($show_judges))
-								<br />
-								{{ $score_run['judge'] }}
-							@endif
+							<span class="judge_name hidden"><br />{{ $score_run['judge'] }}</span>
 						</td>
 						@for($se = 0; $se < 6; $se++)
 							<td>{{ $score_run['scores'][$se] }}</td>
@@ -78,6 +88,7 @@
 	</tbody>
 </table>
 {{ link_to(URL::previous(), 'Return', [ 'class' => 'btn btn-primary btn-margin']) }}
+<a href="#" id="show_judge" class="btn btn-info btn-margin">Show Judges</a>
 <span class="pull-right">
 	{{ link_to_route('score.score_team', 'Score Team', [ $team->division->competition->id, $team->division->id, $team->id ], [ 'class' => 'btn btn-success btn-margin']) }}
 </span>
