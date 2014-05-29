@@ -153,4 +153,48 @@ class DisplayController extends BaseController {
 		}
 		return Redirect::route('display.teamscore', [ $team_id ]);
 	}
+
+	public function challenge_students_csv() {
+		$content = 'School,Team,"Student Name"' . "\n";
+
+		$comps = Competition::with('divisions')->where('name', 'not like', DB::raw('"%test%"'))->get();
+		$div_list = [];
+		foreach($comps as $comp) {
+			$div_list = array_merge($div_list, $comp->divisions->lists('id'));
+		}
+		$teams = Team::with('school')->whereIn('division_id', $div_list)->get();
+
+		foreach($teams as $team) {
+			foreach($team->student_list() as $student) {
+				$content .= '"' . $team->school->name . '","' . $team->name	. '","' . $student . "\"\n";
+			}
+		}
+		// return an string as a file to the user
+		return Response::make($content, '200', array(
+			'Content-Type' => 'application/octet-stream',
+			'Content-Disposition' => 'attachment; filename="challenge_student.csv'
+		));
+	}
+
+	public function video_students_csv() {
+		$content = 'Division,School,Video,"Student Name"' . "\n";
+
+		$comps = Vid_competition::with('divisions')->where('name', 'not like', DB::raw('"%test%"'))->get();
+		$div_list = [];
+		foreach($comps as $comp) {
+			$div_list = array_merge($div_list, $comp->divisions->lists('id'));
+		}
+		$videos = video::with('school', 'vid_division')->whereIn('vid_division_id', $div_list)->get();
+
+		foreach($videos as $video) {
+			foreach($video->student_list() as $student) {
+				$content .= '"' . $video->vid_division->name . '","'. $video->school->name . '","' . $video->name	. '","' . $student . "\"\n";
+			}
+		}
+		// return an string as a file to the user
+		return Response::make($content, '200', array(
+			'Content-Type' => 'application/octet-stream',
+			'Content-Disposition' => 'attachment; filename="video_student.csv'
+		));
+	}
 }

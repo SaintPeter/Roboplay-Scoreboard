@@ -76,7 +76,7 @@ class Video extends Eloquent {
 
 	public function student_list()
 	{
-		return preg_split("/\s*,\s*/", trim($this->students));
+		return preg_split("/\s*\n\s*/", trim($this->students));
 	}
 
 	public function general_scores_count()

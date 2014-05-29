@@ -59,6 +59,9 @@ Route::group(array('before' => 'auth'), function() {
 	}]);
 
 	Route::group(array('before' => 'admin'), function () {
+		Route::get('challenge_students_csv', [ 'uses' => 'DisplayController@challenge_students_csv' ] );
+		Route::get('video_students_csv', [ 'uses' => 'DisplayController@video_students_csv' ] );
+
 		// Manage Competitions
 		Route::resource('competitions', 'CompetitionsController');
 		Route::get('competitions/toggle_frozen/{competition_id}', [ 'as' => 'competition.toggle_frozen', 'uses' => 'CompetitionsController@toggle_frozen' ]);
