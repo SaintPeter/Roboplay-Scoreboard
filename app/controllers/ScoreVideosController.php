@@ -23,10 +23,11 @@ class ScoreVideosController extends \BaseController {
 	 */
 	public function index()
 	{
+		$date = Carbon\Carbon::now()->setTimezone('America/Los_Angeles')->toDateString();
 		// Get a list of active Video Competitions
 		$competiton = Vid_competition::with('divisions')
-								->where('event_start', '<=', date('Y-m-d'))
-								->where('event_end', '>=', date('Y-m-d'))
+								->where('event_start', '<=', $date)
+								->where('event_end', '>=', $date)
 								->get();
 
 		$comp_list = [];
