@@ -62,9 +62,15 @@ class ScoreVideosController extends \BaseController {
 		// Fix category count for VG_GENERAL
 		$scored_count[VG_GENERAL] /= 3;
 
-		$total_count[VG_GENERAL] = Video::whereIn('vid_division_id', $div_list)->count();
-		$total_count[VG_PART] = Video::whereIn('vid_division_id', $div_list)->where('has_custom', true)->count();
-		$total_count[VG_COMPUTE] = Video::whereIn('vid_division_id', $div_list)->where('has_code', true)->count();
+		if(count($div_list) > 0) {
+			$total_count[VG_GENERAL] = Video::whereIn('vid_division_id', $div_list)->count();
+			$total_count[VG_PART] = Video::whereIn('vid_division_id', $div_list)->where('has_custom', true)->count();
+			$total_count[VG_COMPUTE] = Video::whereIn('vid_division_id', $div_list)->where('has_code', true)->count();
+		} else {
+			$total_count[VG_GENERAL] = 0;
+			$total_count[VG_PART] = 0;
+			$total_count[VG_COMPUTE] = 0;
+		}
 
 		//dd($total_count);
 
