@@ -6,41 +6,46 @@
 
 @section('script')
 @if(isset($next_event) AND isset($this_event))
-	//var serverTime = moment("{{ $start_time }}", "hh:mm:ss");
-	//var delta = moment().diff(serverTime);
-	var endTime = moment("{{ $next_event->start }}", "hh:mm:ss");
-	var sign = '';
-	var clock = setInterval(function() {
-		var now =  moment();
-		$("#clock").html(now.format("h:mm:ss"));
-	 }, 1000);
-	 var timer_function = setInterval(function() {
-	 	var timer = moment.duration(endTime.diff(moment()));
-	 	if(timer.asSeconds() < 60 && timer.asSeconds() > 29 && !$('#timer').hasClass('label-warning')) {
-	 		$('#timer').removeClass('label-info');
-	 		$('#timer').addClass('label-warning');
-	 	}
-	 	if(timer.asSeconds() < 30  && timer.asSeconds() > -1 && !$('#timer').hasClass('label-danger')) {
-	 		$('#timer').removeClass('label-warning');
-	 		$('#timer').addClass('label-danger');
-	 	}
-	 	if(timer.asSeconds() < 0 && !$('#timer').hasClass('label-default')) {
-	 		$('#timer').removeClass('label-danger');
-	 		$('#timer').addClass('label-default');
-	 		sign = '-';
-	 	}
+		var serverTime = moment("{{ $start_time }}", "hh:mm:ss");
+		var delta = moment().diff(serverTime);
+		var endTime = moment("{{ $next_event->start }}", "hh:mm:ss");
+		var sign = '';
 
-	 	if(timer.asSeconds() < -5) {
-	 		location.reload(true);
-	 	}
-	 	$("#timer").html(sign + timer.hours() + ':' + prefix(Math.abs(timer.minutes())) + ':' + prefix(Math.abs(timer.seconds())));
-	 }, 1000);
+		// Current Time Clock Function
+		var clock = setInterval(function() {
+			var now = moment();
+			$("#clock").html(now.subtract('milliseconds', delta).format("h:mm:ss"));
+		}, 1000);
 
-	 setInterval( function() {
-	 	location.reload(true);
-	 }, 5.2 * 60 * 1000);
+		// Countdown Timer function
+		var countdown_timer = setInterval(function() {
+			var timer = moment.duration(endTime.diff(moment().subtract('milliseconds', delta)));
+			if(timer.asSeconds() < 60 && timer.asSeconds() > 29 && !$('#timer').hasClass('label-warning')) {
+				$('#timer').removeClass('label-info');
+				$('#timer').addClass('label-warning');
+			}
+			if(timer.asSeconds() < 30 && !$('#timer').hasClass('label-danger')) {
+				$('#timer').removeClass('label-warning');
+				$('#timer').addClass('label-danger');
+			}
+		 	if(timer.asSeconds() < 0 && !$('#timer').hasClass('label-default')) {
+		 		$('#timer').removeClass('label-danger');
+		 		$('#timer').addClass('label-default');
+		 		sign = '-';
+		 	}
 
+		 	if(timer.asSeconds() < -5) {
+		 		location.reload(true);
+		 	}
+		 	$("#timer").html(sign + timer.hours() + ':' + prefix(Math.abs(timer.minutes())) + ':' + prefix(Math.abs(timer.seconds())));
+	 	}, 1000);
 
+		// 5 Minute Reload Timer
+		setInterval( function() {
+			location.reload(true);
+		}, 5.2 * 60 * 1000); // 5.2 minutes * 60 seconds * 1000 Milliseconds
+
+	// Add leading zero to single digits
 	function prefix(input) {
 	    return (input < 10 ? '0' : '') + input;
 	}
