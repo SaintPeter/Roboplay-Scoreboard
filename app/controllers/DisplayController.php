@@ -184,7 +184,7 @@ class DisplayController extends BaseController {
 		foreach($comps as $comp) {
 			$div_list = array_merge($div_list, $comp->divisions->lists('id'));
 		}
-		$videos = video::with('school', 'vid_division')->whereIn('vid_division_id', $div_list)->get();
+		$videos = Video::with('school', 'vid_division')->whereIn('vid_division_id', $div_list)->get();
 
 		foreach($videos as $video) {
 			foreach($video->student_list() as $student) {
