@@ -1,7 +1,22 @@
 @extends('layouts.scaffold')
 
+@section('script')
+$(function() {
+		$(".confirm").click(function(){
+			if (!confirm("Are you sure you want to clear scores?")){
+				return false;
+			}
+		});
+	});
+
+@stop
+
 @section('main')
-<p>{{ link_to_route('divisions.create', 'Add New Division',array(), array('class' => 'btn btn-primary')) }}</p>
+<p>
+	{{ link_to_route('divisions.create', 'Add New Division',array(), array('class' => 'btn btn-primary btn-margin')) }}
+	<span class="pull-right">{{link_to_route('divisions.clear_all_scores', 'Clear All Division Scores', null, ['class' => 'btn btn-warning btn-margin confirm']) }}</span>
+
+	</p>
 
 @if ($divisions->count())
 	<table class="table table-striped table-bordered">
@@ -31,6 +46,7 @@
                             {{ Form::submit('Delete', array('class' => 'btn btn-danger')) }}
                         {{ Form::close() }}
                     </td>
+                    <td>{{link_to_route('divisions.clear_scores', 'Clear Scores', [ $division->id ], ['class' => 'btn btn-warning btn-margin confirm']) }}</td>
 				</tr>
 			@endforeach
 		</tbody>

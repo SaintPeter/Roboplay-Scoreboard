@@ -81,6 +81,13 @@ Route::group(array('before' => 'auth'), function() {
 		Route::get('divisions/assign/{division_id}', array(
 				   'as' => 'divisions.assign',
 				   'uses' => 'DivisionsController@assign'));
+		Route::get('divisions/{division_id}/clear_scores', array(
+				   'as' => 'divisions.clear_scores',
+				   'uses' => 'DivisionsController@clear_scores'))
+				   ->where('division_id', '\d+');
+		Route::get('divisions/clear/all_scores', array(
+				   'as' => 'divisions.clear_all_scores',
+				   'uses' => 'DivisionsController@clear_all_scores'));
 		Route::post('divisions/saveassign', array(
 				   'as' => 'divisions.saveassign',
 				   'uses' => 'DivisionsController@saveassign'));

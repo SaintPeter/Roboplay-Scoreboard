@@ -236,4 +236,21 @@ class DivisionsController extends BaseController {
 
 	}
 
+	// Clear Scores
+	public function clear_scores($id) {
+		$count = 0;
+		if(Roles::isAdmin()) {
+			$count = Score_run::where('division_id', $id)->delete();
+		}
+		return Redirect::route('divisions.index')->with('message', "$count score runs deleted");
+	}
+
+	public function clear_all_scores() {
+		$count = 0;
+		if(Roles::isAdmin()) {
+			$count = DB::table('score_runs')->delete();
+		}
+		return Redirect::route('divisions.index')->with('message', "$count score runs deleted");
+	}
+
 }
