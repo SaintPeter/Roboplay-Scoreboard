@@ -75,7 +75,7 @@ class DisplayController extends BaseController {
 
 		// Frozen Calculation
 		$freeze_time = new Carbon\Carbon($comp->freeze_time);
-		if($comp->frozen AND $start_time->gt($freeze_time) AND !isset($do_not_freeze)) {
+		if($comp->frozen AND isset($start_time->freeze_time) AND !isset($do_not_freeze)) {
 			$frozen = true;
 		} else {
 			$frozen = false;
