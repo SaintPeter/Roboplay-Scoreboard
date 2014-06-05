@@ -21,7 +21,7 @@
 @stop
 
 @section('main')
-<h2>Open Access</h2>
+<h2>Competition Scores</h2>
 <ul data-role="listview" data-inset="true">
 	@if(!$competitions->isEmpty())
 		@foreach($competitions as $comp)
@@ -29,6 +29,15 @@
 		@endforeach
 	@endif
 </ul>
+
+@if(!$vid_competitions->isEmpty())
+<h2>Videos</h2>
+<ul data-role="listview" data-inset="true">
+		@foreach($vid_competitions as $comp)
+			<li>{{ link_to_route('display.video_list', $comp->name . ' - Video List', $comp->id, $noajax) }} </li>
+		@endforeach
+</ul>
+@endif
 
 @if(Roles::isJudge())
 <h2>Judge Menu</h2>

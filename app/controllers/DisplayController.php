@@ -197,4 +197,43 @@ class DisplayController extends BaseController {
 			'Content-Disposition' => 'attachment; filename="video_student.csv'
 		));
 	}
+
+	public function video_list($competition_id)
+	{
+		$comp = Vid_competition::with('divisions')->find($competition_id);
+
+		Breadcrumbs::addCrumb($comp->name . ' Videos', route('display.video_list', [ $competition_id ]));
+		View::share('title', $comp->name . ' | Video List');
+
+		//dd(DB::getQueryLog());
+		$divs = [0];
+		foreach($comp->divisions as $div) {
+			$divs[] = $div->id;
+		}
+
+		$video_list = Video::with('school', 'vid_division')->whereIn('vid_division_id', $divs)->get();
+
+		$videos = [];
+		foreach($video_list as $video) {
+			$videos[$video->vid_division->name][$video->name] = $video;
+		}
+
+		return View::make('display.video_list', compact('videos', 'comp'));
+	}
+
+	public function show_video($competition_id, $video_id)
+	{
+		Breadcrumbs::addCrumb('Video List', route('display.video_list', [ $competition_id ]));
+		Breadcrumbs::addCrumb('Video', '');
+		View::share('title', 'Show Video');
+
+		$video = Video::find($video_id);
+		if(empty($video)) {
+			// Invalid video
+			return Redirect::route('display.show_videos', [ $competition_id ])
+							->with('message', "Invalid video id '$video_id'.  Video no longer exists or another error occured.");
+		}
+
+		return View::make('display.show_video', compact('video'));
+	}
 }

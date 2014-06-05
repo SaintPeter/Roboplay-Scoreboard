@@ -21,9 +21,12 @@ Route::get('file_viewer/{file_id}', [ 'as' => 'file_viewer', function($file_id) 
 
 Route::get('/', [ 'as' => 'home', function()
 {
+	$date = Carbon\Carbon::now()->setTimezone('America/Los_Angeles')->toDateString();
+
 	$competitions = Competition::where('active', true)->get();
+	$vid_competitions = Vid_competition::where('event_end', '<', $date)->get();
 	$noajax = array('data-ajax' => "false");
-	return View::make('home', compact('competitions', 'noajax'));
+	return View::make('home', compact('competitions','vid_competitions', 'noajax'));
 }]);
 
 /* ----------------------- Score Display ---------------------------- */
@@ -37,6 +40,10 @@ Route::get('team/{team_id}/delete_score/{score_run_id}', [
 		 ->where('team_id', '\d+');
 Route::get('comp/{competition_id}', array('as' => 'display.compscore', 'uses' => 'DisplayController@compscore'))
 		 ->where('competition_id', '\d+');
+
+/* ----------------------- Video Display ---------------------------- */
+Route::get('video_list/{comp_id}', [ 'as' => 'display.video_list', 'uses' => 'DisplayController@video_list'] );
+Route::get('video_list/{comp_id}/{video_id}', [ 'as' => 'display.show_video', 'uses' => 'DisplayController@show_video'] );
 
 /* ------------------------- Ajax Handlers -------------------------- */
 Route::get('ajax/c', [ 'as' => 'ajax.counties', 'uses' => 'Wp_fix@ajax_counties']);
