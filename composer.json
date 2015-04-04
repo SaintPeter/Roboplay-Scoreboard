@@ -12,8 +12,8 @@
 	"require": {
 		"laravel/framework": "4.1.*",
 		"hampel/wordpress-auth-laravel": "dev-bugfix",
-		"way/generators": "dev-master",
-		"creitive/breadcrumbs": "dev-master",
+		"way/generators": "3.0",
+		"creitive/laravel4-breadcrumbs": "dev-master",
 		"nesbot/Carbon": "*",
 		"easybook/geshi": "dev-master",
 		"doctrine/dbal": "dev-master"
