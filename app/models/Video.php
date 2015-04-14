@@ -48,6 +48,7 @@ class Video extends Eloquent {
 		$this->attributes['yt_code'] = $code;
 	}
 
+	// Relationships
 	public function vid_division()
 	{
 		return $this->belongsTo('Vid_division');
@@ -68,15 +69,19 @@ class Video extends Eloquent {
 		return $this->hasMany('Video_scores');
 	}
 
+	public function students() {
+		return $this->morphToMany('Student', 'studentable');
+	}
 
+	// Methods
 	public function student_count()
 	{
-		return count(explode("\n",trim($this->students)));
+		return $this->students()->count();
 	}
 
 	public function student_list()
 	{
-		return preg_split("/\s*\n\s*/", trim($this->students));
+		return "Not Implmented Yet";
 	}
 
 	public function general_scores_count()

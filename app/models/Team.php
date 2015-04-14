@@ -7,10 +7,19 @@ class Team extends Eloquent {
 	public static $rules = array(
 		'name' => 'required',
 		'division_id' => 'required',
-		'school_id' => 'required',
-		'students' => 'required'
+		'school_id' => 'required'
 	);
 
+	public static function boot() {
+		parent::boot();
+
+		// Detach Students
+		static::deleting(function($team) {
+			$team->students()->sync([]);
+		});
+	}
+
+	// Relationships
 	public function division()
 	{
 		return $this->belongsTo('Division');
@@ -26,6 +35,11 @@ class Team extends Eloquent {
 		return $this->hasOne('Schools', 'school_id', 'school_id');
 	}
 
+	public function students() {
+		return $this->morphToMany('Student', 'studentable');
+	}
+
+
 	public function longname()
 	{
 		if(isset($this->school)) {
@@ -37,11 +51,17 @@ class Team extends Eloquent {
 
 	public function student_count()
 	{
-		return count(explode("\n",trim($this->students)));
+		return $this->students()->count();
 	}
 
 	public function student_list()
 	{
-		return preg_split("/\s*\n\s*/", trim($this->students));
+		$student_list = [];
+
+		foreach($this->students as $student) {
+			$student_list[] = $student->fullName();
+		}
+
+		return $student_list;
 	}
 }

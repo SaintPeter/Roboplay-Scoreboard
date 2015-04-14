@@ -36,13 +36,29 @@ class TeacherTeamsController extends BaseController {
 	 */
 	public function create()
 	{
-		Breadcrumbs::addCrumb('Manage Challenge Teams', 'teacher/teams');
+		Breadcrumbs::addCrumb('Manage Teams', 'teacher');
 		Breadcrumbs::addCrumb('Add Team', 'create');
 		$school_id = Usermeta::getSchoolId();
 		$school = Schools::find($school_id);
 
+		// Create a list of Divisions to choose from
+		$competitions = Competition::where('active', true)->with(
+									[ 'divisions' => function($q) {
+											return $q->orderby('display_order');
+										} ] )
+									->get();
+
+		foreach($competitions as $competition) {
+			foreach($competition->divisions as $division) {
+				$division_list[$competition->name][$division->id] = $division->name;
+			}
+		}
+
+		// Ethnicity List Setup
+		$ethnicity_list = array_merge([ 0 => "- Select Ethnicity -" ], Ethnicity::all()->lists('name','id'));
+
 		View::share('title', 'Add Team - ' . $school->name);
-        return View::make('teacher.teams.create', compact('school'));
+        return View::make('teacher.teams.create', compact('school','ethnicity_list', 'division_list'));
 	}
 
 	/**
@@ -52,23 +68,63 @@ class TeacherTeamsController extends BaseController {
 	 */
 	public function store()
 	{
-		$input = Input::all();
+		$input = Input::except('students');
 		$input['school_id'] = Usermeta::getSchoolId();
-		$invoice = Wp_invoice::with('challenge_division')->where('user_id', Auth::user()->ID)->first();
-		$input['division_id'] = $invoice->challenge_division->id;
+		$input['teacher_id'] = Auth::user()->ID;
+		$input['year'] = Carbon\Carbon::now()->year;
 
-		$validation = Validator::make($input, Team::$rules);
+		$students = Input::get('students');
 
-		if ($validation->passes())
+		//dd($students);
+
+		$teamErrors = Validator::make($input, Team::$rules);
+
+		if ($teamErrors->passes())
 		{
-			Team::create($input);
+			if(!empty($students)) {
+				$students_pass = true;
+				foreach ($students as $index => $student) {
+				 	 $studentErrors[$index] = Validator::make($student, Student::$rules);
+				 	 if($studentErrors[$index]->fails()) {
+				 	 	$students_pass = false;
+				 	 	$students[$index]['errors'] = $studentErrors[$index]->messages()->all();
+				 	}
+				}
 
-			return Redirect::route('teacher.teams.index');
+				if($students_pass) {
+					$newTeam = Team::create($input);
+					$sync_list = [];
+
+					foreach ($students as $index => &$student) {
+						$student['teacher_id'] = Auth::user()->ID;
+						$student['year'] = Carbon\Carbon::now()->year;
+						if(array_key_exists('id', $student)) {
+							$newStudent = Student::find($student['id']);
+							$newStudent->update($student);
+						} else {
+							$newStudent = Student::create($student);
+						}
+						$sync_list[] = $newStudent->id;
+					}
+					$newTeam->students()->sync($sync_list);
+					return Redirect::route('teacher.index');
+				} else {
+					return Redirect::route('teacher.teams.create')
+						->withInput(Input::except('students'))
+						->with('students', $students)
+						->with('message', 'There were validation errors.');
+				}
+			} else {
+				// No students, just create the team
+				Team::create($input);
+				return Redirect::route('teacher.index');
+			}
 		}
 
 		return Redirect::route('teacher.teams.create')
-			->withInput()
-			->withErrors($validation)
+			->withInput(Input::except('students'))
+			->with('students', $students)
+			->withErrors($teamErrors)
 			->with('message', 'There were validation errors.');
 	}
 
@@ -83,7 +139,32 @@ class TeacherTeamsController extends BaseController {
 		Breadcrumbs::addCrumb('Manage Challenge Teams', 'teacher/teams');
 		Breadcrumbs::addCrumb('Edit Team', $id);
 		View::share('title', 'Edit Team');
-		$team = Team::find($id);
+		$team = Team::with('students')->find($id);
+
+		// Create a list of Divisions to choose from
+		$competitions = Competition::where('active', true)->with(
+									[ 'divisions' => function($q) {
+											return $q->orderby('display_order');
+										} ] )
+									->get();
+
+		foreach($competitions as $competition) {
+			foreach($competition->divisions as $division) {
+				$division_list[$competition->name][$division->id] = $division->name;
+			}
+		}
+
+		// Student Setup
+		$ethnicity_list = array_merge([ 0 => "- Select Ethnicity -" ], Ethnicity::all()->lists('name','id'));
+		if(!Session::has('students')) {
+			// On first load we populate the form from the DB
+			$students = $team->students;
+		} else {
+			// On subsequent loads or errors, use the sessions variable
+			$students = [];
+		}
+		$index = -1;
+
 
 		if (is_null($team))
 		{
@@ -92,7 +173,7 @@ class TeacherTeamsController extends BaseController {
 
 		$divisions = Division::longname_array();
 
-		return View::make('teacher.teams.edit', compact('team'))
+		return View::make('teacher.teams.edit', compact('team','students', 'division_list', 'ethnicity_list', 'index'))
 				   ->with('divisions', $divisions);
 	}
 
@@ -104,19 +185,58 @@ class TeacherTeamsController extends BaseController {
 	 */
 	public function update($id)
 	{
-		$input = array_except(Input::all(), '_method');
+		$input = Input::except('_method', 'students');
 		$input['school_id'] = Usermeta::getSchoolId();
-		$invoice = Wp_invoice::with('challenge_division')->where('user_id', Auth::user()->ID)->first();
-		$input['division_id'] = $invoice->challenge_division->id;
+		$input['teacher_id'] = Auth::user()->ID;
+		$input['year'] = Carbon\Carbon::now()->year;
 
-		$validation = Validator::make($input, Team::$rules);
+		$students = Input::get('students');
 
-		if ($validation->passes())
+		$teamValidation = Validator::make($input, Team::$rules);
+
+		if ($teamValidation->passes())
 		{
-			$team = Team::find($id);
-			$team->update($input);
+			if(!empty($students)) {
+				$students_pass = true;
+				foreach ($students as $index => $student) {
+				 	 $studentErrors[$index] = Validator::make($student, Student::$rules);
+				 	 if($studentErrors[$index]->fails()) {
+				 	 	$students_pass = false;
+				 	 	$students[$index]['errors'] = $studentErrors[$index]->messages()->all();
+				 	}
+				}
 
-			return Redirect::route('teacher.teams.index', $id);
+				if($students_pass) {
+					$team = Team::find($id);
+					$team->update($input);
+
+					foreach ($students as $index => &$student) {
+						$student['teacher_id'] = Auth::user()->ID;
+						$student['year'] = Carbon\Carbon::now()->year;
+						if(array_key_exists('id', $student)) {
+							$newStudent = Student::find($student['id']);
+							$newStudent->update($student);
+						} else {
+							$newStudent = Student::create($student);
+						}
+						$sync_list[] = $newStudent->id;
+					}
+					$team->students()->sync($sync_list);
+					return Redirect::route('teacher.index');
+				} else {
+					return Redirect::route('teacher.teams.edit', $id)
+						->withInput(Input::except('students'))
+						->with('students', $students)
+						->with('message', 'There were validation errors.');
+				}
+			} else {
+				// No students, just update the team
+				$team = Team::find($id);
+				$team->update($input);
+				return Redirect::route('teacher.index');
+			}
+
+			return Redirect::route('teacher.index');
 		}
 
 		return Redirect::route('teacher.teams.edit', $id)
@@ -135,7 +255,7 @@ class TeacherTeamsController extends BaseController {
 	{
 		Team::find($id)->delete();
 
-		return Redirect::route('teacher.teams.index');
+		return Redirect::route('teacher.index');
 	}
 
 }

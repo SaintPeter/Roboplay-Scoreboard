@@ -14,4 +14,21 @@ class Wp_user extends Eloquent {
 	public function usermeta() {
 		return $this->hasMany('Usermeta', 'user_id');
 	}
+
+	public function getName() {
+		return $this->getMeta('first_name') . ' ' . $this->getMeta('last_name');
+	}
+
+	public function getMeta($key, $default = '') {
+		if(empty($this->metadata)) {
+			$this->metadata = $this->usermeta->lists('meta_value', 'meta_key');
+		}
+		if(array_key_exists($key, $this->metadata)) {
+			return $this->metadata[$key];
+		} else {
+			return $default;
+		}
+
+	}
+
 }
