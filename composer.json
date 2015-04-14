@@ -16,7 +16,8 @@
 		"creitive/laravel4-breadcrumbs": "dev-master",
 		"nesbot/Carbon": "*",
 		"easybook/geshi": "dev-master",
-		"doctrine/dbal": "dev-master"
+		"doctrine/dbal": "dev-master",
+		"parsecsv/php-parsecsv": "0.4.5"
 	},
 	"autoload": {
 		"classmap": [
