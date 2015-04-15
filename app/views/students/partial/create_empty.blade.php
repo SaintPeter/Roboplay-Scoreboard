@@ -1,4 +1,5 @@
-<div id="student_{{$index}}" class="vertical-container row">
+<!-- student.partial.create_empty -->
+<div class="vertical-container row student_{{$index}}">
 	@if($index > 0)
 		<hr>
 	@endif

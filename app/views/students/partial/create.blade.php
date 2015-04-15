@@ -1,6 +1,7 @@
-<div id="student_{{$index}}" class="vertical-container row">
+<!-- student.partial.create -->
+<div class="vertical-container row student_{{$index}}">
 	@if(array_key_exists('id', $student))
-		{{ Form::hidden("students[$index][id]", $student['id']) }}
+		{{ Form::hidden("students[$index][id]", $student['id'], [ 'class' => 'student_id' ]) }}
 	@endif
 	@if($index > 0)
 		<hr>
@@ -54,7 +55,7 @@
 </div>
 
 @if (array_key_exists('errors', $student))
-	<div class="row" id="student_{{ $index }}">
+	<div class="row student_{{ $index }}">
 		<ul>
 			@foreach($student['errors'] as $error)
 				<li class="error">{{ $error }}</li>

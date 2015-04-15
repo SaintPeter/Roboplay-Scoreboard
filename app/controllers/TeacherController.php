@@ -67,7 +67,10 @@ class TeacherController extends BaseController {
 
 	// Returns a view with a table of unattached students for a given type
 	public function ajax_student_list($type) {
+		$current_students = Input::get('current_students', []);
+
 		$student_query = Student::where('teacher_id', Auth::user()->ID);
+
 		switch($type) {
 			case 'teams':
 				$student_query = $student_query->has('teams', '=', 0);
@@ -79,6 +82,11 @@ class TeacherController extends BaseController {
 				$student_query = $student_query->has('maths', '=', 0);
 				break;
 		}
+
+		if(count($current_students) > 0) {
+			$student_query = $student_query->whereNotIn('id', $current_students);
+		}
+
 		$student_list = $student_query->get();
 
 		return View::make('students.partial.list')->with(compact('student_list'));
@@ -91,7 +99,6 @@ class TeacherController extends BaseController {
 
 		// Ethnicity List Setup
 		$ethnicity_list = array_merge([ 0 => "- Select Ethnicity -" ], Ethnicity::all()->lists('name','id'));
-
 
 		return View::make('students.partial.edit_list')->with(compact('students', 'ethnicity_list', 'index'));
 	}
@@ -113,7 +120,8 @@ class TeacherController extends BaseController {
 		$csv = new parseCSV(Input::file('csv_file')->getRealPath());
 		$rawData = $csv->data;
 
-		$index = Input::get('index');
+		// Index doesn't matter because things get renumbered in the view
+		$index = 0;
 
 		// Clean up/translate data, fix field names
 		foreach($rawData as $student) {
@@ -139,7 +147,9 @@ class TeacherController extends BaseController {
 			}
 		}
 
-		return View::make('students.partial.edit_list')->with(compact('students', 'ethnicity_list'));
+		$index = Input::get('index');
+
+		return View::make('students.partial.edit_list')->with(compact('students', 'ethnicity_list', 'index'));
 	}
 
 	/**
