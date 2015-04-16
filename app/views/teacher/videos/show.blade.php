@@ -42,7 +42,7 @@
 @stop
 
 @section('main')
-<p>{{ link_to_route('teacher.videos.index', 'Return to Videos' ,[], ['class' => 'btn btn-info']) }}</p>
+<p>{{ link_to_route('teacher.index', 'Return to Team Management' ,[], ['class' => 'btn btn-info']) }}</p>
 <table class="table table-striped table-bordered">
 	<thead>
 		<tr>
@@ -58,7 +58,7 @@
 	<tbody>
 		<tr>
 			<td>{{{ $video->name }}}</td>
-			<td>{{ nl2br($video->students) }}</td>
+			<td>{{ join('<br />', $video->student_list()) }}</td>
 			<td>{{{ $video->has_custom==1 ? 'Has Custom Parts' : 'No Custom Parts' }}}</td>
 			<td class="{{ $video->has_vid==1 ? 'confirmed' : 'unconfirmed' }}">
 					{{ $video->has_vid==1 ? 'Video File' : 'No Video' }} <br />

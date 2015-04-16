@@ -50,13 +50,12 @@
 @if(Roles::isTeacher())
 <h2>Teacher Menu</h2>
 <ul data-role="listview" data-inset="true">
+	<li><a href="/scoreboard/docs/teacher_guide_2015.pdf" data-ajax="false">Teacher Guide</a></li>
 	<li>
-		<a href="{{ route('teacher.teams.index') }}" data-ajax="false">
-			Manage Challenge Teams
-			<p>Not required for Video Submissions</p>
+		<a href="{{ route('teacher.index') }}" data-ajax="false">
+			Manage Teams and Videos
 		</a>
 	</li>
-	<li>{{ link_to_route('teacher.videos.index', 'Manage Videos',array(),  $noajax) }}</li>
 </ul>
 @endif
 

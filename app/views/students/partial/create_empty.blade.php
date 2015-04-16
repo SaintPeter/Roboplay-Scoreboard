@@ -28,7 +28,7 @@
 		</div>
 		<div class="form-group">
 			<label class="sr-only" for="students[{{ $index }}][gender]">Gender</label>
-			{{ Form::select("students[$index][gender]", [ 0 => '- Pick Gender -', 'Male' => 'Male', 'Female' => 'Female' ], [ 'class' => 'form-control' ] ) }}
+			{{ Form::select("students[$index][gender]", [ 0 => '- Pick Gender -', 'Male' => 'Male', 'Female' => 'Female' ], null, [ 'class' => 'form-control' ] ) }}
 		</div>
 		<div class="form-group">
 			<label class="sr-only" for="students[{{ $index }}][ethnicity_id]">Ethnicity</label>

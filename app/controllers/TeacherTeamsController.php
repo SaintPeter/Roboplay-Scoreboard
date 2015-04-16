@@ -9,7 +9,7 @@ class TeacherTeamsController extends BaseController {
 	 */
 	public function index()
 	{
-		Breadcrumbs::addCrumb('Manage Challenge Teams', 'teacher/teams');
+		Breadcrumbs::addCrumb('Manage Challenge Teams', 'teacher');
 		$school_id = Usermeta::getSchoolId();
 		$school = Schools::find($school_id);
 		$invoice = Wp_invoice::with('challenge_division')->where('user_id', Auth::user()->ID)->first();
@@ -37,7 +37,7 @@ class TeacherTeamsController extends BaseController {
 	public function create()
 	{
 		Breadcrumbs::addCrumb('Manage Teams', 'teacher');
-		Breadcrumbs::addCrumb('Add Team', 'create');
+		Breadcrumbs::addCrumb('Add Video', 'create');
 		$school_id = Usermeta::getSchoolId();
 		$school = Schools::find($school_id);
 
@@ -168,7 +168,7 @@ class TeacherTeamsController extends BaseController {
 
 		if (is_null($team))
 		{
-			return Redirect::route('teacher.teams.index');
+			return Redirect::route('teacher.index');
 		}
 
 		$divisions = Division::longname_array();

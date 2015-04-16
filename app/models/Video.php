@@ -7,7 +7,6 @@ class Video extends Eloquent {
 	public static $rules = array(
 		'name' => 'required',
 		'yt_code' => array('required','yt_valid', 'yt_embeddable', 'yt_public'),
-		'students' => 'required',
 		'school_id' => 'required',
 		'vid_division_id' => 'required'
 	);
@@ -81,7 +80,13 @@ class Video extends Eloquent {
 
 	public function student_list()
 	{
-		return "Not Implmented Yet";
+		$student_list = [];
+
+		foreach($this->students as $student) {
+			$student_list[] = $student->fullName();
+		}
+
+		return $student_list;
 	}
 
 	public function general_scores_count()

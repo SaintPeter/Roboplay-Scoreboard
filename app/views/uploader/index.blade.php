@@ -31,7 +31,7 @@
 				var output = document.getElementById('output');
 				var message = document.createElement('div');
 				message.className = 'alert alert-danger';
-				message.innerHTML = '<strong>Error:</strong> File "' + filename + '" file size exceeds limit of 500 MegaBytes.';
+				message.innerHTML = '<strong>Error:</strong> File "' + filename + '" file size exceeds limit of 100 MegaBytes.';
 				output.appendChild(message);
 				return true;
 			},
@@ -114,7 +114,7 @@
 		@endforeach
 	</div>
 	<h4>File Size Limits</h4>
-	<p style="margin-left: 10px;">Files may be up to 500MB. <br />Video Files must be at least 10MB.</p>
+	<p style="margin-left: 10px;">Files may be up to 100MB. <br />Video Files must be at least 10MB.</p>
 	<br />
 	<div id="uploads">
 		<div id="noupload">

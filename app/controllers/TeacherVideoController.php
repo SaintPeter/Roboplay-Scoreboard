@@ -2,13 +2,6 @@
 
 class TeacherVideoController extends BaseController {
 
-	public function __construct()
-	{
-		parent::__construct();
-
-		Breadcrumbs::addCrumb('Manage Videos', 'teacher/videos');
-	}
-
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -42,10 +35,28 @@ class TeacherVideoController extends BaseController {
 	 */
 	public function create()
 	{
+		Breadcrumbs::addCrumb('Manage Teams', 'teacher');
 		Breadcrumbs::addCrumb('Add Video', 'teacher/videos/create');
-		View::share('title', 'Add Video');
-		$vid_divisions = Vid_division::longname_array();
-		return View::make('teacher.videos.create',compact('vid_divisions'));
+		$school_id = Usermeta::getSchoolId();
+		$school = Schools::find($school_id);
+
+		// Create a list of Divisions to choose from
+		$competitions = Vid_competition::where('event_end', ">", Carbon\Carbon::now())->with(
+									[ 'divisions' => function($q) {
+											return $q->orderby('display_order');
+										} ] )
+									->get();
+
+		foreach($competitions as $competition) {
+			foreach($competition->divisions as $division) {
+				$division_list[$competition->name][$division->id] = $division->name;
+			}
+		}
+
+		// Ethnicity List Setup
+		$ethnicity_list = array_merge([ 0 => "- Select Ethnicity -" ], Ethnicity::all()->lists('name','id'));
+
+		return View::make('teacher.videos.create',compact('division_list', 'ethnicity_list'));
 	}
 
 	/**
@@ -55,23 +66,61 @@ class TeacherVideoController extends BaseController {
 	 */
 	public function store()
 	{
-		$input = Input::all();
+		$input = Input::except('students');
 		$input['school_id'] = Usermeta::getSchoolId();
-		$invoice = Wp_invoice::where('user_id', Auth::user()->ID)->first();
-		$input['vid_division_id'] = $invoice->vid_division_id;
+		$input['teacher_id'] = Auth::user()->ID;
+		$input['year'] = Carbon\Carbon::now()->year;
 
-		$validation = Validator::make($input, Video::$rules);
+		$students = Input::get('students');
 
-		if ($validation->passes())
+		$videoErrors = Validator::make($input, Video::$rules);
+
+		if ($videoErrors->passes())
 		{
-			$video = Video::create($input);
+			if(!empty($students)) {
+				$students_pass = true;
+				foreach ($students as $index => $student) {
+				 	 $studentErrors[$index] = Validator::make($student, Student::$rules);
+				 	 if($studentErrors[$index]->fails()) {
+				 	 	$students_pass = false;
+				 	 	$students[$index]['errors'] = $studentErrors[$index]->messages()->all();
+				 	}
+				}
 
-			return Redirect::route('teacher.videos.show', $video->id);
+				if($students_pass) {
+					$newvideo = video::create($input);
+					$sync_list = [];
+
+					foreach ($students as $index => &$student) {
+						$student['teacher_id'] = Auth::user()->ID;
+						$student['year'] = Carbon\Carbon::now()->year;
+						if(array_key_exists('id', $student)) {
+							$newStudent = Student::find($student['id']);
+							$newStudent->update($student);
+						} else {
+							$newStudent = Student::create($student);
+						}
+						$sync_list[] = $newStudent->id;
+					}
+					$newvideo->students()->sync($sync_list);
+					return Redirect::route('teacher.index');
+				} else {
+					return Redirect::route('teacher.videos.create')
+						->withInput(Input::except('students'))
+						->with('students', $students)
+						->with('message', 'There were validation errors.');
+				}
+			} else {
+				// No students, just create the team
+				Video::create($input);
+				return Redirect::route('teacher.index');
+			}
 		}
 
 		return Redirect::route('teacher.videos.create')
-			->withInput()
-			->withErrors($validation)
+			->withInput(Input::except('students'))
+			->with('students', $students)
+			->withErrors($videoErrors)
 			->with('message', 'There were validation errors.');
 	}
 
@@ -98,16 +147,45 @@ class TeacherVideoController extends BaseController {
 	 */
 	public function edit($id)
 	{
-		Breadcrumbs::addCrumb('Edit Video', 'teacher/videos/edit');
+		Breadcrumbs::addCrumb('Manage Teams', 'teacher');
+		Breadcrumbs::addCrumb('Edit Video', $id);
 		View::share('title', 'Edit Video');
-		$video = Video::with('vid_division')->find($id);
+		$video = video::with('students')->find($id);
+
+		// Create a list of Divisions to choose from
+		$competitions = Vid_competition::where('event_end', '>', Carbon\Carbon::now())->with(
+									[ 'divisions' => function($q) {
+											return $q->orderby('display_order');
+										} ] )
+									->get();
+
+		foreach($competitions as $competition) {
+			foreach($competition->divisions as $division) {
+				$division_list[$competition->name][$division->id] = $division->name;
+			}
+		}
+
+		// Student Setup
+		$ethnicity_list = array_merge([ 0 => "- Select Ethnicity -" ], Ethnicity::all()->lists('name','id'));
+		if(!Session::has('students')) {
+			// On first load we populate the form from the DB
+			$students = $video->students;
+		} else {
+			// On subsequent loads or errors, use the sessions variable
+			$students = [];
+		}
+		$index = -1;
+
 
 		if (is_null($video))
 		{
-			return Redirect::route('teacher.videos.index');
+			return Redirect::route('teacher.index');
 		}
 
-		return View::make('teacher.videos.edit', compact('video'));
+		$divisions = Division::longname_array();
+
+		return View::make('teacher.videos.edit', compact('video','students', 'division_list', 'ethnicity_list', 'index'))
+				   ->with('divisions', $divisions);
 	}
 
 	/**
@@ -118,19 +196,58 @@ class TeacherVideoController extends BaseController {
 	 */
 	public function update($id)
 	{
-		$input = array_except(Input::all(), '_method');
+		$input = Input::except('_method', 'students');
 		$input['school_id'] = Usermeta::getSchoolId();
-		$invoice = Wp_invoice::where('user_id', Auth::user()->ID)->first();
-		$input['vid_division_id'] = $invoice->vid_division_id;
+		$input['teacher_id'] = Auth::user()->ID;
+		$input['year'] = Carbon\Carbon::now()->year;
 
-		$validation = Validator::make($input, Video::$rules);
+		$students = Input::get('students');
 
-		if ($validation->passes())
+		$videoValidation = Validator::make($input, Video::$rules);
+
+		if ($videoValidation->passes())
 		{
-			$video = Video::find($id);
-			$video->update($input);
+			if(!empty($students)) {
+				$students_pass = true;
+				foreach ($students as $index => $student) {
+				 	 $studentErrors[$index] = Validator::make($student, Student::$rules);
+				 	 if($studentErrors[$index]->fails()) {
+				 	 	$students_pass = false;
+				 	 	$students[$index]['errors'] = $studentErrors[$index]->messages()->all();
+				 	}
+				}
 
-			return Redirect::route('teacher.videos.show', $id);
+				if($students_pass) {
+					$video = video::find($id);
+					$video->update($input);
+
+					foreach ($students as $index => &$student) {
+						$student['teacher_id'] = Auth::user()->ID;
+						$student['year'] = Carbon\Carbon::now()->year;
+						if(array_key_exists('id', $student)) {
+							$newStudent = Student::find($student['id']);
+							$newStudent->update($student);
+						} else {
+							$newStudent = Student::create($student);
+						}
+						$sync_list[] = $newStudent->id;
+					}
+					$video->students()->sync($sync_list);
+					return Redirect::route('teacher.index');
+				} else {
+					return Redirect::route('teacher.videos.edit', $id)
+						->withInput(Input::except('students'))
+						->with('students', $students)
+						->with('message', 'There were validation errors.');
+				}
+			} else {
+				// No students, just update the video
+				$video = video::find($id);
+				$video->update($input);
+				return Redirect::route('teacher.index');
+			}
+
+			return Redirect::route('teacher.index');
 		}
 
 		return Redirect::route('teacher.videos.edit', $id)

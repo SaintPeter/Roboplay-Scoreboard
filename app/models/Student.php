@@ -11,7 +11,7 @@ class Student extends \Eloquent {
 		'gender' => 'required|not_in:0',
 		'ethnicity_id' => 'required|exists:ethnicities,id',
 		'grade' => 'required|numeric|min:5|max:14',
-		'email' => 'sometimes|required|email'
+		'email' => 'sometimes|email'
 	];
 
 	// Relationships
