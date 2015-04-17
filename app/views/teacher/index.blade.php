@@ -88,8 +88,7 @@
 			<thead>
 				<tr>
 					<th>County/District/School</th>
-					<th>Challenge/Division</th>
-					<th>Videos (Used)</th>
+					<th>Teams (Paid For)</th>
 					<th>Status</th>
 				</tr>
 			</thead>
@@ -101,17 +100,9 @@
 						<strong>S:</strong> {{ $school->name }}
 					</td>
 					<td>
-						@if(isset($invoice->vid_division))
-							{{ $invoice->vid_division->competition->name }}<br />
-							{{ $invoice->vid_division->name }}
-						@else
-							No Division Set
-						@endif
-					</td>
-					<td>
-						<strong>RoboPlay:</strong> {{ $teams->count() }}
+						<strong>Challenge:</strong> {{ $teams->count() }}
 							({{ $invoice->getData('Challenge', 0) + $invoice->getData('Challenge2', 0) }}) <br />
-						<strong>Videos:</strong> {{ $videos->count() }}
+						<strong>Video:</strong> {{ $videos->count() }}
 							({{ $invoice->getData('Video', 0) }})<br />
 						<strong>Math:</strong> {{ $math->count() }}
 							({{ $invoice->getData('PreMath', 0) + $invoice->getData('AlgMath', 0) }})
@@ -122,7 +113,7 @@
 		</table>
 	</div>
 
-	<h1>Manage Teams</h1>
+	<h1>Manage Teams and Videos</h1>
 	<h2>{{ $school->name }}</h2>
 	<div class="clear"></div>
 </div>
@@ -146,6 +137,7 @@
 		<tr>
 			<th>Name</th>
 			<th>Students</th>
+			<th>Division</th>
 			<th>Actions</th>
 		</tr>
 	</thead>
@@ -156,6 +148,7 @@
 				<tr>
 					<td>{{{ $team->name }}}</td>
 					<td>{{ join('<br />', $team->student_list()) }}</td>
+					<td>{{ $team->division->longname() }}</td>
 	                <td>{{ link_to_route('teacher.teams.edit', 'Edit', array($team->id), array('class' => 'btn btn-info')) }}
 	                	&nbsp;
 	                    {{ Form::open(array('method' => 'DELETE', 'route' => array('teacher.teams.destroy', $team->id), 'id' => 'team_delete_form_' . $team->id, 'style' => 'display: inline-block;')) }}
@@ -185,7 +178,7 @@
 	<table class="table table-striped table-bordered">
 		<thead>
 			<tr>
-				<th>Name</th>
+				<th>Name/Division</th>
 				<th>Students</th>
 				<th>YouTube</th>
 				<th>Custom Parts</th>
@@ -199,8 +192,8 @@
 			@if ($videos->count())
 				@foreach ($videos as $video)
 					<tr>
-						<td>{{{ $video->name }}}</td>
-						<td>{{ $video->student_count() }}</td>
+						<td>{{{ $video->name }}}<br />{{{ $video->vid_division->longname() }}}</td>
+						<td>{{ join('<br />', $team->student_list()) }}</td>
 						<td><a href="http://youtube.com/watch?v={{{ $video->yt_code }}}" target="_new">YouTube</a></td>
 						<td>{{{ $video->has_custom==1 ? 'Yes' : 'No' }}}</td>
 						<td>{{ count($video->files) }}</td>

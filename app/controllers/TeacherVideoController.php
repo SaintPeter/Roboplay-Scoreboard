@@ -35,7 +35,7 @@ class TeacherVideoController extends BaseController {
 	 */
 	public function create()
 	{
-		Breadcrumbs::addCrumb('Manage Teams', 'teacher');
+		Breadcrumbs::addCrumb('Manage Teams and Videos', 'teacher');
 		Breadcrumbs::addCrumb('Add Video', 'teacher/videos/create');
 		$school_id = Usermeta::getSchoolId();
 		$school = Schools::find($school_id);
@@ -133,6 +133,7 @@ class TeacherVideoController extends BaseController {
 	public function show($id)
 	{
 		View::share('title', 'Video Preview');
+		Breadcrumbs::addCrumb('Manage Teams and Videos', 'teacher');
 		Breadcrumbs::addCrumb('Video Preview', 'teacher/videos/create');
 		$video = Video::with('school', 'school.district', 'school.district.county')->findOrFail($id);
 
@@ -147,7 +148,7 @@ class TeacherVideoController extends BaseController {
 	 */
 	public function edit($id)
 	{
-		Breadcrumbs::addCrumb('Manage Teams', 'teacher');
+		Breadcrumbs::addCrumb('Manage Teams and Videos', 'teacher');
 		Breadcrumbs::addCrumb('Edit Video', $id);
 		View::share('title', 'Edit Video');
 		$video = video::with('students')->find($id);

@@ -36,7 +36,7 @@ class TeacherTeamsController extends BaseController {
 	 */
 	public function create()
 	{
-		Breadcrumbs::addCrumb('Manage Teams', 'teacher');
+		Breadcrumbs::addCrumb('Manage Teams and Videos', 'teacher');
 		Breadcrumbs::addCrumb('Add Video', 'create');
 		$school_id = Usermeta::getSchoolId();
 		$school = Schools::find($school_id);
@@ -136,7 +136,7 @@ class TeacherTeamsController extends BaseController {
 	 */
 	public function edit($id)
 	{
-		Breadcrumbs::addCrumb('Manage Challenge Teams', 'teacher/teams');
+		Breadcrumbs::addCrumb('Manage Teams and Videos', 'teacher');
 		Breadcrumbs::addCrumb('Edit Team', $id);
 		View::share('title', 'Edit Team');
 		$team = Team::with('students')->find($id);
