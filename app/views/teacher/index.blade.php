@@ -158,7 +158,7 @@
 				</tr>
 			@endforeach
 		@else
-			<tr><td colspan="3" class="text-center">No Teams Created</td></tr>
+			<tr><td colspan="4" class="text-center">No Teams Created</td></tr>
 		@endif
 
 	</tbody>
