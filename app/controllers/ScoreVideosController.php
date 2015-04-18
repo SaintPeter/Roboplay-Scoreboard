@@ -1,12 +1,12 @@
 <?PHP
 
 define('VG_GENERAL', 1);
-define('VG_PART', 2);
+define('VG_CUSTOM', 2);
 define('VG_COMPUTE', 3);
 
 class ScoreVideosController extends \BaseController {
 	public $group_names = [ VG_GENERAL => "General",
-							VG_PART    => "Custom Part",
+							VG_CUSTOM    => "Custom Part",
 							VG_COMPUTE => "Computational Thinking" ];
 
 	public function __construct()
@@ -40,18 +40,25 @@ class ScoreVideosController extends \BaseController {
 		}
 
 		// Get a list of all videos this judge has scored
-		$video_scores = Video_scores::with('division', 'division.competition')
-							->where('judge_id', Auth::user()->ID)
-							->orderBy('total', 'desc')
-							->get();
+		if(!empty($div_list)) {
+			$video_scores = Video_scores::with('division', 'division.competition')
+								->where('judge_id', Auth::user()->ID)
+								->whereIn('vid_division_id', $div_list)
+								->orderBy('total', 'desc')
+								->get();
+		} else {
+			$video_scores = [];
+		}
 		$videos = [];
 		$types = Vid_score_type::orderBy('id')->lists('name', 'id');
 
+		// Create blank list of scores
 		$blank = array_combine(array_keys($types), array_fill(0, count($types), '-'));
 		foreach($video_scores as $score) {
 			$videos[$score->division->longname()][$score->video->name] = $blank;
 		}
 
+		// Populate score list with actual scores
 		$scored_count = array_combine(array_keys($this->group_names), array_fill(0, count($this->group_names), 0));
 		foreach($video_scores as $score) {
 			$videos[$score->division->longname()][$score->video->name][$score->vid_score_type_id] = $score;
@@ -64,24 +71,45 @@ class ScoreVideosController extends \BaseController {
 
 		if(count($div_list) > 0) {
 			$total_count[VG_GENERAL] = Video::whereIn('vid_division_id', $div_list)->count();
-			$total_count[VG_PART] = Video::whereIn('vid_division_id', $div_list)->where('has_custom', true)->count();
+			$total_count[VG_CUSTOM] = Video::whereIn('vid_division_id', $div_list)->where('has_custom', true)->count();
 			$total_count[VG_COMPUTE] = Video::whereIn('vid_division_id', $div_list)->where('has_code', true)->count();
 		} else {
 			$total_count[VG_GENERAL] = 0;
-			$total_count[VG_PART] = 0;
+			$total_count[VG_CUSTOM] = 0;
 			$total_count[VG_COMPUTE] = 0;
 		}
 
-		//dd($total_count);
+		// Setup toggle boxes based on cookie
+		$judge_compute = Cookie::get('judge_compute',0) ? 'checked="checked"' : '';
+		$judge_custom = Cookie::get('judge_custom',0) ? 'checked="checked"' : '';
+
+		//dd($judge_compute, $judge_custom);
 
 		View::share('title', 'Judge Videos');
-		return View::make('video_scores.index', compact('videos', 'comp_list', 'types', 'total_count', 'scored_count'));
+		return View::make('video_scores.index', compact('videos', 'comp_list', 'types', 'total_count', 'scored_count', 'judge_compute', 'judge_custom'));
 	}
 
 	// Choose an appopriate video for judging
 	// Display video to be judged
-	public function dispatch($video_group)
+	public function dispatch()
 	{
+		// Get toggle statuses
+		if(Input::has('judge_compute')) {
+			Cookie::queue('judge_compute', 1, 5 * 365 * 24 * 60 * 60);
+			$judge_compute = true;
+		} else {
+			Cookie::queue('judge_compute', null, -1);
+			$judge_compute = false;
+		}
+
+		if(Input::has('judge_custom')) {
+			Cookie::queue('judge_custom', 1, 5 * 365 * 24 * 60 * 60);
+			$judge_custom = true;
+		} else {
+			Cookie::queue('judge_custom', null, -1);
+			$judge_custom = false;
+		}
+
 		// Get a list of active Video Competitions
 		$comps = Vid_competition::with('divisions')
 								->where('event_start', '<=', date('Y-m-d'))
@@ -93,17 +121,8 @@ class ScoreVideosController extends \BaseController {
 		}
 
 		// Get all the videos and any comments for this score group
-		$video_query = Video::with([ 'scores' => function($q) use ($video_group) {
-							$q->where('video_scores.score_group', $video_group);
-						}])
-						->whereIn('vid_division_id', $divs);
-		if($video_group == VG_PART) {
-			$all_videos = $video_query->where('has_custom', 1)->get();
-		} elseif ($video_group == VG_COMPUTE) {
-			$all_videos = $video_query->where('has_code', 1)->get();
-		} else {
-		 	$all_videos = $video_query->get();
-		}
+		$all_videos = Video::with('scores')->whereIn('vid_division_id', $divs)->get();
+
 		//dd(DB::getQueryLog());
 //		echo "<pre>";
 //		foreach($all_videos as $video) {
@@ -111,6 +130,7 @@ class ScoreVideosController extends \BaseController {
 //		}
 //		echo "</pre>";
 
+		// Remove videos which have no scores or which this judge has scored before
 		$filtered = $all_videos->filter(function($video) {
 			if(count($video->scores) == 0) {
 				// Videos with no scores stay on the list
@@ -125,36 +145,56 @@ class ScoreVideosController extends \BaseController {
 			}
 		});
 
-//		echo "<pre>";
+//		echo "Filtered: <br/><pre>";
 //		foreach($filtered as $video) {
-//			echo $video->id . " - scores: " . count($video->scores) . "<br />";
+//			echo $video->id . " - scores: " . count($video->scores) . " Custom: {$video->has_custom} Code: {$video->has_code} - {$video->name}<br />";
 //		}
 //		echo "</pre>";
 
 		if(count($filtered) == 0) {
-			return Redirect::route('video.judge.index')->with('message', 'You cannot judge any more of this type of video.');
+			return Redirect::route('video.judge.index')->with('message', 'You cannot judge any more videos.');
 		}
 
+		// Sort by Custom Part, Code, then by score count
+		// In this code minus is used as a stand in for the non-existant spaceship operator <=>
 		$sorted = $filtered->sort( function ($a, $b) {
-				$count_a = count($a->scores);
-				$count_b = count($b->scores);
-			    if ($count_a == $count_b) {
-			        return 0;
-			    }
-			    return ($count_a < $count_b) ? -1 : 1;
+				// Has Custom?
+				$has_custom = $b->has_custom - $a->has_custom;
+				//echo "Custom Test: {$a->id}, {$b->id}: $has_custom<br/>";
+				if($has_custom == 0) {
+					// Custom is the same, check code
+					$has_code = $b->has_code - $a->has_code;
+					//echo "Code Test: {$a->id}, {$b->id}: $has_code<br/>";
+					if($has_code == 0) {
+						// Code is the same, check count
+						//echo "Count Test: {$a->id}, {$b->id}: " . (count($a->scores) - count($b->scores)) . "<br/>";
+						return count($a->scores) - count($b->scores);
+					} else {
+						return $has_code;
+					}
+				} else {
+					// Custom Differs
+					return $has_custom;
+				}
 			});
 
-		//$video = Video::find($video_list[0]->id);
+//		echo "Sorted:<br/><pre>";
+//		foreach($sorted as $video) {
+//			echo $video->id . " - scores: " . count($video->scores) . " Custom: {$video->has_custom} Code: {$video->has_code} - {$video->name}<br />";
+//		}
+//		echo "</pre>";
+//		exit;
+
+		// The top item on the list gets scored next
 		$video = $sorted->first();
-		//$types = Vid_score_type::where('group', $video_group)->with('Rubric')->get();
 
 		//return View::make('video_scores.create', compact('video', 'types'));
-		return Redirect::route('video.judge.score', [ 'video_id' => $video->id, 'video_group' => $video_group ] );
+		return Redirect::route('video.judge.score', [ 'video_id' => $video->id, 'no-cache' => microtime() ] );
 
 	}
 
 	// Score a Specific Video/Video Group combination
-	public function score($video_id, $video_group) {
+	public function score($video_id) {
 		Breadcrumbs::addCrumb('Score Video', 'score');
 		View::share('title', 'Score Video');
 
@@ -165,16 +205,31 @@ class ScoreVideosController extends \BaseController {
 							->with('message', "Invalid video id '$video_id'.  Video no longer exists or another error occured.");
 		}
 
+		// We always score general
+		$video_types = [ VG_GENERAL ];
+
+		// Judge Custom Parts
+		if(Cookie::has('judge_custom')) {
+			$video_types[] = VG_CUSTOM;
+		}
+
+		// Judge Computational Thinking
+		if(Cookie::has('judge_compute')) {
+			$video_types[] = VG_COMPUTE;
+		}
+
+		// Ensure we have not already scored this video
 		$score_count = Video_scores::where('video_id', $video_id)
-								   ->where('score_group', $video_group)
+								   ->whereIn('score_group', $video_types)
 								   ->where('judge_id', Auth::user()->ID)
 								   ->count();
+
 		if($score_count > 0) {
 			return Redirect::route('video.judge.edit', [ 'video_id' => $video_id ])
 							->with('message', 'You already scored this video.  Switched to Edit Mode.');
 		}
 
-		$types = Vid_score_type::where('group', $video_group)->with('Rubric')->get();
+		$types = Vid_score_type::whereIn('group', $video_types)->with('Rubric')->get();
 
 		return View::make('video_scores.create', compact('video', 'types'));
 	}
@@ -289,7 +344,7 @@ class ScoreVideosController extends \BaseController {
 		$groups = [ ];
 		$groups = array_keys($scores->lists('score_group', 'score_group'));
 
-		//$missing_groups = array_diff([ VG_COMPUTE, VG_GENERAL, VG_PART ], $groups);
+		//$missing_groups = array_diff([ VG_COMPUTE, VG_GENERAL, VG_CUSTOM ], $groups);
 
 		$types = Vid_score_type::whereIn('group', $groups)->with('Rubric')->get();
 		//dd($types);
@@ -329,6 +384,20 @@ class ScoreVideosController extends \BaseController {
 		}
 
 		return Redirect::route('video.judge.index');
+	}
+
+	// Clear scores for a specific video and judge
+	public function clear_scores($video_id, $judge_id) {
+		// Only owners may clear their own scores, or admins
+		if(Roles::isAdmin() OR $judge_id == Auth::user()->ID) {
+			Video_scores::where('video_id', $video_id)->where('judge_id', $judge_id)->delete();
+
+			return Redirect::route('video.judge.index')->with('message', 'Score Cleared');
+
+		} else {
+			return Redirect::route('video.judge.index')->with('message','You do not have permission to clear these scores');
+		}
+
 	}
 
 	/**

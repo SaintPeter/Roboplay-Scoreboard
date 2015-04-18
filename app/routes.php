@@ -195,10 +195,10 @@ Route::group(array('before' => 'auth'), function() {
 		Route::get('video/judge/{video_id}/show', [
 					'as' => 'video.judge.show',
 					'uses' => 'ScoreVideosController@show' ]);
-		Route::get('video/judge/dispatch/{video_group}', [
+		Route::get('video/judge/dispatch', [
 					'as' => 'video.judge.dispatch',
 					'uses' => 'ScoreVideosController@dispatch' ]);
-		Route::get('video/judge/score/{video_id}/{video_group}', [
+		Route::get('video/judge/score/{video_id}', [
 					'as' => 'video.judge.score',
 					'uses' => 'ScoreVideosController@score' ]);
 		Route::post('video/judge/store/{video_id}', [
@@ -207,6 +207,9 @@ Route::group(array('before' => 'auth'), function() {
 		Route::post('video/judge/update/{video_id}', [
 					'as' => 'video.judge.update',
 					'uses' => 'ScoreVideosController@update' ]);
+		Route::get('video/judge/clear/{video_id}/{judge_id}', [
+					'as' => 'video.judge.clear_scores',
+					'uses' => 'ScoreVideosController@clear_scores' ]);
 	});
 
 	// ---------------- Teacher Stuff ---------------------------

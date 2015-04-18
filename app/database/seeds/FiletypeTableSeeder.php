@@ -21,7 +21,18 @@ class FiletypeTableSeeder extends Seeder {
 	Filetype::create([ 'ext' => 'docx',	'type' => 'doc',	'name' => 'Document',	'language' => '' ]);
 	Filetype::create([ 'ext' => 'pdf',	'type' => 'doc',	'name' => 'Document',	'language' => '' ]);
 	Filetype::create([ 'ext' => 'txt',	'type' => 'doc',	'name' => 'Document',	'language' => '' ]);
-
+	Filetype::create([ 'ext' =>  'wmv', 'type' =>  'video', 'name' =>  'Video File', 'language' => '' ]);
+	Filetype::create([ 'ext' =>  'asm', 'type' =>  'cad', 'name' =>  'CAD File', 'language' => '' ]);
+	Filetype::create([ 'ext' =>  'prt', 'type' =>  'cad', 'name' =>  'CAD File', 'language' => '' ]);
+	Filetype::create([ 'ext' =>  'step', 'type' =>  'cad', 'name' =>  'CAD File', 'language' => '' ]);
+	Filetype::create([ 'ext' =>  'stp', 'type' =>  'cad', 'name' =>  'CAD File', 'language' => '' ]);
+	Filetype::create([ 'ext' =>  'dxf', 'type' =>  'cad', 'name' =>  'CAD File', 'language' => '' ]);
+	Filetype::create([ 'ext' =>  'igs', 'type' =>  'cad', 'name' =>  'CAD File', 'language' => '' ]);
+	Filetype::create([ 'ext' =>  'stl', 'type' =>  'cad', 'name' =>  'CAD File', 'language' => '' ]);
+	Filetype::create([ 'ext' =>  'acis', 'type' =>  'cad', 'name' =>  'CAD File', 'language' => '' ]);
+	Filetype::create([ 'ext' =>  'catpart', 'type' =>  'cad', 'name' =>  'CAD File', 'language' => '' ]);
+	Filetype::create([ 'ext' =>  'ipt', 'type' =>  'cad', 'name' =>  'CAD File', 'language' => '' ]);
+	Filetype::create([ 'ext' =>  'iam', 'type' =>  'cad', 'name' =>  'CAD File', 'language' => '' ]);
 	}
 
 }
