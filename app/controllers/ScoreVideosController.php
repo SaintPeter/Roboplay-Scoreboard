@@ -1,9 +1,5 @@
 <?PHP
 
-define('VG_GENERAL', 1);
-define('VG_CUSTOM', 2);
-define('VG_COMPUTE', 3);
-
 class ScoreVideosController extends \BaseController {
 	public $group_names = [ VG_GENERAL => "General",
 							VG_CUSTOM    => "Custom Part",
@@ -155,19 +151,20 @@ class ScoreVideosController extends \BaseController {
 			return Redirect::route('video.judge.index')->with('message', 'You cannot judge any more videos.');
 		}
 
-		// Sort by Custom Part, Code, then by score count
+		// Sort videos to determine which one gets scored next
 		// In this code minus is used as a stand in for the non-existant spaceship operator <=>
-		$sorted = $filtered->sort( function ($a, $b) {
+		// Logic:
+		//   Top priority is custom parts.  Sort Descending.  Ignore if judge doesn't score custom.
+		//   Second priority is code.  Sort Descending.  Ignore if judge doesn't score code.
+		//   Third Priority is everything else.  Sort by count of scores, ascending.
+		$sorted = $filtered->sort( function ($a, $b) use ($judge_compute, $judge_custom){
 				// Has Custom?
 				$has_custom = $b->has_custom - $a->has_custom;
-				//echo "Custom Test: {$a->id}, {$b->id}: $has_custom<br/>";
-				if($has_custom == 0) {
+				if($has_custom == 0 OR !$judge_custom) {
 					// Custom is the same, check code
 					$has_code = $b->has_code - $a->has_code;
-					//echo "Code Test: {$a->id}, {$b->id}: $has_code<br/>";
-					if($has_code == 0) {
+					if($has_code == 0 OR !$judge_compute) {
 						// Code is the same, check count
-						//echo "Count Test: {$a->id}, {$b->id}: " . (count($a->scores) - count($b->scores)) . "<br/>";
 						return count($a->scores) - count($b->scores);
 					} else {
 						return $has_code;
