@@ -115,7 +115,7 @@ class Vid_competitionsController extends BaseController {
 			$vid_competition = $this->vid_competition->find($id);
 			$vid_competition->update($input);
 
-			return Redirect::route('vid_competitions.show', $id);
+			return Redirect::route('vid_competitions.index');
 		}
 
 		return Redirect::route('vid_competitions.edit', $id)
