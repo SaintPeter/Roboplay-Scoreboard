@@ -95,6 +95,9 @@
 
 {{ Form::open(['route' => [ 'video.judge.store', $video->id ] ]) }}
 <table class="score_table">
+	<tr>
+		<td colspan="5">@include('teacher.videos.partial.tags', [ 'video' => $video ])</td>
+	</tr>
 	@foreach($types as $type)
 		<tr class="title_row">
 			<td class="name_col">{{ $type->display_name }}</td>

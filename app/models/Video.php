@@ -73,7 +73,7 @@ class Video extends Eloquent {
 	}
 
 	public function comments() {
-		return $this->belongsTo('Video_comments');
+		return $this->belongsTo('Video_comment');
 	}
 
 	// Methods

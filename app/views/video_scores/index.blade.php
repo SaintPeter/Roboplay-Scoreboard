@@ -6,6 +6,11 @@
 @stop
 
 @section('style')
+.comment {
+	background-image: url(/scoreboard/css/images/comment_mark.png);
+	background-position: top right;
+	background-repeat: no-repeat;
+}
 .holder {
 	border: 1px solid gray;
 	border-radius: 4px;
@@ -82,6 +87,15 @@
 td.score:nth-child(odd) {
 	background-color: rgb(245, 245, 245);
 }
+@stop
+
+@section('script')
+$(document).tooltip({
+	content: function (callback) {
+		callback($(this).prop('title'));
+	}
+});
+
 @stop
 
 @section('main')
@@ -174,12 +188,24 @@ td.score:nth-child(odd) {
 					</tr>
 					@foreach($video_list as $vid_title => $scores)
 						<tr class="score_row">
-							<td>
-								<a href="{{ route('video.judge.edit', [ $scores['video_id'] ]) }}">
-									<span class="glyphicon glyphicon-edit"></span>
+							 @if($scores['flag'] == FLAG_NORMAL)
+								<td>
+									<a href="{{ route('video.judge.edit', [ $scores['video_id'] ]) }}">
+										<span class="glyphicon glyphicon-edit"></span>
+										<strong>{{ $vid_title }}</strong>
+									</a>
+								</td>
+							@elseif($scores['flag'] == FLAG_REVIEW)
+								<td class="comment text-warning" title="<strong>Video Under Review</strong>">
+									<span class="glyphicon glyphicon-exclamation-sign"></span>
 									<strong>{{ $vid_title }}</strong>
-								</a>
-							</td>
+								</td>
+							@else
+								<td class="comment text-danger" title="<strong>Video Disqualified</strong>">
+									<span class="glyphicon glyphicon-remove"></span>
+									<strong>{{ $vid_title }}</strong>
+								</td>
+							@endif
 								@foreach($types as $index => $type)
 									@if($scores[$index] == '-')
 										<td class="score">-</td>

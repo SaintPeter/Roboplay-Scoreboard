@@ -22,6 +22,10 @@
 	height: 100%;
 	float: none;
 }
+
+.indent {
+	margin-left: 20px;
+}
 @stop
 
 @include('students.partial.js', [ 'type' => 'teams' ])
@@ -50,10 +54,40 @@
 	    </ul>
 	</div>
 
-	<div class="form-group">
-	    {{ Form::label('has_custom', 'Has a Custom Part:') }}
-	    {{ Form::select('has_custom', [ 0 => 'No', 1 => 'Yes' ], $video->has_custom) }}
+{{ Form::label('',"Content Tags") }}
+	<div class="indent">
+		<div class="checkbox">
+			<label>
+				{{ Form::hidden('has_story', 0) }}
+				{{ Form::checkbox('has_story', 1, $video->has_story) }} Storyline
+			</label>
+		</div>
+
+		<div class="checkbox">
+			<label>
+				{{ Form::hidden('has_choreo', 0) }}
+				{{ Form::checkbox('has_choreo', 1, $video->has_choreo) }} Choreography
+			</label>
+		</div>
+
+		<div class="checkbox">
+			<label>
+				{{ Form::hidden('has_task', 0) }}
+				{{ Form::checkbox('has_task', 1, $video->has_task) }} Interesting Task
+			</label>
+		</div>
+
+		<div class="checkbox">
+			<label>
+				{{ Form::hidden('has_custom', 0) }}
+				{{ Form::checkbox('has_custom',1, $video->has_custom) }} Custom Designed Part
+			</label>
+		</div>
 	</div>
+		<p><strong>Note:</strong><br/>These tags act as hints to judges about the content of your videos.  <br />
+			Each video will be scored on all areas regardless of tags, except for "Custom part", <br />
+			which must be flagged to be judged for that category.<br/>
+			Computational Thinking will automatically be tagged when the video's code is uploaded.</p>
 
 	<div class="form-group">
 		{{ Form::label('student_form', 'Students:') }}

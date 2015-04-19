@@ -37,7 +37,7 @@ class ScoreVideosController extends \BaseController {
 
 		// Get a list of all videos this judge has scored
 		if(!empty($div_list)) {
-			$video_scores = Video_scores::with('division', 'division.competition')
+			$video_scores = Video_scores::with('division', 'division.competition', 'video', 'video.comments')
 								->where('judge_id', Auth::user()->ID)
 								->whereIn('vid_division_id', $div_list)
 								->orderBy('total', 'desc')
@@ -59,6 +59,7 @@ class ScoreVideosController extends \BaseController {
 		foreach($video_scores as $score) {
 			$videos[$score->division->longname()][$score->video->name][$score->vid_score_type_id] = $score;
 			$videos[$score->division->longname()][$score->video->name]['video_id'] = $score->video_id;
+			$videos[$score->division->longname()][$score->video->name]['flag'] = $score->video->flag;
 			$scored_count[$score->score_group]++;
 		}
 
@@ -116,8 +117,8 @@ class ScoreVideosController extends \BaseController {
 			$divs = array_merge($divs, $comp->divisions->lists('id'));
 		}
 
-		// Get all the videos and any comments for this score group
-		$all_videos = Video::with('scores')->whereIn('vid_division_id', $divs)->get();
+		// Get all the videos and their scores were the video is not flagged for review or disqualified
+		$all_videos = Video::with('scores')->where('flag',FLAG_NORMAL)->whereIn('vid_division_id', $divs)->get();
 
 		//dd(DB::getQueryLog());
 //		echo "<pre>";
