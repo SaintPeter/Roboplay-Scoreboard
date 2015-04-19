@@ -190,7 +190,7 @@ class ScoreVideosController extends \BaseController {
 
 	}
 
-	// Score a Specific Video/Video Group combination
+	// Score a Specific Video combination
 	public function score($video_id) {
 		Breadcrumbs::addCrumb('Score Video', 'score');
 		View::share('title', 'Score Video');
@@ -277,7 +277,7 @@ class ScoreVideosController extends \BaseController {
 	 */
 	public function store($video_id)
 	{
-		$input = Input::all();
+		$input = Input::except('report_problem','comment');
 		$video = Video::find($video_id);
 
 		foreach($input['scores'] as $type => $score) {
@@ -287,6 +287,22 @@ class ScoreVideosController extends \BaseController {
 			$score['judge_id'] = Auth::user()->ID;
 			Video_scores::create($score);
 		}
+
+		// Deal with problem reports
+		if(Input::has('report_problem') AND Input::has('comment')) {
+			$video_comment['video_id'] = $video->id;
+			$video_comment['judge_id'] = Auth::user()->ID;
+			$video_comment['comment'] = Input::get('comment', '--No Comment Entered--');
+
+			Video_comment::create($video_comment);
+
+			// Flag the video for Review
+			$video->flag = FLAG_REVIEW;
+			$video->save();
+
+			// TODO:  E-mail admin to let them know a video has been flagged
+		}
+
 
 		return Redirect::route('video.judge.index');
 	}
@@ -378,6 +394,21 @@ class ScoreVideosController extends \BaseController {
 			$score['judge_id'] = Auth::user()->ID;
 			$this_score = Video_scores::find($score['id']);
 			$this_score->update($score);
+		}
+
+		// Deal with problem reports
+		if(Input::has('report_problem') AND Input::has('comment')) {
+			$video_comment['video_id'] = $video->id;
+			$video_comment['judge_id'] = Auth::user()->ID;
+			$video_comment['comment'] = Input::get('comment', '--No Comment Entered--');
+
+			Video_comment::create($video_comment);
+
+			// Flag the video for Review
+			$video->flag = FLAG_REVIEW;
+			$video->save();
+
+			// TODO:  E-mail admin to let them know a video has been flagged
 		}
 
 		return Redirect::route('video.judge.index');
