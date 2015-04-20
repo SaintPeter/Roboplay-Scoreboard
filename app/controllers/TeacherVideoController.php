@@ -56,6 +56,7 @@ class TeacherVideoController extends BaseController {
 		// Ethnicity List Setup
 		$ethnicity_list = array_merge([ 0 => "- Select Ethnicity -" ], Ethnicity::all()->lists('name','id'));
 
+		View::share('title', 'Create Video');
 		return View::make('teacher.videos.create',compact('division_list', 'ethnicity_list'));
 	}
 
