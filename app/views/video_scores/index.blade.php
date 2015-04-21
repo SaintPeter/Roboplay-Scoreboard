@@ -1,6 +1,16 @@
 @extends('layouts.scaffold')
 
+@section('head')
+	{{ HTML::style ('https://gitcdn.github.io/bootstrap-toggle/2.2.0/css/bootstrap-toggle.min.css') }}
+	{{ HTML::script('https://gitcdn.github.io/bootstrap-toggle/2.2.0/js/bootstrap-toggle.min.js') }}
+@stop
+
 @section('style')
+.comment {
+	background-image: url(/scoreboard/css/images/comment_mark.png);
+	background-position: top right;
+	background-repeat: no-repeat;
+}
 .holder {
 	border: 1px solid gray;
 	border-radius: 4px;
@@ -42,7 +52,7 @@
 	background-color: #5CB85C
 }
 .scored_container {
-	width: 700px;
+	width: 800px;
 	margin-left: auto;
 	margin-right: auto;
 	margin-top: 15px;
@@ -69,23 +79,27 @@
 }
 .score_row td {
 	text-align: center;
-	width: 70px;
+	width: 60px;
 	text-align: center;
 	border: 1px solid lightgray;
 }
 
-.score {
-
-}
 td.score:nth-child(odd) {
 	background-color: rgb(245, 245, 245);
 }
+@stop
 
-
+@section('script')
+$(document).tooltip({
+	content: function (callback) {
+		callback($(this).prop('title'));
+	}
+});
 
 @stop
 
 @section('main')
+{{ Form::open([ 'route' => 'video.judge.dispatch', 'method' => 'get' ]) }}
 @if(count($comp_list))
 	<h4>Open Video Competitions</h4>
 	@foreach($comp_list as $comp => $divs)
@@ -108,9 +122,9 @@ td.score:nth-child(odd) {
 				All judges may judge these videos.</p>
 				<div class="text-center button_box">
 					@if($scored_count[VG_GENERAL] >= $total_count[VG_GENERAL] AND $total_count[VG_GENERAL] > 0)
-						<a class="btn btn-primary btn-margin disabled" href="#">Score</a>
+						<button class="btn btn-primary btn-margin disabled">Score Videos</button>
 					@else
-						<a class="btn btn-primary btn-margin" href="{{ route('video.judge.dispatch', [ VG_GENERAL ]) }}">Score</a>
+						<button class="btn btn-primary btn-margin">Score Videos</button>
 					@endif
 					<p>Scored: {{ $scored_count[VG_GENERAL] }} of {{ $total_count[VG_GENERAL] }}</p>
 				</div>
@@ -125,12 +139,12 @@ td.score:nth-child(odd) {
 			<p>These videos contain a custom designed part and will be scored on the design and use of that part.<br /><br />
 			Judges should have a background in mechanical design or robotics.</p>
 			<div class="text-center button_box">
-					@if($scored_count[VG_PART] >= $total_count[VG_PART] AND $total_count[VG_PART] > 0)
-						<a class="btn btn-info btn-margin disabled" href="#">Score</a>
+					@if($scored_count[VG_CUSTOM] >= $total_count[VG_CUSTOM] AND $total_count[VG_CUSTOM] > 0)
+						<input id="judge_custom" name="judge_custom" disabled class="disabled" type="checkbox" data-toggle="toggle" data-onstyle="info" data-on="Will Judge" data-off="Won't Judge" {{ $judge_custom }}>
 					@else
-						<a class="btn btn-info btn-margin" href="{{ route('video.judge.dispatch', [ VG_PART ]) }}">Score</a>
+						<input id="judge_custom" name="judge_custom" type="checkbox" data-toggle="toggle" data-onstyle="info" data-on="Will Judge" data-off="Won't Judge" {{ $judge_custom }}>
 					@endif
-				<p>Scored: {{ $scored_count[VG_PART] }} of {{ $total_count[VG_PART] }}</p>
+				<p>Scored: {{ $scored_count[VG_CUSTOM] }} of {{ $total_count[VG_CUSTOM] }}</p>
 			</div>
 		</div>
 	</div>
@@ -144,15 +158,17 @@ td.score:nth-child(odd) {
 			   Judges should have a background in reading source code.</p>
 			<div class="text-center button_box">
 					@if($scored_count[VG_COMPUTE] >= $total_count[VG_COMPUTE] AND $total_count[VG_COMPUTE] > 0)
-						<a class="btn btn-success btn-margin disabled" href="#">Score</a>
+						<input id="judge_compute" name="judge_compute" disabled class="disabled" type="checkbox" data-toggle="toggle" data-onstyle="success" data-on="Will Judge" data-off="Won't Judge" {{ $judge_compute }}>
 					@else
-						<a class="btn btn-success btn-margin" href="{{ route('video.judge.dispatch', [ VG_COMPUTE ]) }}">Score</a>
+						<input id="judge_compute" name="judge_compute" type="checkbox" data-toggle="toggle" data-onstyle="success" data-on="Will Judge" data-off="Won't Judge" {{ $judge_compute }}>
 					@endif
 				<p>Scored: {{ $scored_count[VG_COMPUTE] }} of {{ $total_count[VG_COMPUTE] }}</p>
 			</div>
 		</div>
 	</div>
 </div>
+{{ Form::close() }}
+
 <div class="text-center"><br /><strong>Note:</strong> Each video should be scored on its own merits as compared to the rubric, rather than in comparison to other videos.</div>
 
 <div class="scored_container">
@@ -166,17 +182,30 @@ td.score:nth-child(odd) {
 					<tr class="comp_row">
 						<td>{{ $comp }}</td>
 						@foreach($types as $type)
-							<td class="type">{{ $type }}</td>
+							<td class="type">{{ ucwords($type) }}</td>
 						@endforeach
+						<td>Action</td>
 					</tr>
 					@foreach($video_list as $vid_title => $scores)
 						<tr class="score_row">
-							<td>
-								<a href="{{ route('video.judge.edit', [ $scores['video_id'] ]) }}">
-									<span class="glyphicon glyphicon-edit"></span>
+							 @if($scores['flag'] == FLAG_NORMAL)
+								<td>
+									<a href="{{ route('video.judge.edit', [ $scores['video_id'] ]) }}">
+										<span class="glyphicon glyphicon-edit"></span>
+										<strong>{{ $vid_title }}</strong>
+									</a>
+								</td>
+							@elseif($scores['flag'] == FLAG_REVIEW)
+								<td class="comment text-warning" title="<strong>Video Under Review</strong>">
+									<span class="glyphicon glyphicon-exclamation-sign"></span>
 									<strong>{{ $vid_title }}</strong>
-								</a>
-							</td>
+								</td>
+							@else
+								<td class="comment text-danger" title="<strong>Video Disqualified</strong>">
+									<span class="glyphicon glyphicon-remove"></span>
+									<strong>{{ $vid_title }}</strong>
+								</td>
+							@endif
 								@foreach($types as $index => $type)
 									@if($scores[$index] == '-')
 										<td class="score">-</td>
@@ -184,6 +213,11 @@ td.score:nth-child(odd) {
 										<td class="score">{{ $scores[$index]->total }}</td>
 									@endif
 								@endforeach
+							<td>
+								<a href="{{ route('video.judge.clear_scores', [ $scores['video_id'], Auth::user()->ID ]) }}" class="btn btn-xs btn-danger">
+									<span class="glyphicon glyphicon-remove"></span>
+								</a>
+							</td>
 						</tr>
 					@endforeach
 				@endforeach

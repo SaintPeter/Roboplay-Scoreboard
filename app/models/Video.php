@@ -1,7 +1,7 @@
 <?php
 
 class Video extends Eloquent {
-	protected $guarded = array();
+	protected $guarded = [ 'id', 'flag' ];
 	protected $with = [ 'school', 'school.district', 'school.district.county', 'files', 'vid_division' ];
 
 	public static $rules = array(
@@ -70,6 +70,10 @@ class Video extends Eloquent {
 
 	public function students() {
 		return $this->morphToMany('Student', 'studentable');
+	}
+
+	public function comments() {
+		return $this->belongsTo('Video_comment');
 	}
 
 	// Methods

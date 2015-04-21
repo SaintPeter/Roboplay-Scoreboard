@@ -2,7 +2,7 @@
 
 class VideoManagementController extends \BaseController {
 
-	public function index()
+	public function index($year = null)
 	{
 		Breadcrumbs::addCrumb('Manage Scores');
 		$video_scores = Video_scores::with('division', 'division.competition', 'judge')
@@ -23,34 +23,44 @@ class VideoManagementController extends \BaseController {
 		}
 
 		View::share('title', 'Manage Scores');
-		return View::make('video_scores.manage.index', compact('videos','types'));
+		return View::make('video_scores.manage.index', compact('videos','types','year'));
 
 	}
 
-	public function summary()
+	public function summary($year = null)
 	{
 		Breadcrumbs::addCrumb('Scoring Summary');
 		View::share('title', 'Scoring Summary');
 
 		// Videos with score count
-		$videos = Video::with('scores')->get();
+		if($year) {
+			$videos = Video::with('scores')->where('year', $year)->get();
+		} else {
+			$videos = Video::with('scores')->get();
+		}
 
 		foreach($videos as $video) {
 			$output[$video->vid_division->competition->name][$video->vid_division->name][] = $video;
 		}
 
-		return View::make('video_scores.manage.summary', compact('output'));
+		return View::make('video_scores.manage.summary', compact('output','year'));
 	}
 
 	// Display information about individual judges
 	// as well as overall summary info
-	public function judge_performance()
+	public function judge_performance($year = null)
 	{
 		Breadcrumbs::addCrumb('Judge Performace');
 		View::share('title', 'Judge Performance');
 
 		// Judges Scoring Count
-		$judge_list = Judge::with('video_scores')->where('is_judge', true)->get();
+		$judge_list = Judge::with( [ 'video_scores' => function($q) use ($year) {
+				if($year) {
+					return $q->where('year', $year);
+				} else {
+					return $q;
+				}
+			} ] )->where('is_judge', true)->get();
 
 		//dd(DB::getQueryLog());
 
@@ -69,7 +79,7 @@ class VideoManagementController extends \BaseController {
 				return $b['total'] - $a['total'];
 		});
 
-		return View::make('video_scores.manage.judge_performance', compact('judge_score_count'));
+		return View::make('video_scores.manage.judge_performance', compact('judge_score_count', 'year'));
 	}
 
 	// Process the deletion of scores
@@ -110,12 +120,17 @@ class VideoManagementController extends \BaseController {
 	}
 
 	// Displays score summary sorted by video then by judge
-	public function by_video()
+	public function by_video($year = null)
 	{
 		Breadcrumbs::addCrumb('Scores By Video');
 		$video_scores = Video_scores::with('division', 'division.competition', 'judge')
-							->orderBy('total', 'desc')
-							->get();
+							->orderBy('total', 'desc');
+		if($year) {
+			$video_scores = $video_scores->where('year', $year)->get();
+		} else {
+			$video_scores = $video_scores->get();
+		}
+
 		$videos = [];
 		//dd(DB::getQueryLog());
 		$types = Vid_score_type::orderBy('id')->lists('name', 'id');
@@ -131,11 +146,11 @@ class VideoManagementController extends \BaseController {
 		}
 
 		View::share('title', 'Manage Scores');
-		return View::make('video_scores.manage.by_video', compact('videos','types'));
+		return View::make('video_scores.manage.by_video', compact('videos', 'types', 'year'));
 
 	}
 
-	public function scores_csv() {
+	public function scores_csv($year = null) {
 		$video_scores = Video_scores::with('division', 'division.competition', 'judge')
 							->orderBy('total', 'desc')
 							->get();
@@ -179,6 +194,55 @@ class VideoManagementController extends \BaseController {
 			'Content-Type' => 'application/octet-stream',
 			'Content-Disposition' => 'attachment; filename="video_scores.csv'
 		));
+	}
+
+	public function reported_videos($year = null) {
+		Breadcrumbs::addCrumb('Reported Videos');
+		View::share('title', 'Reported Videos');
+		$comments_reported = Video_comment::whereHas('video', function($q) use ($year) {
+					if($year) {
+						$q = $q->where('year',$year);
+					}
+					return $q->where('flag', FLAG_REVIEW);
+				} )->with('video')->get();
+
+		$comments_resolved = Video_comment::whereHas('video', function($q) use ($year) {
+					if($year) {
+						$q = $q->where('year',$year);
+					}
+					return $q->where('flag', '<>', FLAG_REVIEW);
+				} )->with('video')->get();
+
+//		$videos_dq = Video::has('comments')->where('flag', FLAG_DISQUALIFIED)->get();
+//		$videos_resolved = Video::has('comments')->where('flag', FLAG_NORMAL)->get();
+
+		//dd(DB::getQueryLog());
+
+		return View::make('video_scores.manage.reported_videos', compact('comments_reported', 'comments_resolved','year'));
+	}
+
+	public function process_report() {
+		if(Input::has('absolve')) {
+			$comment = Video_comment::with('video')->find(Input::get('absolve'));
+			$comment->resolution = Input::get('resolution', 'No Resolution Given');
+			$comment->save();
+			$comment->video->flag = FLAG_NORMAL;
+			$comment->video->save();
+		} elseif (Input::has('dq')) {
+			$comment = Video_comment::with('video')->find(Input::get('dq'));
+			$comment->resolution = Input::get('resolution', 'No Resolution Given');
+			$comment->save();
+			$comment->video->flag = FLAG_DISQUALIFIED;
+			$comment->video->save();
+		}
+		return Redirect::to(URL::previous());
+	}
+
+	public function unresolve($comment_id) {
+		$comment = Video_comment::with('video')->find($comment_id);
+		$comment->video->flag = FLAG_REVIEW;
+		$comment->video->save();
+		return Redirect::to(URL::previous());
 	}
 
 }

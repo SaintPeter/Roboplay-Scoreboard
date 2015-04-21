@@ -75,8 +75,6 @@
 @stop
 
 @section('main')
-<h1>Edit Video Scores</h1>
-{{ Breadcrumbs::render() }}
 <div style="width:950px" class="center-block clearfix">
 	<div class="pull-left" style="width:640px; margin: 10px;">
 		<span class="pull-right">{{ $video->vid_division->name }}</span>
@@ -126,8 +124,40 @@
 			</tr>
 		@endforeach
 	@endforeach
+	<tr class="title_row">
+		<td colspan="5" style="text-align: left;">Report Problem</td>
+	</tr>
+	<tr>
+		<td colspan="5">
+			<a href="#" rubric_id="report_problem" class="rubric_switcher">
+				<span id="icon_report_problem" class="glyphicon glyphicon-chevron-right"></span>
+				Report Problem
+			</a>
+		</td>
+	</tr>
+	<tr class="rubric_row hidden rubric_report_problem">
+		<td colspan=5">
+			<div class="col-md-6">If you believe this video has violated a rule or has a significant issue, please describe the issue in detail.
+				If there is specific content you believe is problematic, include a time marker (mm:ss).
+				<br /><br />
+				Reported videos are immediatly removed from judging.
+				<br /><br />
+				A report will only be submitted if you check the checkbox.
+			</div>
+			<div class="col-md-6">
+				<label for='report_problem'>
+					{{ Form::checkbox('report_problem') }}
+					Report a Problem
+				</label>
+
+				{{ Form::label('comment', 'Problem Description') }}
+				{{ Form::textarea('comment') }}
+			</div>
+		</td>
+	</tr>
 	<tr>
 		<td colspan="5" style="text-align: center">
+			<br />
 			{{ Form::submit('Update', ['class' => 'btn btn-success']) }}
 		</td>
 	</tr>

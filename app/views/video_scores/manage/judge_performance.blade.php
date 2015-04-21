@@ -38,7 +38,7 @@ tr.score_row:nth-child(even) td:last-child {
 
 
 @section('main')
-@include('partials.scorenav', [ 'nav' => 'judges' ])
+@include('partials.scorenav', [ 'nav' => 'judges', 'year' => $year])
 
 <table class="judges">
 	<thead>

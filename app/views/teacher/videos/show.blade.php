@@ -90,6 +90,9 @@
 
 <div style="width:950px" class="center-block clearfix">
 	<h3>Preview</h3>
+	<div>
+		@include('teacher.videos.partial.tags', [ 'video' => $video ])
+	</div>
 	<div class="pull-left" style="width:640px; margin: 10px;">
 		<h4>{{ $video->name }} </h4>
 		<iframe  style="border: 1px solid black" id="ytplayer" type="text/html" width="640" height="390" src="http://www.youtube.com/embed/{{{ $video->yt_code }}}" frameborder="0"></iframe>

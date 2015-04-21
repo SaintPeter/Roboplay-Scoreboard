@@ -134,24 +134,39 @@ Route::group(array('before' => 'auth'), function() {
 		Route::post('ajax/save_school', 					[ 'as' => 'ajax.save_school', 'uses' => 'Wp_fix@ajax_save_school']);
 
 		// Video Scores management
-		Route::get('video_scores', [
+		Route::get('video_scores/{year?}', [
 				   'as' => 'video_scores.manage.index',
-				   'uses' => 'VideoManagementController@index' ]);
-		Route::get('video_scores/by_video', [
+				   'uses' => 'VideoManagementController@index' ])
+				   ->where('year', '\d{4}');
+		Route::get('video_scores/reported/{year?}', [
+				   'as' => 'video_scores.manage.reported',
+				   'uses' => 'VideoManagementController@reported_videos' ])
+				   ->where('year', '\d{4}');
+		Route::get('video_scores/by_video/{year?}', [
 				   'as' => 'video_scores.manage.by_video',
-				   'uses' => 'VideoManagementController@by_video' ]);
+				   'uses' => 'VideoManagementController@by_video' ])
+				   ->where('year', '\d{4}');
 		Route::post('video_scores/process', [
 				    'as' => 'video_scores.manage.process',
 				    'uses' => 'VideoManagementController@process' ]);
-		Route::get('video_scores/scores_csv', [
+		Route::post('video_scores/process_report', [
+				    'as' => 'video_scores.manage.process_report',
+				    'uses' => 'VideoManagementController@process_report' ]);
+		Route::get('video_scores/unresolve/{comment_id}', [
+				   'as' => 'video_scores.manage.unresolve',
+				   'uses' => 'VideoManagementController@unresolve' ]);
+		Route::get('video_scores/scores_csv/{year?}', [
 				    'as' => 'video_scores.manage.scores_csv',
-				    'uses' => 'VideoManagementController@scores_csv' ]);
-		Route::get('video_scores/summary', [
+				    'uses' => 'VideoManagementController@scores_csv' ])
+				    ->where('year', '\d{4}');
+		Route::get('video_scores/summary/{year?}', [
 				    'as' => 'video_scores.manage.summary',
-				    'uses' => 'VideoManagementController@summary' ]);
-		Route::get('video_scores/judge_performance', [
+				    'uses' => 'VideoManagementController@summary' ])
+				    ->where('year', '\d{4}');
+		Route::get('video_scores/judge_performance/{year?}', [
 				    'as' => 'video_scores.manage.judge_performance',
-				    'uses' => 'VideoManagementController@judge_performance' ]);
+				    'uses' => 'VideoManagementController@judge_performance' ])
+				    ->where('year', '\d{4}');
 	});
 
 	Route::group(array('before' => 'judge'), function () {
@@ -195,10 +210,10 @@ Route::group(array('before' => 'auth'), function() {
 		Route::get('video/judge/{video_id}/show', [
 					'as' => 'video.judge.show',
 					'uses' => 'ScoreVideosController@show' ]);
-		Route::get('video/judge/dispatch/{video_group}', [
+		Route::get('video/judge/dispatch', [
 					'as' => 'video.judge.dispatch',
 					'uses' => 'ScoreVideosController@dispatch' ]);
-		Route::get('video/judge/score/{video_id}/{video_group}', [
+		Route::get('video/judge/score/{video_id}', [
 					'as' => 'video.judge.score',
 					'uses' => 'ScoreVideosController@score' ]);
 		Route::post('video/judge/store/{video_id}', [
@@ -207,6 +222,9 @@ Route::group(array('before' => 'auth'), function() {
 		Route::post('video/judge/update/{video_id}', [
 					'as' => 'video.judge.update',
 					'uses' => 'ScoreVideosController@update' ]);
+		Route::get('video/judge/clear/{video_id}/{judge_id}', [
+					'as' => 'video.judge.clear_scores',
+					'uses' => 'ScoreVideosController@clear_scores' ]);
 	});
 
 	// ---------------- Teacher Stuff ---------------------------
