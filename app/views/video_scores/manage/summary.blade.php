@@ -41,7 +41,7 @@
 @stop
 
 @section('main')
-@include('partials.scorenav', [ 'nav' => 'summary'])
+@include('partials.scorenav', [ 'nav' => 'summary', 'year' => $year])
 <div class="col-md-6">
 	@foreach($output as $comp => $divs)
 		@foreach($divs as $div => $videos)

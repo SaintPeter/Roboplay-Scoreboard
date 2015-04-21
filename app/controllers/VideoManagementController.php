@@ -23,7 +23,7 @@ class VideoManagementController extends \BaseController {
 		}
 
 		View::share('title', 'Manage Scores');
-		return View::make('video_scores.manage.index', compact('videos','types'));
+		return View::make('video_scores.manage.index', compact('videos','types','year'));
 
 	}
 
@@ -43,7 +43,7 @@ class VideoManagementController extends \BaseController {
 			$output[$video->vid_division->competition->name][$video->vid_division->name][] = $video;
 		}
 
-		return View::make('video_scores.manage.summary', compact('output'));
+		return View::make('video_scores.manage.summary', compact('output','year'));
 	}
 
 	// Display information about individual judges
@@ -79,7 +79,7 @@ class VideoManagementController extends \BaseController {
 				return $b['total'] - $a['total'];
 		});
 
-		return View::make('video_scores.manage.judge_performance', compact('judge_score_count'));
+		return View::make('video_scores.manage.judge_performance', compact('judge_score_count', 'year'));
 	}
 
 	// Process the deletion of scores
@@ -146,7 +146,7 @@ class VideoManagementController extends \BaseController {
 		}
 
 		View::share('title', 'Manage Scores');
-		return View::make('video_scores.manage.by_video', compact('videos','types'));
+		return View::make('video_scores.manage.by_video', compact('videos', 'types', 'year'));
 
 	}
 
@@ -206,16 +206,43 @@ class VideoManagementController extends \BaseController {
 					return $q->where('flag', FLAG_REVIEW);
 				} )->with('video')->get();
 
+		$comments_resolved = Video_comment::whereHas('video', function($q) use ($year) {
+					if($year) {
+						$q = $q->where('year',$year);
+					}
+					return $q->where('flag', '<>', FLAG_REVIEW);
+				} )->with('video')->get();
+
 //		$videos_dq = Video::has('comments')->where('flag', FLAG_DISQUALIFIED)->get();
 //		$videos_resolved = Video::has('comments')->where('flag', FLAG_NORMAL)->get();
 
 		//dd(DB::getQueryLog());
 
-		return View::make('video_scores.manage.reported_videos', compact('comments_reported'));
+		return View::make('video_scores.manage.reported_videos', compact('comments_reported', 'comments_resolved','year'));
 	}
 
 	public function process_report() {
-		dd(Input::all());
+		if(Input::has('absolve')) {
+			$comment = Video_comment::with('video')->find(Input::get('absolve'));
+			$comment->resolution = Input::get('resolution', 'No Resolution Given');
+			$comment->save();
+			$comment->video->flag = FLAG_NORMAL;
+			$comment->video->save();
+		} elseif (Input::has('dq')) {
+			$comment = Video_comment::with('video')->find(Input::get('dq'));
+			$comment->resolution = Input::get('resolution', 'No Resolution Given');
+			$comment->save();
+			$comment->video->flag = FLAG_DISQUALIFIED;
+			$comment->video->save();
+		}
+		return Redirect::to(URL::previous());
+	}
+
+	public function unresolve($comment_id) {
+		$comment = Video_comment::with('video')->find($comment_id);
+		$comment->video->flag = FLAG_REVIEW;
+		$comment->video->save();
+		return Redirect::to(URL::previous());
 	}
 
 }

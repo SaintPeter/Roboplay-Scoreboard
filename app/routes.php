@@ -152,7 +152,9 @@ Route::group(array('before' => 'auth'), function() {
 		Route::post('video_scores/process_report', [
 				    'as' => 'video_scores.manage.process_report',
 				    'uses' => 'VideoManagementController@process_report' ]);
-
+		Route::get('video_scores/unresolve/{comment_id}', [
+				   'as' => 'video_scores.manage.unresolve',
+				   'uses' => 'VideoManagementController@unresolve' ]);
 		Route::get('video_scores/scores_csv/{year?}', [
 				    'as' => 'video_scores.manage.scores_csv',
 				    'uses' => 'VideoManagementController@scores_csv' ])

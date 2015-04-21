@@ -1,6 +1,9 @@
 @extends('layouts.scaffold')
 
 @section('style')
+.reported {
+	width: 1000px;
+}
 .reported th {
 	background-color: #428BCA;
 	color: white;
@@ -17,7 +20,6 @@ tr.score_row:nth-child(odd){
 }
 
 .reported td {
-	width: 200px;
 	border: 1px solid lightgrey;
 	vertical-align: top;
 }
@@ -31,7 +33,7 @@ tr.score_row:nth-child(odd){
 
 
 @section('main')
-@include('partials.scorenav', [ 'nav' => 'reported' ])
+@include('partials.scorenav', [ 'nav' => 'reported', 'year' => $year]) ])
 
 {{ Form::open([ 'route' => 'video_scores.manage.process_report' ]) }}
 <table class="table-bordered reported">
@@ -49,7 +51,7 @@ tr.score_row:nth-child(odd){
 				<td>{{ link_to_route('video.judge.show', $comment->video->name, [ $comment->video->id ]) }}</td>
 				<td>{{ $comment->judge->display_name }}</td>
 				<td>{{ $comment->comment }}</td>
-				<td>{{ Form::textarea('comment', null, [ 'cols' => 40, 'rows' => 4 ]) }}</td>
+				<td>{{ Form::textarea('resolution', $comment->resolution, [ 'cols' => 40, 'rows' => 4 ]) }}</td>
 				<td class="text-center">
 					{{ Form::button('Absolve', [ 'type' => 'submit', 'name'=> 'absolve', 'value' => $comment->id ,'class' => 'btn btn-success' ]) }}
 					{{ Form::button('Disqualify', [ 'type' => 'submit', 'name'=> 'dq',  'value' => $comment->id ,'class' => 'btn btn-danger' ]) }}</td>
@@ -60,5 +62,43 @@ tr.score_row:nth-child(odd){
 		@endif
 	</tbody>
 </table>
+<br />
+<table class="table-bordered reported">
+	<thead>
+		<th>Video</th>
+		<th>Reported By</th>
+		<th>Comment</th>
+		<th>Response</th>
+		<th>Status</th>
+	</thead>
+	<tbody>
+		@if(!empty($comments_resolved))
+			@foreach($comments_resolved as $comment)
+			<tr class="score_row">
+				<td>{{ link_to_route('video.judge.show', $comment->video->name, [ $comment->video->id ]) }}</td>
+				<td>{{ $comment->judge->display_name }}</td>
+				<td>{{ $comment->comment }}</td>
+				<td>{{ $comment->resolution }}</td>
+				<td class="text-center">
+					@if($comment->video->flag == FLAG_NORMAL)
+						Absolved
+						<a href="{{ route('video_scores.manage.unresolve', [ $comment->id ]) }}" class="pull-right">
+							<span class="glyphicon glyphicon-refresh" title="Unresolve"></span>
+						</a>
+					@else
+						Disqualified
+						<a href="{{ route('video_scores.manage.unresolve', [ $comment->id ]) }}" class="pull-right">
+							<span class="glyphicon glyphicon-refresh" title="Unresolve"></span>
+						</a>
+					@endif
+				</td>
+			</tr>
+			@endforeach
+		@else
+			<tr><td colspan="5" class="text-center">No Resolved Videos</td></tr>
+		@endif
+	</tbody>
+</table>
+
 {{ Form::close() }}
 @stop
