@@ -33,7 +33,7 @@ tr.score_row:nth-child(odd){
 
 
 @section('main')
-@include('partials.scorenav', [ 'nav' => 'reported', 'year' => $year]) ])
+@include('partials.scorenav', [ 'nav' => 'reported', 'year' => $year])
 
 {{ Form::open([ 'route' => 'video_scores.manage.process_report' ]) }}
 <table class="table-bordered reported">
