@@ -133,6 +133,9 @@ Route::group(array('before' => 'auth'), function() {
 		Route::get('ajax/set_vid_div/{invoice_no}/{value}', [ 'as' => 'ajax.set_vid_div', 'uses' => 'Wp_fix@ajax_set_vid_div']);
 		Route::post('ajax/save_school', 					[ 'as' => 'ajax.save_school', 'uses' => 'Wp_fix@ajax_save_school']);
 
+		// Invouce Review
+		Route::get('invoice_review',						[ 'as' => 'invoice_review',		'uses' => 'InvoiceReview@invoice_review' ]);
+
 		// Video Scores management
 		Route::get('video_scores/{year?}', [
 				   'as' => 'video_scores.manage.index',

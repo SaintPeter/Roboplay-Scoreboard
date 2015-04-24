@@ -7,7 +7,7 @@ class Wp_invoice_table extends Eloquent {
 	protected $guarded = array('invoice_no');
 	public $timestamps = false;
 
-	private $data = [];
+	public $data = [];
 
 	public function invoice_data() {
 		return $this->hasMany('Wp_invoice_data', 'invoice_no', 'invoice_no');
@@ -22,11 +22,11 @@ class Wp_invoice_table extends Eloquent {
 	}
 
 	public function videos() {
-		return $this->hasMany('Video', 'user_id', 'teacher_id');
+		return $this->hasMany('Video', 'teacher_id', 'user_id');
 	}
 
 	public function teams() {
-		return $this->hasMany('Team', 'user_id', 'teacher_id');
+		return $this->hasMany('Team', 'teacher_id', 'user_id');
 	}
 
 	public function getData($key, $default = '') {

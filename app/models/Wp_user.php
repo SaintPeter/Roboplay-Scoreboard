@@ -19,6 +19,14 @@ class Wp_user extends Eloquent {
 		return $this->getMeta('first_name') . ' ' . $this->getMeta('last_name');
 	}
 
+	public function getSchool() {
+		if($this->getMeta('wp_school_id', false)) {
+			return Schools::find($this->getMeta('wp_school_id'))->name;
+		} else {
+			return "No School Set";
+		}
+	}
+
 	public function getMeta($key, $default = '') {
 		if(empty($this->metadata)) {
 			$this->metadata = $this->usermeta->lists('meta_value', 'meta_key');
