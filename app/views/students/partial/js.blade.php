@@ -47,10 +47,15 @@ $(function() {
 		$('#choose_students_dialog').html('');
 		var data = $('.student_id').map(function() { return $(this).attr('value'); }).get();
 		var encoded_data = data.join('&');
-
+@if(defined('use_teacher_id'))
+		$.post('/scoreboard/ajax/student_list/{{ $type }}/' + $('#teacher_id').val(), { current_students: data }, function(data) {
+			$('#choose_students_dialog').html(data);
+		});
+@else
 		$.post('/scoreboard/ajax/student_list/{{ $type }}', { current_students: data }, function(data) {
 			$('#choose_students_dialog').html(data);
 		});
+@endif
 		$('#choose_students_dialog').dialog('open');
 	});
 

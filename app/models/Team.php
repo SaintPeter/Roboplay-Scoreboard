@@ -58,8 +58,12 @@ class Team extends Eloquent {
 	{
 		$student_list = [];
 
-		foreach($this->students as $student) {
-			$student_list[] = $student->fullName();
+		if(count($this->students) > 0) {
+			foreach($this->students as $student) {
+				$student_list[] = $student->fullName();
+			}
+		} else {
+			$student_list = [ 'No Students' ];
 		}
 
 		return $student_list;

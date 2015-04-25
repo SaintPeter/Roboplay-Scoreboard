@@ -193,7 +193,7 @@
 				@foreach ($videos as $video)
 					<tr>
 						<td>{{{ $video->name }}}<br />{{{ $video->vid_division->longname() }}}</td>
-						<td>{{ join('<br />', $team->student_list()) }}</td>
+						<td>{{ join('<br />', $video->student_list()) }}</td>
 						<td><a href="http://youtube.com/watch?v={{{ $video->yt_code }}}" target="_new">YouTube</a></td>
 						<td>{{{ $video->has_custom==1 ? 'Yes' : 'No' }}}</td>
 						<td>{{ count($video->files) }}</td>

@@ -89,33 +89,7 @@
 			which must be flagged to be judged for that category.<br/>
 			Computational Thinking will automatically be tagged when the video's code is uploaded.</p>
 
-	<div class="form-group">
-		{{ Form::label('student_form', 'Students:') }}
-		<div class="form-inline" id="student_form">
-			@if(Session::has('students') or !empty($students))
-				{{-- For existing students during edit --}}
-				@if(Session::has('students'))
-					@foreach(Session::get('students') as $index => $student)
-						@include('students.partial.create', compact('index', 'ethnicity_list', 'student' ))
-					@endforeach
-				@endif
-				{{-- For new students during edit --}}
-				@if(!empty($students))
-					@foreach($students as $student)
-						<?php $index++; ?>
-						@include('students.partial.edit',   compact('index', 'ethnicity_list', 'student' ))
-					@endforeach
-				@endif
-			@else
-				<?php $index = -1; ?>
-			@endif
-
-		</div>
-		<br />
-		{{ Form::button('Add Student', [ 'class' => 'btn btn-success', 'id' => 'add_student', 'title' => 'Add Student' ]) }}
-		{{ Form::button('Mass Upload Students', [ 'class' => 'btn btn-success', 'id' => 'mass_upload_students', 'title' => 'Upload Students' ]) }}
-		{{ Form::button('Choose Students', [ 'class' => 'btn btn-success', 'id' => 'choose_students', 'title' => 'Choose Students' ] ) }}
-	</div>
+	@include('students.partial.fields', [ 'students' => (defined('students') ? $students : [])])
 
 	<div class="form-group">
 		{{ Form::submit('Update', array('class' => 'btn btn-primary')) }}
@@ -125,24 +99,7 @@
 	</div>
 {{ Form::close() }}
 
-{{-- Update savedIndex with the number of students already displayed . . plus 1 --}}
-<script>
-	savedIndex = {{ $index + 1 }};
-</script>
-
-<div id="choose_students_dialog" title="Choose Students">
-
-</div>
-
-<div id="mass_upload_students_dialog" title="Choose Upload File">
-Download this <a href="/scoreboard/docs/roboplay_scoreboard_student_upload_template.xls">Excel Template</a> and follow the instructions inside to generate a csv file for upload.
-  {{ Form::open([ 'route' => 'ajax.import_students_csv', 'files' => true, 'id' => 'upload_form' ] ) }}
-	  {{ Form::label('csv_file', 'CSV File', array('id'=>'','class'=>'')) }}
-  	  {{ Form::file('csv_file') }}
-  <br/>
-  <!-- submit buttons -->
-  {{ Form::close() }}
-</div>
+@include('students.partial.dialogs')
 
 @if ($errors->any())
 <div class="col-md-6">

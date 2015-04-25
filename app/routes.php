@@ -46,13 +46,13 @@ Route::get('video_list/{comp_id}', [ 'as' => 'display.video_list', 'uses' => 'Di
 Route::get('video_list/{comp_id}/{video_id}', [ 'as' => 'display.show_video', 'uses' => 'DisplayController@show_video'] );
 
 /* ------------------------- Ajax Handlers -------------------------- */
-Route::get('ajax/c', [ 'as' => 'ajax.counties', 'uses' => 'Wp_fix@ajax_counties']);
-Route::get('ajax/d/{county_id}', [ 'as' => 'ajax.districts', 'uses' => 'Wp_fix@ajax_districts']);
-Route::get('ajax/s/{district_id}', [ 'as' => 'ajax.schools', 'uses' => 'Wp_fix@ajax_schools']);
+Route::get('ajax/c', 				[ 'as' => 'ajax.counties', 	'uses' => 'Wp_fix@ajax_counties']);
+Route::get('ajax/d/{county_id}', 	[ 'as' => 'ajax.districts', 'uses' => 'Wp_fix@ajax_districts']);
+Route::get('ajax/s/{district_id}', 	[ 'as' => 'ajax.schools', 	'uses' => 'Wp_fix@ajax_schools']);
 Route::get('ajax/blank_student/{index}', [ 'as' => 'ajax.blank_student', 'uses' => 'TeacherController@ajax_blank_student' ]);
-Route::post('ajax/student_list/{type}',  [ 'as' => 'ajax.student_list',  'uses' => 'TeacherController@ajax_student_list' ]);
-Route::post('ajax/load_students/{index}',  [ 'as' => 'ajax.load_students',  'uses' => 'TeacherController@ajax_load_students' ]);
-Route::post('ajax/import_students_csv',  [ 'as' => 'ajax.import_students_csv',  'uses' => 'TeacherController@ajax_import_students_csv' ]);
+Route::post('ajax/student_list/{type}/{teacher_id?}',	[ 'as' => 'ajax.student_list',  		'uses' => 'TeacherController@ajax_student_list' ]);
+Route::post('ajax/load_students/{index}',  				[ 'as' => 'ajax.load_students',  		'uses' => 'TeacherController@ajax_load_students' ]);
+Route::post('ajax/import_students_csv',  				[ 'as' => 'ajax.import_students_csv',	'uses' => 'TeacherController@ajax_import_students_csv' ]);
 
 /* ------------------------------ User ------------------------------------- */
 // All items in this route group require login

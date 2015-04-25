@@ -35,18 +35,20 @@
 @stop
 
 @section('main')
+@include('partials.year_select')
 <p>{{ link_to_route('videos.create', 'Add Video', [],  [ 'class' => 'btn btn-primary' ]) }}</p>
+
+
 
 <table class="table table-striped table-bordered" id="video_table">
 	<thead>
 		<tr>
 			<th>Name</th>
-			<th>YT Code</th>
 			<th>Students</th>
-			<th>Custom</th>
-			<th>Uploads</th>
+			<th>Status</th>
 			<th>County/District/School</th>
 			<th>Challenge/Division</th>
+			<th>Year</th>
 			<th>Actions</th>
 		</tr>
 	</thead>
@@ -56,12 +58,11 @@
 		@foreach ($videos as $video)
 			<tr>
 				<td>{{{ $video->name }}}</td>
-				<td>{{{ $video->yt_code }}}</td>
-				<td>{{ nl2br($video->students) }}</td>
-				<td>{{{ $video->has_custom==1 ? 'Yes' : 'No' }}}</td>
-				<td class="{{ $video->has_vid==1 ? 'confirmed' : 'unconfirmed' }}">
-					{{ $video->has_vid==1 ? 'Video File' : 'No Video' }} <br />
-					{{ $video->has_code==1 ? 'Code File' : 'No Code' }} <br />
+				<td>{{ join('<br />', $video->student_list()) }}</td>
+				<td>
+					{{ $video->has_custom==1 ? '<span class="btn btn-warning btn-xs">Custom</span>' : '' }} <br />
+					{{ $video->has_vid==1 ? '<span class="btn btn-success btn-xs">Video File</span>' : '<span class="btn btn-danger btn-xs">No Video</span>' }} <br />
+					{{ $video->has_code==1 ? '<span class="btn btn-info btn-xs">Code</span>' : '<span class="btn btn-danger btn-xs">No Code</span>' }} <br />
 				</td>
 				<td>
 					@if(isset($video->school))
@@ -79,6 +80,9 @@
 					@else
 						No Division Set
 					@endif
+				</td>
+				<td>
+					{{ $video->year }}
 				</td>
                 <td>
                 	{{ link_to_route('videos.show', 'Show', array($video->id), array('class' => 'btn btn-default btn-margin')) }}

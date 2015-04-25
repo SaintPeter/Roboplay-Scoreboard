@@ -1,38 +1,51 @@
 @extends('layouts.scaffold')
 
-@section('head')
-	{{ HTML::script('js/jquery.jCombo.js') }}
+@section('style')
+/* Fix margins for nested inline forms */
+.form-inline .form-group{
+	margin-left: 0;
+	margin-right: 0;
+}
+
+/* Make nested form things look good */
+.form-group .col-md-6 {
+	padding-left: 0;
+}
+
+.vertical-container {
+	display: table;
+	width: 100%;
+}
+
+.vertical-container > .col-md-1 {
+	display: table-cell;
+	vertical-align: middle;
+	height: 100%;
+	float: none;
+}
+
+.indent {
+	margin-left: 20px;
+}
 @stop
 
-@section('script')
-$(function() {
-	$( "#select_county" ).jCombo({url: "/scoreboard/ajax/c",
-			initial_text: "-- Select County --",
-			selected_value: "{{ Input::old('select_county') }}"
-		});
-	$( "#select_district" ).jCombo({url: "/scoreboard/ajax/d/",
-			parent: "#select_county",
-			initial_text: "-- Select District --",
-			selected_value: "{{ Input::old('select_district') }}"
-		});
-	$( "#select_school" ).jCombo({url: "/scoreboard/ajax/s/",
-			parent: "#select_district",
-			initial_text: "-- Select School --",
-			selected_value: "{{ Input::old('school_id') }}"
-		});
-});
+@section('head')
+	{{ HTML::script('js/jquery.form.min.js') }}
 @stop
+
+
+@include('students.partial.js', [ 'type' => 'videos', 'use_teacher_id' => true ])
 
 @section('main')
-{{ Form::open(array('route' => 'videos.store', 'role'=>"form", 'class' => 'col-md-6' )) }}
+{{ Form::open(array('route' => 'videos.store', 'role'=>"form", 'class' => 'col-md-8' )) }}
 	<div class="form-group">
-	    {{ Form::label('name', 'Name:') }}
-	    {{ Form::text('name', null, [ 'class'=>'form-control col-md-4' ]) }}
+		{{ Form::label('name', 'Name:') }}
+		{{ Form::text('name', null, [ 'class'=>'form-control col-md-4' ]) }}
 	</div>
 
 	<div class="form-group">
-	    {{ Form::label('yt_code', 'YouTube URL or Code:') }}
-	    {{ Form::text('yt_code', null, [ 'class'=>'form-control col-md-4' ]) }}
+		{{ Form::label('yt_code', 'YouTube URL or Code:') }}
+		{{ Form::text('yt_code', null, [ 'class'=>'form-control col-md-4' ]) }}
 	</div>
 
 	<div class="form-group">
@@ -40,49 +53,69 @@ $(function() {
 		{{ Form::select('vid_division_id', $vid_divisions, null, [ 'class'=>'form-control col-md-4' ]) }}
 	</div>
 
-    <div class="form-group">
-		<label for="select_county">County:</label>
-		<select name="select_county" id="select_county" class="form-control col-md-4"></select>
+	<div class="form-group">
+		<label for="teacher_id">Teacher:</label>
+		{{ Form::select('teacher_id', $teacher_list, null, [ 'class'=>'form-control' ]) }}
 	</div>
 
-	<div class="form-group">
-		<label for="select_district">District:</label>
-		<select name="select_district" id="select_district" class="form-control col-md-4"></select>
+	<label>Content Tags</label>
+	<div class="indent">
+		<div class="checkbox">
+			<label>
+				{{ Form::hidden('has_story', 0) }}
+				{{ Form::checkbox('has_story', 1) }} Storyline
+			</label>
+		</div>
+
+		<div class="checkbox">
+			<label>
+				{{ Form::hidden('has_choreo', 0) }}
+				{{ Form::checkbox('has_choreo', 1) }} Choreography
+			</label>
+		</div>
+
+		<div class="checkbox">
+			<label>
+				{{ Form::hidden('has_task', 0) }}
+				{{ Form::checkbox('has_task', 1) }} Interesting Task
+			</label>
+		</div>
+
+		<div class="checkbox">
+			<label>
+				{{ Form::hidden('has_custom', 0) }}
+				{{ Form::checkbox('has_custom',1) }} Custom Designed Part
+			</label>
+		</div>
+	</div>
+	<label>Attributes</label>
+	<div class="indent">
+		<div class="checkbox">
+			<label>
+				{{ Form::hidden('has_code', 0) }}
+				{{ Form::checkbox('has_code',1) }} Has Code
+			</label>
+		</div>
+
+		<div class="checkbox">
+			<label>
+				{{ Form::hidden('has_vid', 0) }}
+				{{ Form::checkbox('has_vid',1) }} Has Video
+			</label>
+		</div>
 	</div>
 
-	<div class="form-group">
-		<label for="select_school">School:</label>
-		<select name="school_id" id="select_school" class="form-control col-md-4"></select>
-	</div>
-
-	<div class="form-group">
-	    {{ Form::label('students', 'Students:') }}
-	    {{ Form::textarea('students') }}
-	    <p>One Student Per Line</p>
-	</div>
-
-	<div class="form-group">
-	    {{ Form::label('has_custom', 'Has a Custom Part:') }}
-	    {{ Form::select('has_custom', [ 0 => 'No', 1 => 'Yes' ]) }}
-	</div>
-
-	<div class="form-group">
-	    {{ Form::label('has_vid', 'Has a Video:') }}
-	    {{ Form::select('has_vid', [ 0 => 'No', 1 => 'Yes' ]) }}
-	</div>
-
-	<div class="form-group">
-	    {{ Form::label('has_code', 'Has a Code File:') }}
-	    {{ Form::select('has_code', [ 0 => 'No', 1 => 'Yes' ]) }}
-	</div>
+@include('students.partial.fields', [ 'students' => (defined('students') ? $students : [])])
 
 	<div class="form-group">
 		{{ Form::submit('Submit', array('class' => 'btn btn-primary')) }}
-		 		&nbsp;
+				&nbsp;
 		{{ link_to_route('videos.index', 'Cancel', [], ['class' => 'btn btn-info']) }}
 
 	</div>
 {{ Form::close() }}
+
+@include('students.partial.dialogs', compact('index'))
 
 @if ($errors->any())
 <div class="col-md-6">

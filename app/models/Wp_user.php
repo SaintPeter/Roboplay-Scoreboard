@@ -16,7 +16,11 @@ class Wp_user extends Eloquent {
 	}
 
 	public function getName() {
-		return $this->getMeta('first_name') . ' ' . $this->getMeta('last_name');
+		return ucwords($this->getMeta('first_name') . ' ' . $this->getMeta('last_name'));
+	}
+
+	public function getNameProper() {
+		return ucwords($this->getMeta('last_name') . ", " . $this->getMeta('first_name')) ;
 	}
 
 	public function getSchool() {

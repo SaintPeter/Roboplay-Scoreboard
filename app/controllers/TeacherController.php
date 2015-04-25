@@ -66,10 +66,14 @@ class TeacherController extends BaseController {
 	}
 
 	// Returns a view with a table of unattached students for a given type
-	public function ajax_student_list($type) {
+	public function ajax_student_list($type, $teacher_id = null) {
 		$current_students = Input::get('current_students', []);
 
-		$student_query = Student::where('teacher_id', Auth::user()->ID);
+		if($teacher_id) {
+			$student_query = Student::where('teacher_id', $teacher_id);
+		} else {
+			$student_query = Student::where('teacher_id', Auth::user()->ID);
+		}
 
 		switch($type) {
 			case 'teams':
