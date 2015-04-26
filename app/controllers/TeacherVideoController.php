@@ -81,7 +81,11 @@ class TeacherVideoController extends BaseController {
 			if(!empty($students)) {
 				$students_pass = true;
 				foreach ($students as $index => $student) {
-				 	 $studentErrors[$index] = Validator::make($student, Student::$rules);
+				 	 $student_rules = Student::$rules;
+					if(array_key_exists('id', $student)) {
+						$student_rules['ssid'] .= ',' . $student['id'];
+					}
+				 	$studentErrors[$index] = Validator::make($student, $student_rules);
 				 	 if($studentErrors[$index]->fails()) {
 				 	 	$students_pass = false;
 				 	 	$students[$index]['errors'] = $studentErrors[$index]->messages()->all();
@@ -104,7 +108,7 @@ class TeacherVideoController extends BaseController {
 						$sync_list[] = $newStudent->id;
 					}
 					$newvideo->students()->sync($sync_list);
-					return Redirect::route('teacher.index');
+					return Redirect::route('teacher.videos.show', $newvideo->id);
 				} else {
 					return Redirect::route('teacher.videos.create')
 						->withInput(Input::except('students'))
@@ -113,8 +117,8 @@ class TeacherVideoController extends BaseController {
 				}
 			} else {
 				// No students, just create the team
-				Video::create($input);
-				return Redirect::route('teacher.index');
+				$video = Video::create($input);
+				return Redirect::route('teacher.videos.show', $video->id);
 			}
 		}
 
@@ -212,7 +216,11 @@ class TeacherVideoController extends BaseController {
 			if(!empty($students)) {
 				$students_pass = true;
 				foreach ($students as $index => $student) {
-				 	 $studentErrors[$index] = Validator::make($student, Student::$rules);
+				 	 $student_rules = Student::$rules;
+					if(array_key_exists('id', $student)) {
+						$student_rules['ssid'] .= ',' . $student['id'];
+					}
+				 	$studentErrors[$index] = Validator::make($student, $student_rules);
 				 	 if($studentErrors[$index]->fails()) {
 				 	 	$students_pass = false;
 				 	 	$students[$index]['errors'] = $studentErrors[$index]->messages()->all();
@@ -268,6 +276,6 @@ class TeacherVideoController extends BaseController {
 	{
 		Video::find($id)->delete();
 
-		return Redirect::route('teacher.videos.index');
+		return Redirect::route('teacher.index');
 	}
 }

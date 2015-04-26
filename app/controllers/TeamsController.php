@@ -15,10 +15,30 @@ class TeamsController extends BaseController {
 	 */
 	public function index()
 	{
-		$teams = Team::with('division', 'school', 'school.district', 'school.district.county')->get();
+		if(Input::has('selected_year')) {
+			$selected_year = Input::get('selected_year');
+			if($selected_year == 'clear') {
+				Session::forget('selected_year');
+				$selected_year = false;
+			} else {
+				Session::put('selected_year', $selected_year);
+			}
+		} else {
+			$selected_year = Session::get('selected_year', false);
+		}
+
+		if($selected_year) {
+			$teams = Team::where('year', $selected_year)->with('division', 'school', 'school.district', 'school.district.county')->get();
+		} else {
+			$teams = Team::with('division', 'school', 'school.district', 'school.district.county')
+						->orderBy('year', 'desc')
+						->get();
+		}
+
+		$division_list = Division::longname_array();
 
 		View::share('title', 'Teams');
-		return View::make('teams.index', compact('teams'));
+		return View::make('teams.index', compact('teams', 'division_list'));
 	}
 
 	/**
@@ -30,10 +50,18 @@ class TeamsController extends BaseController {
 	{
 		Breadcrumbs::addCrumb('Add Team', 'create');
 		View::share('title', 'Add Team');
-		$divisions = Division::longname_array();
+		$division_list = Division::longname_array();
+
+		$teacher_list = [];
+		$this->populate_teacher_list($teacher_list);
+
+		// Ethnicity List Setup
+		$ethnicity_list = array_merge([ 0 => "- Select Ethnicity -" ], Ethnicity::all()->lists('name','id'));
+
+		View::share('index', 0);
 
 		return View::make('teams.create')
-				   ->with('divisions', $divisions);
+				   ->with(compact('division_list', 'teacher_list', 'ethnicity_list'));
 	}
 
 	/**
@@ -43,20 +71,64 @@ class TeamsController extends BaseController {
 	 */
 	public function store()
 	{
-		$input = array_except(Input::all(), ['_method', 'select_county', 'select_district' ]);
+		$input = Input::except('_method', 'students');
+		$input['year'] = Carbon\Carbon::now()->year;
+		$input['school_id'] = Wp_user::find(Input::get('teacher_id'))->getMeta('wp_school_id', 0);
 
-		$validation = Validator::make($input, Team::$rules);
+		$students = Input::get('students');
 
-		if ($validation->passes())
+		$teamErrors = Validator::make($input, Team::$rules);
+
+		if ($teamErrors->passes())
 		{
-			Team::create($input);
+			if(!empty($students)) {
+				$students_pass = true;
+				foreach ($students as $index => $student) {
+				 	$student_rules = Student::$rules;
+					if(array_key_exists('id', $student)) {
+						$student_rules['ssid'] .= ',' . $student['id'];
+					}
+				 	$studentErrors[$index] = Validator::make($student, $student_rules);
+				 	if($studentErrors[$index]->fails()) {
+				 		$students_pass = false;
+				 		$students[$index]['errors'] = $studentErrors[$index]->messages()->all();
+				 	}
+				}
 
-			return Redirect::route('teams.index');
+				if($students_pass) {
+					$newTeam = Team::create($input);
+					$sync_list = [];
+
+					foreach ($students as $index => &$student) {
+						$student['teacher_id'] = Auth::user()->ID;
+						$student['year'] = Carbon\Carbon::now()->year;
+						if(array_key_exists('id', $student)) {
+							$newStudent = Student::find($student['id']);
+							$newStudent->update($student);
+						} else {
+							$newStudent = Student::create($student);
+						}
+						$sync_list[] = $newStudent->id;
+					}
+					$newTeam->students()->sync($sync_list);
+					return Redirect::route('teams.index');
+				} else {
+					return Redirect::route('teams.create')
+						->withInput(Input::except('students'))
+						->with('students', $students)
+						->with('message', 'There were validation errors.');
+				}
+			} else {
+				// No students, just create the team
+				Team::create($input);
+				return Redirect::route('teams.index');
+			}
 		}
 
 		return Redirect::route('teams.create')
-			->withInput()
-			->withErrors($validation)
+			->withInput(Input::except('students'))
+			->with('students', $students)
+			->withErrors($teamErrors)
 			->with('message', 'There were validation errors.');
 	}
 
@@ -87,21 +159,29 @@ class TeamsController extends BaseController {
 		View::share('title', 'Edit Team');
 		$team = Team::with('school', 'school.district', 'school.district.county')->find($id);
 
-		$starting_school = isset($team->school) ? $team->school->school_id : 0;
-		$starting_district = isset($team->school) ? $team->school->district->district_id : 0;
-		$starting_county = isset($team->school) ? $team->school->district->county->county_id : 0;
-
 		if (is_null($team))
 		{
 			return Redirect::route('teams.index');
 		}
 
-		$divisions = Division::longname_array();
-		$vid_divisions = Vid_division::longname_array();
+		$division_list = Division::longname_array();
 
-		return View::make('teams.edit', compact('team', 'starting_county', 'starting_district', 'starting_school'))
-				   ->with('divisions', $divisions)
-				   ->with('vid_divisions', $vid_divisions);
+		// Student Setup
+		$ethnicity_list = array_merge([ 0 => "- Select Ethnicity -" ], Ethnicity::all()->lists('name','id'));
+		if(!Session::has('students')) {
+			// On first load we populate the form from the DB
+			$students = $team->students;
+		} else {
+			// On subsequent loads or errors, use the sessions variable
+			$students = [];
+		}
+
+		$teacher_list = [];
+		$this->populate_teacher_list($teacher_list);
+
+		View::share('index', -1);
+
+		return View::make('teams.edit', compact('team','students', 'division_list', 'ethnicity_list', 'teacher_list'));
 	}
 
 	/**
@@ -112,16 +192,61 @@ class TeamsController extends BaseController {
 	 */
 	public function update($id)
 	{
-		$input = array_except(Input::all(), ['_method', 'select_county', 'select_district' ]);
+		$input = Input::except('_method', 'students');
+		$input['school_id'] = Wp_user::find(Input::get('teacher_id'))->getMeta('wp_school_id', 0);
+		$input['year'] = Carbon\Carbon::now()->year;
 
-		$validation = Validator::make($input, Team::$rules);
+		$students = Input::get('students');
 
-		if ($validation->passes())
+		$teamValidation = Validator::make($input, Team::$rules);
+
+		if ($teamValidation->passes())
 		{
-			$team = Team::find($id);
-			$team->update($input);
+			if(!empty($students)) {
+				$students_pass = true;
+				foreach ($students as $index => $student) {
+					$student_rules = Student::$rules;
+					if(array_key_exists('id', $student)) {
+						$student_rules['ssid'] .= ',' . $student['id'];
+					}
+				 	$studentErrors[$index] = Validator::make($student, $student_rules);
+				 	if($studentErrors[$index]->fails()) {
+				 		$students_pass = false;
+				 		$students[$index]['errors'] = $studentErrors[$index]->messages()->all();
+				 	}
+				}
 
-			return Redirect::route('teams.show', $id);
+				if($students_pass) {
+					$team = Team::find($id);
+					$team->update($input);
+
+					foreach ($students as $index => &$student) {
+						$student['teacher_id'] = Input::get('teacher_id',0);
+						$student['year'] = Carbon\Carbon::now()->year;
+						if(array_key_exists('id', $student)) {
+							$newStudent = Student::find($student['id']);
+							$newStudent->update($student);
+						} else {
+							$newStudent = Student::create($student);
+						}
+						$sync_list[] = $newStudent->id;
+					}
+					$team->students()->sync($sync_list);
+					return Redirect::route('teams.index');
+				} else {
+					return Redirect::route('teams.edit', $id)
+						->withInput(Input::except('students'))
+						->with('students', $students)
+						->with('message', 'There were validation errors.');
+				}
+			} else {
+				// No students, just update the team
+				$team = Team::find($id);
+				$team->update($input);
+				return Redirect::route('teams.index');
+			}
+
+			return Redirect::route('teams.index');
 		}
 
 		return Redirect::route('teams.edit', $id)
@@ -147,4 +272,20 @@ class TeamsController extends BaseController {
 		return Redirect::route('teams.index');
 	}
 
+	public function populate_teacher_list(&$teacher_list) {
+		$teacher_ids = Wp_invoice_table::where('invoice_type_id', 16)->lists('user_id');
+		$teachers = Wp_user::whereIn('ID', $teacher_ids)->get();
+		$school_ids = Usermeta::whereIn('user_id', $teacher_ids)->where('meta_key', 'wp_school_id')->lists('meta_value','user_id');
+		$school_list = Schools::whereIn('school_id', $school_ids)->lists('name', 'school_id');
+
+		$teacher_list = [ 0 => '-- Select Teacher --'];
+		foreach($teachers as $teacher) {
+			if(array_key_exists($teacher->ID, $school_ids)) {
+				$teacher_list[$teacher->ID] = $teacher->getNameProper() . " (" . $school_list[$school_ids[$teacher->ID]] . ")";
+			} else {
+			 	$teacher_list[$teacher->ID] = $teacher->getNameProper() . " (No School Set)";
+			}
+		}
+		asort($teacher_list);
+	}
 }

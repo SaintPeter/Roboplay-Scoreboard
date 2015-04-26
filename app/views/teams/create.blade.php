@@ -1,28 +1,45 @@
 @extends('layouts.scaffold')
 
-@section('head')
-	{{ HTML::script('js/jquery.jCombo.js') }}
+
+@section('style')
+/* Fix margins for nested inline forms */
+.form-inline .form-group{
+	margin-left: 0;
+	margin-right: 0;
+}
+
+/* Make nested form things look good */
+.form-group .col-md-6 {
+	padding-left: 0;
+}
+
+.vertical-container {
+	display: table;
+	width: 100%;
+}
+
+.vertical-container > .col-md-1 {
+	display: table-cell;
+	vertical-align: middle;
+	height: 100%;
+	float: none;
+}
+
+.indent {
+	margin-left: 20px;
+}
 @stop
 
-@section('script')
-$(function() {
-	$( "#select_county" ).jCombo({url: "/scoreboard/ajax/c",
-			initial_text: "-- Select County --"
-		});
-	$( "#select_district" ).jCombo({url: "/scoreboard/ajax/d/",
-			parent: "#select_county",
-			initial_text: "-- Select District --",
-		});
-	$( "#select_school" ).jCombo({url: "/scoreboard/ajax/s/",
-			parent: "#select_district",
-			initial_text: "-- Select School --",
-		});
-});
+@section('head')
+	{{ HTML::script('js/jquery.form.min.js') }}
 @stop
+
+
+@include('students.partial.js', [ 'type' => 'videos', 'use_teacher_id' => true ])
 
 
 @section('main')
-{{ Form::open(array('route' => 'teams.store', 'role'=>"form", 'class' => 'col-md-6')) }}
+{{ Form::open(array('route' => 'teams.store', 'role'=>"form", 'class' => 'col-md-8')) }}
         <div class="form-group">
             {{ Form::label('name', 'Team Name:') }}
             {{ Form::text('name','', array('class'=>'form-control col-md-4')) }}
@@ -30,35 +47,23 @@ $(function() {
 
         <div class="form-group">
         	{{ Form::label('division_id', 'Division:') }}
-            {{ Form::select('division_id', $divisions, '', [ 'class'=>'form-control col-md-4' ]) }}
+            {{ Form::select('division_id', $division_list, '', [ 'class'=>'form-control col-md-4' ]) }}
         </div>
 
         <div class="form-group">
-			<label for="select_county">County</label>
-			<select name="select_county" id="select_county" class="form-control col-md-4"></select>
+		<label for="teacher_id">Teacher:</label>
+			{{ Form::select('teacher_id', $teacher_list, null, [ 'class'=>'form-control' ]) }}
 		</div>
 
-		<div class="form-group">
-			<label for="select_district">District</label>
-			<select name="select_district" id="select_district" class="form-control col-md-4"></select>
-		</div>
-
-		<div class="form-group">
-			<label for="select_school">School</label>
-			<select name="school_id" id="select_school" class="form-control col-md-4"></select>
-		</div>
-
-        <div class="form-group">
-            {{ Form::label('students', 'Students:') }}
-            {{ Form::textarea('students', '' , array('class'=>'form-control col-md-4')) }}
-            <p>Enter one student per line.</p>
-        </div>
+		@include('students.partial.fields', [ 'students' => (defined('students') ? $students : [])])
 
  		{{ Form::submit('Submit', array('class' => 'btn btn-primary ')) }}
  		&nbsp;
  		{{ link_to_route('teams.index', 'Cancel', [], ['class' => 'btn btn-info']) }}
 
 {{ Form::close() }}
+
+@include('students.partial.dialogs', compact('index'))
 
 @if ($errors->any())
 <div class="col-md-6">

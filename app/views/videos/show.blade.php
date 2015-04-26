@@ -50,8 +50,7 @@
 			<th>Name</th>
 			<th>YT Code</th>
 			<th>Students</th>
-			<th>Custom</th>
-			<th>Uploads</th>
+			<th>Status</th>
 			<th>County/District/School</th>
 			<th>Challenge/Division</th>
 			<th>Actions</th>
@@ -62,13 +61,10 @@
 		<tr>
 			<td>{{{ $video->name }}}</td>
 			<td>{{{ $video->yt_code }}}</td>
-			<td>{{ nl2br($video->students) }}</td>
-			<td>{{{ $video->has_custom==1 ? 'Yes' : 'No' }}}</td>
-			<td class="{{ $video->has_vid==1 ? 'confirmed' : 'unconfirmed' }}">
-					{{ $video->has_vid==1 ? 'Video File' : 'No Video' }} <br />
-					{{ $video->has_code==1 ? 'Code File' : 'No Code' }} <br />
-				</td>
-
+			<td>{{ join('<br />', $video->student_list()) }}</td>
+			<td>
+				{{ $video->has_vid==1 ? '<span class="btn btn-success btn-xs">Video File</span>' : '<span class="btn btn-danger btn-xs">No Video</span>' }} <br />
+				{{ $video->has_code==1 ? '<span class="btn btn-info btn-xs">Code</span>' : '<span class="btn btn-danger btn-xs">No Code</span>' }} <br />				</td>
 			<td>
 				@if(isset($video->school))
 					<strong>C:</strong> {{ $video->school->district->county->name }}<br />
@@ -99,6 +95,9 @@
 
 <div style="width:950px" class="center-block clearfix">
 	<h3>Preview</h3>
+	<div>
+		@include('teacher.videos.partial.tags', [ 'video' => $video ])
+	</div>
 	<div class="pull-left" style="width:640px; margin: 10px;">
 		<h4>{{ $video->name }} </h4>
 		<iframe  style="border: 1px solid black" id="ytplayer" type="text/html" width="640" height="390" src="http://www.youtube.com/embed/{{{ $video->yt_code }}}" frameborder="0"></iframe>

@@ -64,7 +64,8 @@ class VideosController extends BaseController {
 		// Ethnicity List Setup
 		$ethnicity_list = array_merge([ 0 => "- Select Ethnicity -" ], Ethnicity::all()->lists('name','id'));
 
-		View::share('index', 0);
+		$index = 0;
+		View::share('index', $index);
 		return View::make('videos.create', compact('vid_divisions', 'teacher_list', 'ethnicity_list'));
 	}
 
@@ -91,7 +92,11 @@ class VideosController extends BaseController {
 			if(!empty($students)) {
 				$students_pass = true;
 				foreach ($students as $index => $student) {
-				 	 $studentErrors[$index] = Validator::make($student, Student::$rules);
+				 	 $student_rules = Student::$rules;
+					if(array_key_exists('id', $student)) {
+						$student_rules['ssid'] .= ',' . $student['id'];
+					}
+				 	$studentErrors[$index] = Validator::make($student, $student_rules);
 				 	 if($studentErrors[$index]->fails()) {
 				 	 	$students_pass = false;
 				 	 	$students[$index]['errors'] = $studentErrors[$index]->messages()->all();
@@ -209,7 +214,11 @@ class VideosController extends BaseController {
 			if(!empty($students)) {
 				$students_pass = true;
 				foreach ($students as $index => $student) {
-				 	 $studentErrors[$index] = Validator::make($student, Student::$rules);
+				 	 $student_rules = Student::$rules;
+					if(array_key_exists('id', $student)) {
+						$student_rules['ssid'] .= ',' . $student['id'];
+					}
+				 	$studentErrors[$index] = Validator::make($student, $student_rules);
 				 	 if($studentErrors[$index]->fails()) {
 				 	 	$students_pass = false;
 				 	 	$students[$index]['errors'] = $studentErrors[$index]->messages()->all();
@@ -274,7 +283,7 @@ class VideosController extends BaseController {
 		$school_ids = Usermeta::whereIn('user_id', $teacher_ids)->where('meta_key', 'wp_school_id')->lists('meta_value','user_id');
 		$school_list = Schools::whereIn('school_id', $school_ids)->lists('name', 'school_id');
 
-		$teacher_list = [];
+		$teacher_list = [ 0 => '-- Select Teacher --'];
 		foreach($teachers as $teacher) {
 			if(array_key_exists($teacher->ID, $school_ids)) {
 				$teacher_list[$teacher->ID] = $teacher->getNameProper() . " (" . $school_list[$school_ids[$teacher->ID]] . ")";

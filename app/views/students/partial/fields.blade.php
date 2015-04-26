@@ -25,3 +25,8 @@
 		{{ Form::button('Mass Upload Students', [ 'class' => 'btn btn-success btn-sm', 'id' => 'mass_upload_students', 'title' => 'Upload Students' ]) }}
 		{{ Form::button('Choose Students', [ 'class' => 'btn btn-success btn-sm', 'id' => 'choose_students', 'title' => 'Choose Students' ] ) }}
 	</div>
+
+{{-- Update savedIndex with the number of students already displayed . . plus 1 --}}
+<script>
+	savedIndex = {{ $index + 1 }};
+</script>

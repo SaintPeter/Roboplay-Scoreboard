@@ -1,7 +1,3 @@
-{{-- Update savedIndex with the number of students already displayed . . plus 1 --}}
-<script>
-	savedIndex = {{ $index + 1 }};
-</script>
 
 <div id="choose_students_dialog" title="Choose Students">
 

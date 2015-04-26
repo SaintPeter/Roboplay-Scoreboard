@@ -17,7 +17,7 @@
 	<tbody>
 		<tr>
 			<td>{{{ $team->name }}}</td>
-			<td>{{ nl2br($team->students) }}</td>
+			<td>{{ join('<br />', $team->student_list()) }}</td>
 			<td>{{{ $team->division->longname() }}}</td>
 			<td>
 				@if(isset($team->school))

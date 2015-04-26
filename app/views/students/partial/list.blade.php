@@ -1,7 +1,7 @@
 <form id="student_list">
 <table class="table table-condensed">
 	<tbody>
-		@if(!empty($student_list))
+		@if(count($student_list) > 0)
 			@foreach($student_list as $student)
 			<tr>
 				<td class="text-center">{{ Form::checkbox('students[]', $student->id) }}</td>

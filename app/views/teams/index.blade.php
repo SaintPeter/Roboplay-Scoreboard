@@ -42,6 +42,7 @@
 @stop
 
 @section('main')
+@include('partials.year_select')
 <p>{{ link_to_route('teams.create', 'Add Team', [], [ 'class' => 'btn btn-primary' ]) }}</p>
 
 <table id="team_table" class="table table-striped table-bordered table-condensed">
@@ -51,6 +52,7 @@
 			<th>Students</th>
 			<th>Division</th>
 			<th>County/District/School</th>
+			<th>Year</th>
 			<th>Actions</th>
 		</tr>
 	</thead>
@@ -71,6 +73,7 @@
 						Not Set
 					@endif
 				</td>
+				<td>{{ $team->year }}</td>
                 <td>
                 	{{ link_to_route('teams.show', 'Show', [$team->id], [ 'class' => 'btn btn-default' ]) }}
                 	&nbsp;
@@ -84,7 +87,7 @@
 			</tr>
 			@endforeach
 		@else
-			<tr><td colspan="5">No Teams Created</td></tr>
+			<tr><td colspan="6">No Teams Created</td></tr>
 		@endif
 	</tbody>
 </table>

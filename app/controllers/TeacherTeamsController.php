@@ -47,7 +47,7 @@ class TeacherTeamsController extends BaseController {
 											return $q->orderby('display_order');
 										} ] )
 									->get();
-
+		$division_list = [];
 		foreach($competitions as $competition) {
 			foreach($competition->divisions as $division) {
 				$division_list[$competition->name][$division->id] = $division->name;
@@ -75,8 +75,6 @@ class TeacherTeamsController extends BaseController {
 
 		$students = Input::get('students');
 
-		//dd($students);
-
 		$teamErrors = Validator::make($input, Team::$rules);
 
 		if ($teamErrors->passes())
@@ -84,7 +82,11 @@ class TeacherTeamsController extends BaseController {
 			if(!empty($students)) {
 				$students_pass = true;
 				foreach ($students as $index => $student) {
-				 	 $studentErrors[$index] = Validator::make($student, Student::$rules);
+				 	 $student_rules = Student::$rules;
+					if(array_key_exists('id', $student)) {
+						$student_rules['ssid'] .= ',' . $student['id'];
+					}
+				 	$studentErrors[$index] = Validator::make($student, $student_rules);
 				 	 if($studentErrors[$index]->fails()) {
 				 	 	$students_pass = false;
 				 	 	$students[$index]['errors'] = $studentErrors[$index]->messages()->all();
@@ -199,7 +201,11 @@ class TeacherTeamsController extends BaseController {
 			if(!empty($students)) {
 				$students_pass = true;
 				foreach ($students as $index => $student) {
-				 	 $studentErrors[$index] = Validator::make($student, Student::$rules);
+				 	 $student_rules = Student::$rules;
+					if(array_key_exists('id', $student)) {
+						$student_rules['ssid'] .= ',' . $student['id'];
+					}
+				 	$studentErrors[$index] = Validator::make($student, $student_rules);
 				 	 if($studentErrors[$index]->fails()) {
 				 	 	$students_pass = false;
 				 	 	$students[$index]['errors'] = $studentErrors[$index]->messages()->all();
