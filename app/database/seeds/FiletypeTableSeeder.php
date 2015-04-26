@@ -17,8 +17,8 @@ class FiletypeTableSeeder extends Seeder {
 	Filetype::create([ 'ext' => 'jpeg',	'type' => 'img',	'name' => 'Image File',	'language' => '',	'icon' => 'fa-file-picture-o',	'viewer' => 'lytebox' ]);
 	Filetype::create([ 'ext' => 'gif',	'type' => 'img',	'name' => 'Image File',	'language' => '',	'icon' => 'fa-file-picture-o',	'viewer' => 'lytebox' ]);
 	Filetype::create([ 'ext' => 'png',	'type' => 'img',	'name' => 'Image File',	'language' => '',	'icon' => 'fa-file-picture-o',	'viewer' => 'lytebox' ]);
-	Filetype::create([ 'ext' => 'doc',	'type' => 'doc',	'name' => 'Document',	'language' => '',	'icon' => 'fa-file-word-o' ]);
-	Filetype::create([ 'ext' => 'docx',	'type' => 'doc',	'name' => 'Document',	'language' => '',	'icon' => 'fa-file-word-o' ]);
+	Filetype::create([ 'ext' => 'doc',	'type' => 'doc',	'name' => 'Document',	'language' => '',	'icon' => 'fa-file-word-o',	'viewer' => 'lytebox' ]);
+	Filetype::create([ 'ext' => 'docx',	'type' => 'doc',	'name' => 'Document',	'language' => '',	'icon' => 'fa-file-word-o',	'viewer' => 'lytebox' ]);
 	Filetype::create([ 'ext' => 'pdf',	'type' => 'doc',	'name' => 'Document',	'language' => '',	'icon' => 'fa-file-pdf-o',	'viewer' => 'lytebox' ]);
 	Filetype::create([ 'ext' => 'txt',	'type' => 'doc',	'name' => 'Document',	'language' => '',	'icon' => 'fa-file-text-o',	'viewer' => 'lytebox' ]);
 	Filetype::create([ 'ext' =>  'wmv', 'type' =>  'video', 'name' =>  'Video File', 'language' => '',	'icon' => 'fa-file-video-o',	'viewer' => 'lytebox' ]);
