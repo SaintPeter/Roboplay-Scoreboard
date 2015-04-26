@@ -5,11 +5,21 @@
 			@foreach($video->files as $file)
 			<tr>
 				@if($show_type) <td>{{ $file->filetype->name }}</td> @endif
-				@if($file->filetype->type == 'code' OR $file->filetype->type == 'img' OR ($file->filetype->type == 'doc' and ($file->filetype->ext == 'txt' or $file->filetype->ext == 'pdf')))
-					<td>{{ link_to($file->url(), $file->filename, [ 'target' => '_blank', 'class' => 'lytebox', 'data-title' => $file->filename, "data-lyte-options" => "group:group1" ]) }}</td>
+				@if($file->filetype->viewer == 'lytebox')
+					<td>
+						<a href="{{ $file->url() }}" class="lytebox" data-title="{{ $file->filename }}" data-lyte-options="group:group1" target="_blank" >
+							<i class="fa {{ $file->filetype->icon}}"></i>
+							{{ $file->filename }}
+						</a>
+					</td>
 					<td><a href="{{ url($file->path()) }}" target="_blank"><span class="glyphicon glyphicon-download" title="Download File"></span></a></td>
 				@else
-					<td>{{ link_to($file->path(), $file->filename, [ 'target' => '_blank' ]) }}</td>
+					<td>
+						<a href="{{ url($file->path()) }}" target="_blank">
+							<i class="fa {{ $file->filetype->icon}}"></i>
+							{{ $file->filename }}
+						</a>
+					</td>
 					<td>&nbsp;</td>
 				@endif
 				@if($show_delete)

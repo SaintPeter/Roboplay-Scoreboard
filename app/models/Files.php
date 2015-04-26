@@ -31,8 +31,13 @@ class Files extends \Eloquent {
 	public function url() {
 		if($this->filetype->type == 'code') {
 			return route('file_viewer', [ 'file_id' => $this->id ]);
+		} elseif($this->filetype->ext == 'doc' OR
+		   $this->filetype->ext == 'docx' OR
+		   $this->filetype->ext == 'xls' OR
+		   $this->filetype->ext == 'xlsx') {
+		   	return 'https://view.officeapps.live.com/op/view.aspx?src=' . urlencode(url($this->path()));
 		} else {
-		 	return $this->path();
+		 	return url($this->path());
 		}
 	}
 
