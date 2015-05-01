@@ -46,7 +46,7 @@
 			<th>Name</th>
 			<th>Students</th>
 			<th>Status</th>
-			<th>County/District/School</th>
+			<th>Teacher/County/District/School</th>
 			<th>Challenge/Division</th>
 			<th>Year</th>
 			<th>Actions</th>
@@ -65,6 +65,11 @@
 					{{ $video->has_code==1 ? '<span class="btn btn-info btn-xs">Code</span>' : '<span class="btn btn-danger btn-xs">No Code</span>' }} <br />
 				</td>
 				<td>
+					@if($video->teacher)
+						{{ $video->teacher->getName() }}<br />
+					@else
+						No Teacher Set<br />
+					@endif
 					@if(isset($video->school))
 						<strong>C:</strong> {{ $video->school->district->county->name }}<br />
 						<strong>D:</strong> {{ $video->school->district->name }}<br />

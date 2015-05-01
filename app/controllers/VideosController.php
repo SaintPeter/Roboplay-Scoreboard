@@ -36,10 +36,13 @@ class VideosController extends BaseController {
 
 		if($selected_year) {
 			$videos = Video::where('year', $selected_year)
-							->with('vid_division', 'school', 'school.district', 'school.district.county')->get();
+							->with('vid_division', 'school', 'school.district', 'school.district.county')
+							->orderBy('teacher_id')
+							->get();
 		} else {
 			$videos = Video::with('vid_division', 'school', 'school.district', 'school.district.county')
 							->orderBy('year', 'desc')
+							->orderBy('teacher_id')
 							->get();
 		}
 
@@ -165,7 +168,7 @@ class VideosController extends BaseController {
 	{
 		Breadcrumbs::addCrumb('Edit Video', 'videos');
 		View::share('title', 'Edit Video');
-		$video = Video::with('vid_division', 'school', 'school.district', 'school.district.county')->find($id);
+		$video = Video::with('teacher','vid_division', 'school', 'school.district', 'school.district.county')->find($id);
 		$vid_divisions = Vid_division::longname_array();
 
 		$teacher_list = [];
@@ -205,7 +208,7 @@ class VideosController extends BaseController {
 		$rules = Video::$rules;
 		unset($rules['yt_code']);
 		$input['school_id'] = Wp_user::find(Input::get('teacher_id'))->getMeta('wp_school_id', 0);
-		$input['year'] = Carbon\Carbon::now()->year;
+		// $input['year'] = Carbon\Carbon::now()->year;  // Don't overwrite the current year
 
 		$videoErrors = Validator::make($input, $rules);
 

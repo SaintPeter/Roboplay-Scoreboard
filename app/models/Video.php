@@ -76,6 +76,10 @@ class Video extends Eloquent {
 		return $this->belongsTo('Video_comment');
 	}
 
+	public function teacher() {
+		return $this->belongsTo('Wp_user', 'teacher_id', 'ID');
+	}
+
 	// Methods
 	public function student_count()
 	{
