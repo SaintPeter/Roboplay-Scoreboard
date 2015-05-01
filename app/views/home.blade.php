@@ -27,6 +27,8 @@
 		@foreach($competitions as $comp)
 			<li>{{ link_to_route('display.compscore', $comp->name . ' Scoreboard', $comp->id, $noajax) }} </li>
 		@endforeach
+	@else
+		<p>No Active Competitions</p>
 	@endif
 </ul>
 
