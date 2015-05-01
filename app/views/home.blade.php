@@ -58,7 +58,14 @@
 			Manage Teams and Videos
 		</a>
 	</li>
+
 </ul>
+	<p>Lost?  Confused?  Frustrated?<br />
+		<ol>
+			<li>Read the <a href="/scoreboard/docs/teacher_guide_2015.pdf" data-ajax="false">Teacher Guide</a></li>
+			<li>Still stuck?<br /> E-mail <a href="mailto:rex.schrader@gmail.com?subject=RoboPlay 2015 - Scoreboard Question&cc=hespindola@ucdavis.edu">rex.schrader@gmail.com</a></li>			
+		</ol>		
+		</p>
 @endif
 
 @if(Roles::isAdmin())
