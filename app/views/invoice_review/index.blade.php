@@ -31,7 +31,7 @@
 	@foreach($invoices as $invoice)
 	<tr>
 		<td>
-			{{ $invoice->user->getName() }}
+			{{ link_to('mailto:' . $invoice->user->user_email, $invoice->user->getName()) }}
 		</td>
 		<td>
 			{{ $invoice->user->getSchool() }}

@@ -78,7 +78,7 @@
 	<li>{{ link_to('vid_divisions', 'Video Competition Divisions', $noajax) }}</li>
 	<li>{{ link_to('videos', 'Manage Videos', $noajax) }}</li>
 	<li data-role="list-divider">Other Management</li>
-	<li>{{ link_to('invoice_management', 'Invoice Payment Management', $noajax) }}</li>
+	<li>{{ link_to('invoice_review', 'Invoice Review', $noajax) }}</li>
 </ul>
 @endif
 
