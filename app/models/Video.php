@@ -53,6 +53,11 @@ class Video extends Eloquent {
 		return $this->belongsTo('Vid_division');
 	}
 
+	public function division()
+	{
+		return $this->belongsTo('Vid_division', 'vid_division_id');
+	}
+
 	public function school()
 	{
 		return $this->belongsTo('Schools', 'school_id', 'school_id');
