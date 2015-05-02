@@ -35,7 +35,7 @@
 @stop
 
 
-@include('students.partial.js', [ 'type' => 'videos', 'use_teacher_id' => true ])
+@include('students.partial.js', [ 'type' => 'teams', 'use_teacher_id' => true ])
 
 
 @section('main')
@@ -55,7 +55,7 @@
 			{{ Form::select('teacher_id', $teacher_list, null, [ 'class'=>'form-control' ]) }}
 		</div>
 
-		@include('students.partial.fields', [ 'students' => (defined('students') ? $students : [])])
+		@include('students.partial.fields', [ 'students' => $students ])
 
  		{{ Form::submit('Submit', array('class' => 'btn btn-primary ')) }}
  		&nbsp;

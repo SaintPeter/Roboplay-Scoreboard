@@ -156,7 +156,7 @@ class TeacherVideoController extends BaseController {
 		Breadcrumbs::addCrumb('Manage Teams and Videos', 'teacher');
 		Breadcrumbs::addCrumb('Edit Video', $id);
 		View::share('title', 'Edit Video');
-		$video = video::with('students')->find($id);
+		$video = Video::with('students')->find($id);
 
 		// Create a list of Divisions to choose from
 		$competitions = Vid_competition::where('event_end', '>', Carbon\Carbon::now())->with(

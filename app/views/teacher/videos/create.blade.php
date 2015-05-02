@@ -30,7 +30,7 @@
 
 @stop
 
-@include('students.partial.js', [ 'type' => 'teams' ])
+@include('students.partial.js', [ 'type' => 'videos' ])
 
 @section('main')
 {{ Form::open(array('route' => 'teacher.videos.store','class' => 'col-md-8')) }}

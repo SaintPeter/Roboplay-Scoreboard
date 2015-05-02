@@ -28,7 +28,7 @@
 }
 @stop
 
-@include('students.partial.js', [ 'type' => 'teams' ])
+@include('students.partial.js', [ 'type' => 'videos' ])
 
 @section('main')
 {{ Form::model($video, array('method' => 'PATCH', 'route' => array('teacher.videos.update', $video->id), 'class' => 'col-md-8')) }}
@@ -89,7 +89,7 @@
 			which must be flagged to be judged for that category.<br/>
 			Computational Thinking will automatically be tagged when the video's code is uploaded.</p>
 
-	@include('students.partial.fields', [ 'students' => (defined('students') ? $students : [])])
+	@include('students.partial.fields', [ 'students' => $students ])
 
 	<div class="form-group">
 		{{ Form::submit('Update', array('class' => 'btn btn-primary')) }}
