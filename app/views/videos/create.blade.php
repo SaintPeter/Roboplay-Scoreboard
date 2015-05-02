@@ -105,7 +105,7 @@
 		</div>
 	</div>
 
-@include('students.partial.fields', [ 'students' => (defined('students') ? $students : [])])
+	@include('students.partial.fields', [ 'students' => $students ])
 
 	<div class="form-group">
 		{{ Form::submit('Submit', array('class' => 'btn btn-primary')) }}
