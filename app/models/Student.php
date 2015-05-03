@@ -7,7 +7,7 @@ class Student extends \Eloquent {
 	public static $rules = [
 		'first_name' => 'required',
 		'last_name' => 'required',
-		'ssid' => 'required|numeric|digits:10|unique:students,ssid',
+		'ssid' => 'required|numeric|unique:students,ssid',
 		'gender' => 'required|not_in:0',
 		'ethnicity_id' => 'required|exists:ethnicities,id',
 		'grade' => 'required|numeric|min:5|max:14',
