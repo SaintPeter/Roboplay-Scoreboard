@@ -14,21 +14,21 @@
 	<div class="form-group mix">
 		<div class="col-md-6">
 			{{ Form::label('min1', 'Min 1', [ 'class' => 'form-label' ]) }}
-			{{ Form::text('min1', 1, [ 'class' => 'form-control numeric' ]) }}
+			{{ Form::text('min1', null, [ 'class' => 'form-control numeric' ]) }}
 		</div>
 		<div class="col-md-6">
 			{{ Form::label('max1', 'Max 1', [ 'class' => 'form-label' ]) }}
-			{{ Form::text('max1', 10, [ 'class' => 'form-control numeric' ]) }}
+			{{ Form::text('max1', null, [ 'class' => 'form-control numeric' ]) }}
 		</div>
 	</div>
 	<div class="form-group mix">
 		<div class="col-md-6">
 			{{ Form::label('min2', 'Min 2', [ 'class' => 'form-label' ]) }}
-			{{ Form::text('min2', 1, [ 'class' => 'form-control numeric' ]) }}
+			{{ Form::text('min2', null, [ 'class' => 'form-control numeric' ]) }}
 		</div>
 		<div class="col-md-6">
 			{{ Form::label('max2', 'Max 2', [ 'class' => 'form-label' ]) }}
-			{{ Form::text('max2', 10, [ 'class' => 'form-control numeric' ]) }}
+			{{ Form::text('max2', null, [ 'class' => 'form-control numeric' ]) }}
 		</div>
 	</div>
 	<div class="checkbox">

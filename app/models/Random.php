@@ -23,7 +23,6 @@ class Random extends \Eloquent {
 	public function formatted() {
 		switch ($this->type) {
 			case 'single':
-			dd($this->format);
 				return sprintf($this->format, mt_rand($this->min1, $this->max1));
 				break;
 			case 'dual':
