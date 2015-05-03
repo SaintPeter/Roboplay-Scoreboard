@@ -218,17 +218,23 @@ class ScoreVideosController extends \BaseController {
 
 		// Ensure we have not already scored this video
 		$score_count = Video_scores::where('video_id', $video_id)
-								   ->whereIn('score_group', $video_types)
 								   ->where('judge_id', Auth::user()->ID)
 								   ->count();
 
+		// If there are any scores, go to edit mode
 		if($score_count > 0) {
 			return Redirect::route('video.judge.edit', [ 'video_id' => $video_id ])
 							->with('message', 'You already scored this video.  Switched to Edit Mode.');
 		}
 
-		$types = Vid_score_type::whereIn('group', $video_types)->with('Rubric')->get();
+		// Competition id to filter rubric
+		$vid_competition_id = $video->vid_division->competition->id;
 
+		// Get Rubric
+		$types = Vid_score_type::whereIn('group', $video_types)
+						->with( [ 'rubric' => function ($q) use ($vid_competition_id) {
+							return $q->where('vid_competition_id', $vid_competition_id);
+						}])->get();
 		return View::make('video_scores.create', compact('video', 'types'));
 	}
 
@@ -360,7 +366,14 @@ class ScoreVideosController extends \BaseController {
 
 		//$missing_groups = array_diff([ VG_COMPUTE, VG_GENERAL, VG_CUSTOM ], $groups);
 
-		$types = Vid_score_type::whereIn('group', $groups)->with('Rubric')->get();
+		// Competition id to filter rubric
+		$vid_competition_id = $video->vid_division->competition->id;
+
+		//$types = Vid_score_type::whereIn('group', $groups)->with('Rubric')->get();
+		$types = Vid_score_type::whereIn('group', $groups)
+				->with( [ 'rubric' => function ($q) use ($vid_competition_id) {
+					return $q->where('vid_competition_id', $vid_competition_id);
+				}])->get();
 		//dd($types);
 
 		$video_scores = [];

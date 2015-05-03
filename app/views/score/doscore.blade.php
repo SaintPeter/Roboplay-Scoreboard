@@ -58,12 +58,21 @@
 
 @if(count($challenge->randoms) > 0)
 <div class="ui-body ui-body-a">
+	<a href="#randomPopup" id="random_popout" data-rel="popup" data-position-to="window" class="ui-btn ui-btn-inline pull-right">Popout</a>
 	<h4>Randoms</h4>
 	<p>
 	@foreach($challenge->randoms as $random)
 		{{ $random->formatted() }}<br />
 	@endforeach
 	</p>
+</div>
+<div data-role="popup" id="randomPopup" class="ui-corner-all">
+	<div style="padding: 10px 20px">
+		<h1>Random Numbers</h1>
+		@foreach($challenge->randoms as $random)
+			<span style="font-size: 72px;">{{ $random->formatted() }}</span><br />
+		@endforeach
+	</div>
 </div>
 @endif
 <br />
