@@ -43,7 +43,7 @@ class ScoreController extends BaseController {
 
 	public function doscore($team_id, $challenge_id)
 	{
-		$challenge = Challenge::with('score_elements','divisions')->find($challenge_id);
+		$challenge = Challenge::with('score_elements','randoms','divisions')->find($challenge_id);
 		$team = Team::with('division', 'division.competition')->find($team_id);
 		$judge = Judge::find(Auth::user()->ID);
 

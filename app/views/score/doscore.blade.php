@@ -55,6 +55,17 @@
 		{{ nl2br($challenge->rules) }}
 	</p>
 </div>
+
+@if(count($challenge->randoms) > 0)
+<div class="ui-body ui-body-a">
+	<h4>Randoms</h4>
+	<p>
+	@foreach($challenge->randoms as $random)
+		{{ $random->formatted() }}<br />
+	@endforeach
+	</p>
+</div>
+@endif
 <br />
 {{ Form::open(array('route' => array('score.save', $team->id, $challenge->id), 'id' => 'se_form', 'data-ajax' => 'false' )) }}
 	<ul data-role="listview">

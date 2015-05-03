@@ -14,6 +14,11 @@ class Challenge extends Eloquent {
 		return $this->hasMany('Score_element')->orderBy('element_number', 'asc');
 	}
 
+	public function randoms()
+	{
+		return $this->hasMany('Random')->orderBy('display_order', 'asc');
+	}
+
 	public function divisions()
 	{
 		return $this->belongsToMany('Division')->withPivot('display_order');

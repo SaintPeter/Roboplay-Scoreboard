@@ -118,22 +118,22 @@ Route::group(array('before' => 'auth'), function() {
 
 		Route::resource('teams', 'TeamsController');
 		Route::resource('score_elements', 'Score_elementsController');
-		Route::get('score_elements/{challenge_id}/create', array(
-				   'as' => 'score_elements.create',
-				   'uses' => 'Score_elementsController@create'));
+		Route::get('score_elements/{challenge_id}/create', [ 'as' => 'score_elements.create',	'uses' => 'Score_elementsController@create']);
+		Route::resource('randoms', 'RandomsController');
+		Route::get('randoms/{challenge_id}/create', 	   [ 'as' => 'randoms.create',			'uses' => 'RandomsController@create']);
 		Route::resource('score_runs', 'Score_runsController');
 		Route::resource('judges', 'JudgesController');
 		Route::resource('videos', 'VideosController');
 
 		// Magical WP Fix Stuff - Not for "production"
-		Route::get('user_schools', 							[ 'as' => 'user_schools', 'uses' => 'Wp_fix@user_schools']);
+		Route::get('user_schools', 							[ 'as' => 'user_schools', 	'uses' => 'Wp_fix@user_schools']);
 		Route::get('division_check', 						[ 'as' => 'division_check', 'uses' => 'Wp_fix@division_check']);
-		Route::get('team_division_check', 						[ 'as' => 'team_division_check', 'uses' => 'Wp_fix@team_division_check']);
-		Route::get('invoice_fix', 							[ 'as' => 'invoice_fix', 'uses' => 'Wp_fix@invoice_fix']);
-		Route::get('invoice_management',					[ 'as' => 'invoice_set', 'uses' => 'Wp_fix@invoice_set']);
-		Route::get('invoice_csv',							[ 'as' => 'invoice_csv', 'uses' => 'Wp_fix@invoice_csv']);
-		Route::get('ajax/set_paid/{invoice_no}/{value}', 	[ 'as' => 'ajax.set_paid', 'uses' => 'Wp_fix@ajax_set_paid']);
-		Route::get('ajax/set_div/{invoice_no}/{value}', 	[ 'as' => 'ajax.set_div', 'uses' => 'Wp_fix@ajax_set_div']);
+		Route::get('team_division_check', 					[ 'as' => 'team_division_check', 'uses' => 'Wp_fix@team_division_check']);
+		Route::get('invoice_fix', 							[ 'as' => 'invoice_fix', 	'uses' => 'Wp_fix@invoice_fix']);
+		Route::get('invoice_management',					[ 'as' => 'invoice_set', 	'uses' => 'Wp_fix@invoice_set']);
+		Route::get('invoice_csv',							[ 'as' => 'invoice_csv', 	'uses' => 'Wp_fix@invoice_csv']);
+		Route::get('ajax/set_paid/{invoice_no}/{value}', 	[ 'as' => 'ajax.set_paid', 	'uses' => 'Wp_fix@ajax_set_paid']);
+		Route::get('ajax/set_div/{invoice_no}/{value}', 	[ 'as' => 'ajax.set_div', 	'uses' => 'Wp_fix@ajax_set_div']);
 		Route::get('ajax/set_vid_div/{invoice_no}/{value}', [ 'as' => 'ajax.set_vid_div', 'uses' => 'Wp_fix@ajax_set_vid_div']);
 		Route::post('ajax/save_school', 					[ 'as' => 'ajax.save_school', 'uses' => 'Wp_fix@ajax_save_school']);
 
