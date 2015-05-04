@@ -1,5 +1,5 @@
 
-<div style="margin: 10px 0px;" class="pull-right">
+<div class="pull-right">
 	<ul class="nav nav-pills">
 		<?php $selected_year = Session::get('selected_year', false); ?>
 		@for($year = 2014; $year <= Carbon\Carbon::now()->year; $year++)

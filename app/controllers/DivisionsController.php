@@ -27,6 +27,7 @@ class DivisionsController extends BaseController {
 						  ->orderBy('competition_id')
 						  ->orderBy('display_order')
 						  ->get();
+
 		View::share('title', 'Competition Divisions');
 		return View::make('divisions.index', compact('divisions'));
 	}
@@ -82,8 +83,9 @@ class DivisionsController extends BaseController {
 		View::share('title', 'Show Division');
 		$division = $this->division->with('competition','challenges','challenges.score_elements')->findOrFail($id);
 		$challenges = $division->challenges;
+		$division_list = Division::longname_array_counts();
 
-		return View::make('divisions.show', compact('division', 'challenges'));
+		return View::make('divisions.show', compact('division', 'challenges', 'division_list'));
 	}
 
 	/**
@@ -234,6 +236,32 @@ class DivisionsController extends BaseController {
 					->with('challenges', $division->challenges)
 					->with(compact('division'));
 
+	}
+
+	// Clear all of the challenges from a Division
+	public function clearChallenges($division_id) {
+		$division = Division::with('challenges')->findOrFail($division_id);
+		$count = $division->challenges->count();
+
+		// Remove all challenges by syncing to an empty array
+		$division->challenges()->sync([]);
+
+		return Redirect::back()->with('message', "$count Challenges Removed");
+	}
+
+	// Copy a list of challenges from one divsion to another
+	public function copyChallenges($to_id) {
+		$from_id = Input::get('from_id', 0);
+		$from = Division::with('challenges')->findOrFail($from_id);
+		$to = Division::with('challenges')->findOrFail($to_id);
+
+		foreach($from->challenges as $challenge) {
+			$update[$challenge->id] = [ 'display_order' => $challenge->pivot->display_order ];
+		}
+
+		$to->challenges()->sync($update);
+
+		return Redirect::back()->with('message', 'Challenges Copied');
 	}
 
 	// Clear Scores

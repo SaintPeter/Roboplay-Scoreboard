@@ -104,6 +104,7 @@ function setup_random_handler() {
 				<th>Display Name</th>
 				<th>Rules</th>
 				<th>Points</th>
+				<th>Level</th>
 				<th>Actions</th>
 		</tr>
 	</thead>
@@ -114,6 +115,7 @@ function setup_random_handler() {
 					<td>{{{ $challenge->display_name }}}</td>
 					<td>{{{ $challenge->rules }}}</td>
 					<td>{{{ $challenge->points }}}</td>
+					<td>{{{ $challenge->level }}}</td>
 					<td>{{ link_to_route('challenges.edit', 'Edit', array($challenge->id), array('class' => 'btn btn-info btn-margin')) }}
 						{{ Form::open(array('method' => 'DELETE', 'route' => array('challenges.destroy', $challenge->id), 'style' => 'display: inline-block')) }}
 							{{ Form::submit('Delete', array('class' => 'btn btn-danger btn-margin')) }}
@@ -140,7 +142,7 @@ function setup_random_handler() {
 
 	<tbody>
 		@if( $challenge->score_elements->count() == 0 )
-			<tr><td colspan="8" style="align=center;">No Score Elements</td></tr>
+			<tr><td colspan="9" style="align=center;">No Score Elements</td></tr>
 		@else
 		@foreach( $challenge->score_elements as $score_element)
 			<tr>

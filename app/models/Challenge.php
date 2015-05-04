@@ -9,6 +9,13 @@ class Challenge extends Eloquent {
 		'rules' => 'required'
 	);
 
+	public static $levels = [
+		0 => '- Select Level - ',
+		1 => 1,
+		2 => 2,
+		3 => 3
+	];
+
 	public function score_elements()
 	{
 		return $this->hasMany('Score_element')->orderBy('element_number', 'asc');

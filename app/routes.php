@@ -108,6 +108,8 @@ Route::group(array('before' => 'auth'), function() {
 		Route::get('divisions/{division_id}/remove/{challenge_id}', array(
 				   'as' => 'divisions.removeChallenge',
 				   'uses' => 'DivisionsController@removeChallenge'));
+		Route::post('divisions/copy/{from_id}', [ 'as' => 'divisions.copyChallenges', 'uses' => 'DivisionsController@copyChallenges' ] );
+		Route::get('divisions/clear/{division_id}', [ 'as' => 'divisions.clearChallenges', 'uses' => 'DivisionsController@clearChallenges' ] );
 		Route::post('divisions/updateChallengeOrder/{division_id}', array(
 				   'as' => 'divisions.updateChallengeOrder',
 				   'uses' => 'DivisionsController@updateChallengeOrder'));

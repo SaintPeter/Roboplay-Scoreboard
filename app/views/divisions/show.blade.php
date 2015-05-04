@@ -59,7 +59,17 @@
 	</tbody>
 </table>
 
-<h2>Challenges</h2>
+<h2 class="pull-left">Challenges</h2>
+
+<div style="margin-top: 20px;" class="pull-right">
+	{{ Form::open( [ 'route' => [ 'divisions.copyChallenges', $division->id ], 'class' => 'form-inline' ] ) }}
+	<div class="form-group">
+		{{ Form::select('from_id', $division_list, null, [ 'class' => 'form-control' ] ) }}
+		{{ Form::submit('Copy', [ 'class' => 'btn btn-primary' ] ) }}
+		{{ link_to_route('divisions.clearChallenges', 'Clear', [ $division->id ], [ 'class' => 'btn btn-danger']) }}
+	</div>
+	{{ Form::close() }}
+</div>
 
 <table class="table table-striped table-bordered" id="challenge_list">
 	<thead>
@@ -68,7 +78,8 @@
 			<th>Internal Name</th>
 			<th>Display Name</th>
 			<th>Rules</th>
-			<th>Score Elements</th>
+			<th>SE</th>
+			<th>Rand</th>
 			<th colspan="2">Actions</th>
 		</tr>
 	</thead>
