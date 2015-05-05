@@ -247,7 +247,7 @@ class VideosController extends BaseController {
 					$video->students()->sync($sync_list);
 					return Redirect::route('teacher.index');
 				} else {
-					return Redirect::route('teacher.videos.edit', $id)
+					return Redirect::route('videos.edit', $id)
 						->withInput(Input::except('students'))
 						->with('students', $students)
 						->with('message', 'There were validation errors.');
