@@ -203,7 +203,7 @@ class VideosController extends BaseController {
 	public function update($id)
 	{
 		$input = Input::except('_method', 'students' );
-
+		$students = Input::get('students');
 		// Skip check on video
 		$rules = Video::$rules;
 		unset($rules['yt_code']);
@@ -216,6 +216,7 @@ class VideosController extends BaseController {
 		{
 			if(!empty($students)) {
 				$students_pass = true;
+				//dd($students);
 				foreach ($students as $index => $student) {
 				 	 $student_rules = Student::$rules;
 					if(array_key_exists('id', $student)) {
