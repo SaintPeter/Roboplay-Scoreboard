@@ -33,6 +33,8 @@ class FiletypeTableSeeder extends Seeder {
 	Filetype::create([ 'ext' =>  'catpart', 'type' =>  'cad', 'name' =>  'CAD File', 'language' => '' ]);
 	Filetype::create([ 'ext' =>  'ipt', 'type' =>  'cad', 'name' =>  'CAD File', 'language' => '' ]);
 	Filetype::create([ 'ext' =>  'iam', 'type' =>  'cad', 'name' =>  'CAD File', 'language' => '' ]);
+	Filetype::create([ 'ext' => 'xls',	'type' => 'doc',	'name' => 'Document',	'language' => '',	'icon' => 'fa-file-excel-o',	'viewer' => 'lytebox' ]);
+	Filetype::create([ 'ext' => 'xlsx',	'type' => 'doc',	'name' => 'Document',	'language' => '',	'icon' => 'fa-file-excel-o',	'viewer' => 'lytebox' ]);
 	}
 
 }
