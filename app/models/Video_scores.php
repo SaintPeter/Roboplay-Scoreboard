@@ -1,7 +1,7 @@
 <?php
 
 class Video_scores extends \Eloquent {
-	protected $with = [ 'type' ]; // 'video',
+	//protected $with = [ 'type' ]; // 'video',
 	protected $guarded = [ 'id' ];
 
 	public function division() {

@@ -1,5 +1,9 @@
 @extends('layouts.scaffold')
 
+@section('head')
+	{{ HTML::script('js/jquery.TableCSVExport.js') }}
+@stop
+
 @section('style')
 .judges th {
 	background-color: #428BCA;
@@ -36,11 +40,21 @@ tr.score_row:nth-child(even) td:last-child {
 }
 @stop
 
+@section('script')
+	$(function() {
+		$('#exportToCSV').click(function() {
+			$('#judge_table').TableCSVExport( { delivery: 'download' });
+		});
+	});
+
+@stop
+
 
 @section('main')
+@include('partials.year_select')
 @include('partials.scorenav', [ 'nav' => 'judges', 'year' => $year])
 
-<table class="judges">
+<table class="judges" id="judge_table">
 	<thead>
 		<th>Judge</th>
 		<th>General</th>
@@ -60,4 +74,6 @@ tr.score_row:nth-child(even) td:last-child {
 		@endforeach
 	</tbody>
 </table>
+<br />
+{{ Form::button('Export to CSV', [ 'class' => 'btn btn-success', 'id' => 'exportToCSV' ]) }}
 @stop

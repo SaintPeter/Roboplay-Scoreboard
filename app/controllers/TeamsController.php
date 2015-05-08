@@ -15,17 +15,8 @@ class TeamsController extends BaseController {
 	 */
 	public function index()
 	{
-		if(Input::has('selected_year')) {
-			$selected_year = Input::get('selected_year');
-			if($selected_year == 'clear') {
-				Session::forget('selected_year');
-				$selected_year = false;
-			} else {
-				Session::put('selected_year', $selected_year);
-			}
-		} else {
-			$selected_year = Session::get('selected_year', false);
-		}
+		// Selected year set in filters.php -> App::before()
+		$selected_year = Session::get('selected_year', false);
 
 		if($selected_year) {
 			$teams = Team::where('year', $selected_year)->with('division', 'school', 'school.district', 'school.district.county')->get();

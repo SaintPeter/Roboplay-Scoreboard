@@ -33,6 +33,7 @@ tr.score_row:nth-child(odd){
 
 
 @section('main')
+@include('partials.year_select')
 @include('partials.scorenav', [ 'nav' => 'reported', 'year' => $year])
 
 {{ Form::open([ 'route' => 'video_scores.manage.process_report' ]) }}
@@ -45,7 +46,7 @@ tr.score_row:nth-child(odd){
 		<th>Action</th>
 	</thead>
 	<tbody>
-		@if(!empty($comments_reported))
+		@if(count($comments_reported) > 0)
 			@foreach($comments_reported as $comment)
 			<tr class="score_row">
 				<td>{{ link_to_route('video.judge.show', $comment->video->name, [ $comment->video->id ]) }}</td>
@@ -72,7 +73,7 @@ tr.score_row:nth-child(odd){
 		<th>Status</th>
 	</thead>
 	<tbody>
-		@if(!empty($comments_resolved))
+		@if(count($comments_resolved) > 0)
 			@foreach($comments_resolved as $comment)
 			<tr class="score_row">
 				<td>{{ link_to_route('video.judge.show', $comment->video->name, [ $comment->video->id ]) }}</td>
