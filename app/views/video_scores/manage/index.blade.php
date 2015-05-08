@@ -46,6 +46,7 @@ tr.score_row:nth-child(odd){
 
 @section('main')
 {{ Form::open([ 'route' => 'video_scores.manage.process' ]) }}
+@include('partials.year_select')
 @include('partials.scorenav', [ 'nav' => 'by_judge', 'year' => $year])
 <div class="wrapper">
 	<table class="scored_table">

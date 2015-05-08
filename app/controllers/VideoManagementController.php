@@ -5,11 +5,18 @@ class VideoManagementController extends \BaseController {
 	public function index($year = null)
 	{
 		Breadcrumbs::addCrumb('Manage Scores');
-		$video_scores = Video_scores::with('division', 'division.competition', 'judge')
-							->orderBy('total', 'desc')
-							->get();
+
+		$year = is_null($year) ? Session::get('selected_year', false) : intval($year);
+
+		$scores_query = Video_scores::with('division', 'division.competition', 'judge', 'video')
+							->orderBy('total', 'desc');
+		if($year) {
+			$scores_query = $scores_query->where(DB::raw("year(created_at)"), $year);
+		}
+		$video_scores = $scores_query->get();
+
 		$videos = [];
-		//dd(DB::getQueryLog());
+
 		$types = Vid_score_type::orderBy('id')->lists('name', 'id');
 		$blank = array_combine(array_keys($types), array_fill(0, count($types), '-'));
 		foreach($video_scores as $score) {
@@ -21,7 +28,7 @@ class VideoManagementController extends \BaseController {
 		foreach($video_scores as $score) {
 			$videos[$score->division->longname()][$score->judge->display_name][$score->video->name][$score->vid_score_type_id] = $score->total;
 		}
-
+		//dd(DB::getQueryLog());
 		View::share('title', 'Manage Scores');
 		return View::make('video_scores.manage.index', compact('videos','types','year'));
 
@@ -32,9 +39,11 @@ class VideoManagementController extends \BaseController {
 		Breadcrumbs::addCrumb('Scoring Summary');
 		View::share('title', 'Scoring Summary');
 
+		$year = is_null($year) ? Session::get('selected_year', false) : intval($year);
+
 		// Videos with score count
 		if($year) {
-			$videos = Video::with('scores')->where('year', $year)->get();
+			$videos = Video::with('scores')->where(DB::raw("year(created_at)"), $year)->get();
 		} else {
 			$videos = Video::with('scores')->get();
 		}
@@ -53,10 +62,12 @@ class VideoManagementController extends \BaseController {
 		Breadcrumbs::addCrumb('Judge Performace');
 		View::share('title', 'Judge Performance');
 
+		$year = intval($year) OR Session::get('selected_year', false);
+
 		// Judges Scoring Count
 		$judge_list = Judge::with( [ 'video_scores' => function($q) use ($year) {
 				if($year) {
-					return $q->where('year', $year);
+					return $q->where(DB::raw("year(created_at)"), $year);
 				} else {
 					return $q;
 				}
@@ -123,16 +134,15 @@ class VideoManagementController extends \BaseController {
 	public function by_video($year = null)
 	{
 		Breadcrumbs::addCrumb('Scores By Video');
-		$video_scores = Video_scores::with('division', 'division.competition', 'judge')
+		$video_scores = Video_scores::with('division', 'division.competition', 'judge', 'video')
 							->orderBy('total', 'desc');
 		if($year) {
-			$video_scores = $video_scores->where('year', $year)->get();
+			$video_scores = $video_scores->where(DB::raw("year(created_at)"), $year)->get();
 		} else {
 			$video_scores = $video_scores->get();
 		}
 
 		$videos = [];
-		//dd(DB::getQueryLog());
 		$types = Vid_score_type::orderBy('id')->lists('name', 'id');
 		$blank = array_combine(array_keys($types), array_fill(0, count($types), '-'));
 		foreach($video_scores as $score) {
@@ -144,7 +154,7 @@ class VideoManagementController extends \BaseController {
 		foreach($video_scores as $score) {
 			$videos[$score->division->longname()][$score->video->name][$score->judge->display_name][$score->vid_score_type_id] = $score->total;
 		}
-
+		//dd(DB::getQueryLog());
 		View::share('title', 'Manage Scores');
 		return View::make('video_scores.manage.by_video', compact('videos', 'types', 'year'));
 
@@ -201,14 +211,14 @@ class VideoManagementController extends \BaseController {
 		View::share('title', 'Reported Videos');
 		$comments_reported = Video_comment::whereHas('video', function($q) use ($year) {
 					if($year) {
-						$q = $q->where('year',$year);
+						$q = $q->where('year', $year);
 					}
 					return $q->where('flag', FLAG_REVIEW);
 				} )->with('video')->get();
 
 		$comments_resolved = Video_comment::whereHas('video', function($q) use ($year) {
 					if($year) {
-						$q = $q->where('year',$year);
+						$q = $q->where('year', $year);
 					}
 					return $q->where('flag', '<>', FLAG_REVIEW);
 				} )->with('video')->get();
