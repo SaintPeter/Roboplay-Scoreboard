@@ -65,7 +65,7 @@ class Video extends Eloquent {
 
 	public function files()
 	{
-		return $this->hasMany('Files');
+		return $this->hasMany('Files')->orderBy('filename');
 	}
 
 	public function scores()
