@@ -67,9 +67,9 @@ class ScoreVideosController extends \BaseController {
 		$scored_count[VG_GENERAL] /= 3;
 
 		if(count($div_list) > 0) {
-			$total_count[VG_GENERAL] = Video::whereIn('vid_division_id', $div_list)->count();
-			$total_count[VG_CUSTOM] = Video::whereIn('vid_division_id', $div_list)->where('has_custom', true)->count();
-			$total_count[VG_COMPUTE] = Video::whereIn('vid_division_id', $div_list)->where('has_code', true)->count();
+			$total_count[VG_GENERAL] = Video::whereIn('vid_division_id', $div_list)->where('flag', FLAG_NORMAL)->count();
+			$total_count[VG_CUSTOM] = Video::whereIn('vid_division_id', $div_list)->where('has_custom', true)->where('flag', FLAG_NORMAL)->count();
+			$total_count[VG_COMPUTE] = Video::whereIn('vid_division_id', $div_list)->where('has_code', true)->where('flag', FLAG_NORMAL)->count();
 		} else {
 			$total_count[VG_GENERAL] = 0;
 			$total_count[VG_CUSTOM] = 0;
@@ -148,6 +148,7 @@ class ScoreVideosController extends \BaseController {
 //		}
 //		echo "</pre>";
 
+		// No videes left in filteres means they've scored all active videos (or there are no videos to score)
 		if(count($filtered) == 0) {
 			return Redirect::route('video.judge.index')->with('message', 'You cannot judge any more videos.');
 		}
