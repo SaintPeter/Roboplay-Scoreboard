@@ -197,13 +197,13 @@ class ScoreVideosController extends \BaseController {
 		Breadcrumbs::addCrumb('Score Video', 'score');
 		View::share('title', 'Score Video');
 
-		$video = Video::find($video_id);
+		$video = Video::with('vid_division.competition')->find($video_id);
 		if(empty($video)) {
 			// Invalid video
 			return Redirect::route('video.judge.index')
 							->with('message', "Invalid video id '$video_id'.  Video no longer exists or another error occured.");
 		}
-
+//dd(DB::getQueryLog());
 		// We always score general
 		$video_types = [ VG_GENERAL ];
 
@@ -228,8 +228,12 @@ class ScoreVideosController extends \BaseController {
 							->with('message', 'You already scored this video.  Switched to Edit Mode.');
 		}
 
-		$types = Vid_score_type::whereIn('group', $video_types)->with('Rubric')->get();
+		$vid_competition_id = $video->vid_division->competition->id;
 
+		$types = Vid_score_type::with( [ 'Rubric' => function($q) use ($vid_competition_id) {
+			return $q->where('vid_competition_id', $vid_competition_id);
+		}])->whereIn('group', $video_types)->get();
+		//dd($types);
 		return View::make('video_scores.create', compact('video', 'types'));
 	}
 
