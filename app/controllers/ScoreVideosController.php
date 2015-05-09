@@ -344,7 +344,7 @@ class ScoreVideosController extends \BaseController {
 	{
 		Breadcrumbs::addCrumb('Edit Score', 'edit');
 		View::share('title', 'Edit Video Score');
-		$video = Video::find($video_id);
+		$video = Video::with('vid_division.competition')->find($video_id);
 		if(empty($video)) {
 			// Invalid video
 			return Redirect::route('video.judge.index')
@@ -365,8 +365,13 @@ class ScoreVideosController extends \BaseController {
 
 		//$missing_groups = array_diff([ VG_COMPUTE, VG_GENERAL, VG_CUSTOM ], $groups);
 
-		$types = Vid_score_type::whereIn('group', $groups)->with('Rubric')->get();
-		//dd($types);
+		//$types = Vid_score_type::whereIn('group', $groups)->with('Rubric')->get();
+
+		$vid_competition_id = $video->vid_division->competition->id;
+
+		$types = Vid_score_type::with( [ 'Rubric' => function($q) use ($vid_competition_id) {
+			return $q->where('vid_competition_id', $vid_competition_id);
+		}])->whereIn('group', $groups)->get();
 
 		$video_scores = [];
 		foreach($scores as $score) {
