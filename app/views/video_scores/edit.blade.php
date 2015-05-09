@@ -97,7 +97,7 @@
 			<td class="score_col">3</td>
 			<td class="score_col">4</td>
 		</tr>
-		@foreach($type->rubric as $rubric)
+		@foreach($type->Rubric as $rubric)
 			<tr class="score_row">
 				<td class="cat_col">
 						<a href="#" rubric_id="{{ $rubric->id }}" class="rubric_switcher">
