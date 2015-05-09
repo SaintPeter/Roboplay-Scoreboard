@@ -208,6 +208,7 @@ $language_data = array (
         'REGEXPS' => array(
             ),
         'SCRIPT' => array(
+        	0 => 'white-space: pre-wrap;'
             )
         ),
     'URLS' => array(
