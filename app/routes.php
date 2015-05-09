@@ -16,6 +16,7 @@ Route::get('file_viewer/{file_id}', [ 'as' => 'file_viewer', function($file_id) 
 	if(file_exists($file->full_path())) {
 		$source = file_get_contents($file->full_path());
 		$geshi = new Geshi\Geshi($source, $file->filetype->language);
+		$geshi->set_overall_style('white-space: pre-wrap;', true); // Force the pre tag to wrap in the container (iframe)
 		echo $geshi->parse_code();
 	} else {
 		echo "ERROR: File '{$file->filename}' not found.";
