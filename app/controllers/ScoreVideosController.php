@@ -67,9 +67,9 @@ class ScoreVideosController extends \BaseController {
 		$scored_count[VG_GENERAL] /= 3;
 
 		if(count($div_list) > 0) {
-			$total_count[VG_GENERAL] = Video::whereIn('vid_division_id', $div_list)->count();
-			$total_count[VG_CUSTOM] = Video::whereIn('vid_division_id', $div_list)->where('has_custom', true)->count();
-			$total_count[VG_COMPUTE] = Video::whereIn('vid_division_id', $div_list)->where('has_code', true)->count();
+			$total_count[VG_GENERAL] = Video::whereIn('vid_division_id', $div_list)->where('flag', FLAG_NORMAL)->count();
+			$total_count[VG_CUSTOM] = Video::whereIn('vid_division_id', $div_list)->where('has_custom', true)->where('flag', FLAG_NORMAL)->count();
+			$total_count[VG_COMPUTE] = Video::whereIn('vid_division_id', $div_list)->where('has_code', true)->where('flag', FLAG_NORMAL)->count();
 		} else {
 			$total_count[VG_GENERAL] = 0;
 			$total_count[VG_CUSTOM] = 0;
@@ -148,6 +148,7 @@ class ScoreVideosController extends \BaseController {
 //		}
 //		echo "</pre>";
 
+		// No videes left in filteres means they've scored all active videos (or there are no videos to score)
 		if(count($filtered) == 0) {
 			return Redirect::route('video.judge.index')->with('message', 'You cannot judge any more videos.');
 		}
@@ -196,13 +197,13 @@ class ScoreVideosController extends \BaseController {
 		Breadcrumbs::addCrumb('Score Video', 'score');
 		View::share('title', 'Score Video');
 
-		$video = Video::find($video_id);
+		$video = Video::with('vid_division.competition')->find($video_id);
 		if(empty($video)) {
 			// Invalid video
 			return Redirect::route('video.judge.index')
 							->with('message', "Invalid video id '$video_id'.  Video no longer exists or another error occured.");
 		}
-
+//dd(DB::getQueryLog());
 		// We always score general
 		$video_types = [ VG_GENERAL ];
 
@@ -230,11 +231,10 @@ class ScoreVideosController extends \BaseController {
 		// Competition id to filter rubric
 		$vid_competition_id = $video->vid_division->competition->id;
 
-		// Get Rubric
-		$types = Vid_score_type::whereIn('group', $video_types)
-						->with( [ 'rubric' => function ($q) use ($vid_competition_id) {
-							return $q->where('vid_competition_id', $vid_competition_id);
-						}])->get();
+		$types = Vid_score_type::with( [ 'Rubric' => function($q) use ($vid_competition_id) {
+			return $q->where('vid_competition_id', $vid_competition_id);
+		}])->whereIn('group', $video_types)->get();
+
 		return View::make('video_scores.create', compact('video', 'types'));
 	}
 
@@ -345,7 +345,7 @@ class ScoreVideosController extends \BaseController {
 	{
 		Breadcrumbs::addCrumb('Edit Score', 'edit');
 		View::share('title', 'Edit Video Score');
-		$video = Video::find($video_id);
+		$video = Video::with('vid_division.competition')->find($video_id);
 		if(empty($video)) {
 			// Invalid video
 			return Redirect::route('video.judge.index')
@@ -369,12 +369,9 @@ class ScoreVideosController extends \BaseController {
 		// Competition id to filter rubric
 		$vid_competition_id = $video->vid_division->competition->id;
 
-		//$types = Vid_score_type::whereIn('group', $groups)->with('Rubric')->get();
-		$types = Vid_score_type::whereIn('group', $groups)
-				->with( [ 'rubric' => function ($q) use ($vid_competition_id) {
-					return $q->where('vid_competition_id', $vid_competition_id);
-				}])->get();
-		//dd($types);
+		$types = Vid_score_type::with( [ 'Rubric' => function($q) use ($vid_competition_id) {
+			return $q->where('vid_competition_id', $vid_competition_id);
+		}])->whereIn('group', $groups)->get();
 
 		$video_scores = [];
 		foreach($scores as $score) {

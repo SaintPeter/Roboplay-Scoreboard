@@ -83,6 +83,17 @@ class ScoreController extends BaseController {
 		return array($scores, $total);
 	}
 
+	// Return an array with aborts filled in
+	public function abort_scores($challenge_id) {
+		$challenge = Challenge::with('score_elements')->find($challenge_id);
+
+		$scores = array_fill(1, SCORE_COLUMNS, '-');
+		foreach($challenge->score_elements as $se) {
+			$scores[$se->element_number] = 'A';
+		}
+	 return $scores;
+	}
+
 
 	public function save($team_id, $challenge_id)
 	{
@@ -101,8 +112,13 @@ class ScoreController extends BaseController {
 					->withInput();
 		}
 
-		$value_list = Input::get('scores', array());
-		list($scores, $total) = $this->calculate_scores($value_list, $challenge_id);
+		if(Input::has('abort')) {
+			$total = 0;
+			$scores = $this->abort_scores($challenge_id);
+		} else {
+			$value_list = Input::get('scores', array());
+			list($scores, $total) = $this->calculate_scores($value_list, $challenge_id);
+		}
 
 		$run_number = Score_run::where('team_id',  $team_id)->where('challenge_id', $challenge_id)->max('run_number') + 1;
 

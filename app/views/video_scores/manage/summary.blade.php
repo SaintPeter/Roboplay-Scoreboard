@@ -41,8 +41,9 @@
 @stop
 
 @section('main')
+@include('partials.year_select')
 @include('partials.scorenav', [ 'nav' => 'summary', 'year' => $year])
-<div class="col-md-6">
+<div class="col-md-8">
 	@foreach($output as $comp => $divs)
 		@foreach($divs as $div => $videos)
 		<table class="table table-striped table-bordered tablesorter">

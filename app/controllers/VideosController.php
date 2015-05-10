@@ -22,29 +22,18 @@ class VideosController extends BaseController {
 	 */
 	public function index()
 	{
-		if(Input::has('selected_year')) {
-			$selected_year = Input::get('selected_year');
-			if($selected_year == 'clear') {
-				Session::forget('selected_year');
-				$selected_year = false;
-			} else {
-				Session::put('selected_year', $selected_year);
-			}
-		} else {
-			$selected_year = Session::get('selected_year', false);
-		}
+		// Selected year set in filters.php -> App::before()
+		$selected_year = Session::get('selected_year', false);
+
+		$video_query = Video::with('vid_division', 'school', 'school.district', 'school.district.county')
+							->orderBy('year', 'desc')
+							->orderBy('teacher_id');
 
 		if($selected_year) {
-			$videos = Video::where('year', $selected_year)
-							->with('vid_division', 'school', 'school.district', 'school.district.county')
-							->orderBy('teacher_id')
-							->get();
-		} else {
-			$videos = Video::with('vid_division', 'school', 'school.district', 'school.district.county')
-							->orderBy('year', 'desc')
-							->orderBy('teacher_id')
-							->get();
+			$video_query = $video_query->where('year', $selected_year);
 		}
+
+		$videos = $video_query->get();
 
 		View::share('title', 'Videos');
 		return View::make('videos.index', compact('videos'));
@@ -203,7 +192,7 @@ class VideosController extends BaseController {
 	public function update($id)
 	{
 		$input = Input::except('_method', 'students' );
-
+		$students = Input::get('students');
 		// Skip check on video
 		$rules = Video::$rules;
 		unset($rules['yt_code']);
@@ -216,6 +205,7 @@ class VideosController extends BaseController {
 		{
 			if(!empty($students)) {
 				$students_pass = true;
+				//dd($students);
 				foreach ($students as $index => $student) {
 				 	 $student_rules = Student::$rules;
 					if(array_key_exists('id', $student)) {
@@ -246,7 +236,7 @@ class VideosController extends BaseController {
 					$video->students()->sync($sync_list);
 					return Redirect::route('teacher.index');
 				} else {
-					return Redirect::route('teacher.videos.edit', $id)
+					return Redirect::route('videos.edit', $id)
 						->withInput(Input::except('students'))
 						->with('students', $students)
 						->with('message', 'There were validation errors.');

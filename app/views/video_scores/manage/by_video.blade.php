@@ -46,6 +46,7 @@ tr.score_row:nth-child(odd){
 
 @section('main')
 {{ Form::open([ 'route' => 'video_scores.manage.process' ]) }}
+@include('partials.year_select')
 @include('partials.scorenav', [ 'nav' => 'by_video', 'year' => $year])
 <div class="wrapper">
 	<table class="scored_table">
@@ -93,11 +94,13 @@ tr.score_row:nth-child(odd){
 				@endif
 			</tbody>
 		</table>
+		@if(count($videos))
 		<span class="pull-right clearfix" style="margin-top: 10px">
 			{{ Form::select('types', [ 0 => '-- Select Type --', 1 => 'General Scores', 2 => 'Custom Part', 3 => 'Computational Thinking', 'all' => 'All Types' ]) }}
 			{{ Form::submit('Clear Selected Types', [ 'class' => 'btn btn-danger btn-margin' ]) }}
 
 		</span>
+		@endif
 	</div>
 {{ Form::close() }}
 @stop

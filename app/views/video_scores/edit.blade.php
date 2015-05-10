@@ -75,11 +75,11 @@
 @stop
 
 @section('main')
-<div style="width:950px" class="center-block clearfix">
-	<div class="pull-left" style="width:640px; margin: 10px;">
+<div style="width:1090px" class="center-block clearfix">
+	<div class="pull-left" style="width:780px; margin: 10px;">
 		<span class="pull-right">{{ $video->vid_division->name }}</span>
 		<h4>{{ $video->name }} </h4>
-		<iframe  style="border: 1px solid black" id="ytplayer" type="text/html" width="640" height="390" src="http://www.youtube.com/embed/{{{ $video->yt_code }}}?rel=0" frameborder="0"></iframe>
+		<iframe  style="border: 1px solid black" id="ytplayer" type="text/html" width="780" height="480" src="http://www.youtube.com/embed/{{{ $video->yt_code }}}?rel=0" frameborder="0"></iframe>
 	</div>
 
 	<div class="pull-left" style="width: 250px; margin: 10px 20px;">
@@ -97,7 +97,7 @@
 			<td class="score_col">3</td>
 			<td class="score_col">4</td>
 		</tr>
-		@foreach($type->rubric as $rubric)
+		@foreach($type->Rubric as $rubric)
 			<tr class="score_row">
 				<td class="cat_col">
 						<a href="#" rubric_id="{{ $rubric->id }}" class="rubric_switcher">

@@ -1,5 +1,5 @@
 <h4>Files ({{ count($video->files) }})</h4>
-<div style="width: 100%; height: 390px; margin: 0; overflow: auto; border: 1px solid black;">
+<div style="width: 100%; height: 480px; margin: 0; overflow: auto; border: 1px solid black;">
 	<table class="table">
 		@if(count($video->files))
 			@foreach($video->files as $file)
