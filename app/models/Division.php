@@ -33,10 +33,20 @@ class Division extends Eloquent {
 	 */
 	public static function longname_array()
 	{
-		$divlist = Division::with('Competition')->get();
+		$divlist = Division::with('competition')->get();
 		$namelist[0] = "-- Select Division --";
 		foreach($divlist as $div) {
 			$namelist[$div->competition->name][$div->id] = $div->competition->location . " - " . $div->name;
+		};
+		return $namelist;
+	}
+
+	public static function longname_array_counts()
+	{
+		$divlist = Division::with('competition', 'challenges')->get();
+		$namelist[0] = "-- Select Division --";
+		foreach($divlist as $div) {
+			$namelist[$div->competition->name][$div->id] = $div->competition->location . " - " . $div->name . " ({$div->challenges->count()})";
 		};
 		return $namelist;
 	}

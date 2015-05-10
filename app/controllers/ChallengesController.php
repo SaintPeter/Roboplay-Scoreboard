@@ -23,7 +23,42 @@ class ChallengesController extends BaseController {
 	 */
 	public function index()
 	{
-		$challenges = $this->challenge->with('score_elements')->get();
+		if(Input::has('selected_year')) {
+			$selected_year = Input::get('selected_year');
+			if($selected_year == 'clear') {
+				Session::forget('selected_year');
+				$selected_year = false;
+			} else {
+				Session::put('selected_year', $selected_year);
+			}
+		} else {
+			$selected_year = Session::get('selected_year', false);
+		}
+
+		if(Input::has('level_select')) {
+			$level_select = Input::get('level_select');
+			if($level_select == 0) {
+				Session::forget('level_select');
+				$level_select = false;
+			} else {
+				Session::put('level_select', $level_select);
+			}
+		} else {
+			$level_select = Session::get('level_select', false);
+		}
+
+		$challenge_query = Challenge::with('score_elements');
+
+		if($level_select) {
+			$challenge_query = $challenge_query->where('level', $level_select);
+		}
+
+		if($selected_year) {
+			$challenge_query = $challenge_query->where('year', $selected_year);
+		}
+
+		$challenges = $challenge_query->get();
+
 		View::share('title', 'Manage Challenges');
 		return View::make('challenges.index', compact('challenges'));
 	}
@@ -48,6 +83,7 @@ class ChallengesController extends BaseController {
 	public function store()
 	{
 		$input = Input::all();
+		$input['year'] = Carbon\Carbon::now()->year;
 		$validation = Validator::make($input, Challenge::$rules);
 
 		if ($validation->passes())

@@ -18,14 +18,19 @@
 		</div>
 
 		<div class="form-group">
-			{{ Form::label('points', 'Points') }}
-			{{ Form::text('points', null, [ 'class'=>'form-control col-md-2' ]) }}
+			<div class="col-md-6">
+				{{ Form::label('points', 'Points') }}
+				{{ Form::text('points', null, [ 'class'=>'form-control col-md-2' ]) }}
+			</div>
+			<div class="col-md-6">
+				{{ Form::label('level', 'Level') }}
+				{{ Form::selectRange('level', 1, 3 , null, [ 'class'=>'form-control col-md-2' ]) }}
+			</div>
 		</div>
 
-		<div class="form-group">
 			{{ Form::submit('Submit', array('class' => 'btn btn-primary btn-margin')) }}
 			{{ link_to_route('challenges.index', 'Cancel', [], ['class' => 'btn btn-info btn-margin']) }}
-		</div>
+
 {{ Form::close() }}
 
 @if ($errors->any())

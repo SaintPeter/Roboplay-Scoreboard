@@ -6,6 +6,15 @@
 	.ui-li-static {
 		white-space: normal; !important
 	}
+	.bigtext {
+		font-size: 100px;
+	}
+	.center {
+		text-align: center;
+	}
+	#abortPopup-popup, #submitPopup-popup, #randomPopup-popup {
+		width: 90%;
+	}
 @stop
 
 @section('navbar')
@@ -21,10 +30,24 @@
 
 @section('script')
 	var val = "";
+
 	$(function() {
 		// Setup a function to recalculate the score on every "stop" event
 		$("[id^=sel_]").change(calculate_score);
+		// Calculate starting score
 		calculate_score();
+
+		// Submit button
+		$('#do_submit').click(function() {
+			$('#submit_action').attr('name','submit');
+			$('#submit_button').click();
+		});
+
+		// Abort button
+		$('#do_abort').click(function() {
+			$('#submit_action').attr('name','abort');
+			$('#submit_button').click();
+		});
 	});
 
 	function calculate_score() {
@@ -37,7 +60,7 @@
 			total += base + ( val * multi);
 		});
 		total = Math.max(total, 0);
-		$('#score').html(total);
+		$('.score').html(total);
 	}
 
 @stop
@@ -55,8 +78,30 @@
 		{{ nl2br($challenge->rules) }}
 	</p>
 </div>
+
+@if(count($challenge->randoms) > 0)
+<div class="ui-body ui-body-a">
+	<a href="#randomPopup" id="random_popout" data-rel="popup" data-position-to="window" class="ui-btn ui-btn-inline pull-right">Popout</a>
+	<h4>Randoms</h4>
+	<p>
+	@foreach($challenge->randoms as $random)
+		{{ $random->formatted() }}<br />
+	@endforeach
+	</p>
+</div>
+<div data-role="popup" data-history='false' id="randomPopup" class="ui-corner-all">
+	<div role="banner" data-role="header" data-theme="a" class="ui-corner-top ui-header ui-bar-a">
+		<h1 aria-level="1" role="heading" class="ui-title">Random Number</h1>
+	</div>
+	<div role="main" class="ui-corner-bottom ui-content center">
+		@foreach($challenge->randoms as $random)
+			<span class="bigtext">{{ $random->formatted() }}</span><br />
+		@endforeach
+	</div>
+</div>
+@endif
 <br />
-{{ Form::open(array('route' => array('score.save', $team->id, $challenge->id), 'id' => 'se_form', 'data-ajax' => 'false' )) }}
+{{ Form::open(array('route' => array('score.save', $team->id, $challenge->id), 'method' => 'post', 'id' => 'se_form', 'data-ajax' => 'false' )) }}
 	<ul data-role="listview">
 		@foreach($score_elements as $id => $score_element)
 			@if ($score_element->type == 'yesno')
@@ -74,15 +119,45 @@
 			@endif
 		@endforeach
 		<li>
-			Estimated Score: <span id="score"></span> out of {{ $challenge->points }} points
+			Estimated Score: <span class="score"></span> out of {{ $challenge->points }} points
 		</li>
 		<li>
-			<fieldset class="ui-grid-a">
-				<div class="ui-block-a">{{ Form::submit('Submit', array('class' => 'ui-btn', 'name' => 'submit')) }}</div>
+			<fieldset class="ui-grid-b">
+				<div class="ui-block-b"><a href="#submitPopup" class="ui-btn ui-corner-all ui-shadow" id="submitPopup_button" data-role="button" data-rel="popup" data-position-to="window">Submit</a></div>
 				<div class="ui-block-b">{{ Form::submit('Cancel', array('class' => 'ui-btn', 'name' => 'cancel')) }}</div>
+				<div class="ui-block-b"><a href="#abortPopup" class="ui-btn ui-corner-all ui-shadow" id="abortPopup_button" data-role="button" data-rel="popup" data-position-to="window">Abort</a></div>
+
 			</fieldset>
 		</li>
+		<input type="submit" data-role="none" name="blah" id="submit_button" style="display: none;">
+		<input type="hidden" name="changeme" id="submit_action" value="1">
 	</ul>
+
+<div data-role="popup" data-history='false' id="submitPopup" class="ui-corner-all">
+	<div role="banner" data-role="header" data-theme="a" class="ui-corner-top ui-header ui-bar-a">
+		<h1 aria-level="1" role="heading" class="ui-title">Confirm Submit?</h1>
+	</div>
+	<div role="main" class="ui-corner-bottom ui-content center">
+		<span class="bigtext">Run {{{ $run_number }}}</span><br />
+		<span class="bigtext">Score: <span class="score" style="color:blue;"></span></span><br />
+		<a role="button" class="ui-link ui-btn ui-btn-a ui-btn-inline ui-shadow ui-corner-all" href="#" data-role="button" data-inline="true" data-rel="back" data-theme="a">Cancel</a>
+		<a role="button" id="do_submit" class="ui-link ui-btn ui-btn-b ui-btn-inline ui-shadow ui-corner-all" href="#" data-role="button" data-inline="true" data-transition="flow" data-theme="b" data-ajax="false">Confirm Submit</a>
+	</div>
+</div>
+
+<div data-role="popup" data-history='false' id="abortPopup" class="ui-corner-all">
+	<div role="banner" data-role="header" data-theme="a" class="ui-corner-top ui-header ui-bar-a">
+		<h1 aria-level="1" role="heading" class="ui-title">Confirm Abort?</h1>
+	</div>
+	<div role="main" class="ui-corner-bottom ui-content center">
+		<span class="bigtext">Run {{{ $run_number }}}</span><br />
+		<span class="bigtext" style="color: red;">Abort</span><br />
+		<a role="button" class="ui-link ui-btn ui-btn-a ui-btn-inline ui-shadow ui-corner-all" href="#" data-role="button" data-inline="true" data-rel="back" data-theme="a">Cancel</a>
+		<a role="button" id="do_abort" class="ui-link ui-btn ui-btn-b ui-btn-inline ui-shadow ui-corner-all" href="#" data-role="button" data-inline="true" data-rel="back" data-transition="flow" data-theme="b">Confirm Abort</a>
+	</div>
+</div>
+
+
 {{ Form::close() }}
 
 @if ($errors->any())

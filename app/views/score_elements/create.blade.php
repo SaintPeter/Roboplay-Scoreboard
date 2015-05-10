@@ -1,57 +1,56 @@
 {{ Form::open(array('route' => 'score_elements.store', 'id' => 'se_form')) }}
-	<ul>
-        <li>
-            {{ Form::label('name', 'Name') }}
-            {{ Form::text('name') }}
-        </li>
+	<div class="form-group">
+		{{ Form::label('name', 'Name', [ 'class' => 'form-label' ]) }}
+		{{ Form::text('name', null, [ 'class' => 'form-control' ]) }}
+	</div>
 
-        <li>
-            {{ Form::label('display_text', 'Display Text') }}
-            {{ Form::text('display_text') }}
-        </li>
+	<div class="form-group">
+		{{ Form::label('display_text', 'Display Text', [ 'class' => 'form-label' ]) }}
+		{{ Form::text('display_text', null, [ 'class' => 'form-control' ]) }}
+	</div>
 
-        <li>
-            {{ Form::label('element_number', 'Display Order') }}
-            {{ Form::input('number', 'element_number', $order) }}
-        </li>
+	<div class="form-group">
+		{{ Form::label('element_number', 'Display Order', [ 'class' => 'form-label' ]) }}
+		{{ Form::text( 'element_number', $order, [ 'class' => 'form-control numeric' ]) }}
+	</div>
 
-        <li>
-            {{ Form::label('base_value', 'Base Value') }}
-            {{ Form::input('number', 'base_value') }}
-        </li>
+	<div class="form-group">
+		{{ Form::label('base_value', 'Base Value', [ 'class' => 'form-label' ]) }}
+		{{ Form::text( 'base_value', null, [ 'class' => 'form-control numeric' ]) }}
+	</div>
 
-        <li>
-            {{ Form::label('multiplier', 'Multiplier') }}
-            {{ Form::input('number', 'multiplier') }}
-        </li>
+	<div class="form-group">
+		{{ Form::label('multiplier', 'Multiplier', [ 'class' => 'form-label' ]) }}
+		{{ Form::text( 'multiplier', null, [ 'class' => 'form-control numeric' ]) }}
+	</div>
 
-        <li>
-            {{ Form::label('min_entry', 'Minimum Value') }}
-            {{ Form::input('number', 'min_entry') }}
-        </li>
+	<div class="form-group">
+		{{ Form::label('min_entry', 'Minimum Value', [ 'class' => 'form-label' ]) }}
+		{{ Form::text( 'min_entry', null, [ 'class' => 'form-control numeric' ]) }}
+	</div>
 
-        <li>
-            {{ Form::label('max_entry', 'Maximum Value') }}
-            {{ Form::input('number', 'max_entry') }}
-        </li>
+	<div class="form-group">
+		{{ Form::label('max_entry', 'Maximum Value', [ 'class' => 'form-label' ]) }}
+		{{ Form::text( 'max_entry', null, [ 'class' => 'form-control numeric' ]) }}
+	</div>
 
-        <li>
-            {{ Form::label('type', 'Input Type') }}
-            {{ Form::select('type', $input_types) }}
-        </li>
+	<div class="form-group">
+		{{ Form::label('type', 'Input Type', [ 'class' => 'form-label' ]) }}
+		{{ Form::select('type', $input_types, null, [ 'class' => 'form-control' ]) }}
+	</div>
+	<br />
 
-		<li>
-			{{ Form::input('hidden', 'challenge_id', $challenge_id) }}
-			{{ Form::submit('Submit', array('class' => 'btn btn-info se_submit')) }}
-		</li>
-	</ul>
+	<div class="form-group">
+		{{ Form::input('hidden', 'challenge_id', $challenge_id) }}
+		{{ Form::submit('Submit', array('class' => 'btn btn-info se_submit')) }}
+	</div>
 {{ Form::close() }}
 
 @if ($errors->any())
 <div class="col-md-6">
 	<h3>Validation Errors</h3>
 	<ul>
-		{{ implode('', $errors->all('<li class="error">:message</li>')) }}
+		{{ implode('', $errors->all('<li class="error">:message</div>')) }}
 	</ul>
 </div>
 @endif

@@ -27,7 +27,7 @@ $(function() {
 				<th>Order</th>
 				<th>Competition</th>
 				<th>Challenges</th>
-				<th colspan="3">Actions</th>
+				<th colspan="4">Actions</th>
 			</tr>
 		</thead>
 

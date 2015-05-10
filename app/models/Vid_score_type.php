@@ -9,7 +9,7 @@ class Vid_score_type extends \Eloquent {
 	}
 
 	public function rubric() {
-		return $this->hasMany('Rubric');
+		return $this->hasMany('Rubric')->orderBy('order');
 	}
 
 	public function competition() {
