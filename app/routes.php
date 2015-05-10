@@ -28,8 +28,8 @@ Route::get('/', [ 'as' => 'home', function()
 {
 	$date = Carbon\Carbon::now()->setTimezone('America/Los_Angeles')->toDateString();
 
-	$competitions = Competition::where('event_date', '<', $date)->where('active', true)->get();
-	$vid_competitions = Vid_competition::where('event_start', '<', $date)->get();
+	$competitions = Competition::where('event_date', '<=', $date)->where('active', true)->get();
+	$vid_competitions = Vid_competition::where('event_end', '<', $date)->get();
 	$noajax = array('data-ajax' => "false");
 	return View::make('home', compact('competitions','vid_competitions', 'noajax'));
 }]);
