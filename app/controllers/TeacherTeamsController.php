@@ -70,6 +70,8 @@ class TeacherTeamsController extends BaseController {
 	{
 		$input = Input::except('students');
 		$input['school_id'] = Usermeta::getSchoolId();
+		$teacher = Wp_user::with('usermeta')->find(Auth::user()->ID);
+		$school_id = $teacher::getMeta('wp_school_id');
 		$input['teacher_id'] = Auth::user()->ID;
 		$input['year'] = Carbon\Carbon::now()->year;
 
@@ -99,6 +101,7 @@ class TeacherTeamsController extends BaseController {
 
 					foreach ($students as $index => &$student) {
 						$student['teacher_id'] = Auth::user()->ID;
+						$student['school_id'] = $school_id;
 						$student['year'] = Carbon\Carbon::now()->year;
 						if(array_key_exists('id', $student)) {
 							$newStudent = Student::find($student['id']);
@@ -189,6 +192,8 @@ class TeacherTeamsController extends BaseController {
 	{
 		$input = Input::except('_method', 'students');
 		$input['school_id'] = Usermeta::getSchoolId();
+		$teacher = Wp_user::with('usermeta')->find(Auth::user()->ID);
+		$school_id = $teacher::getMeta('wp_school_id');
 		$input['teacher_id'] = Auth::user()->ID;
 		$input['year'] = Carbon\Carbon::now()->year;
 
@@ -218,6 +223,7 @@ class TeacherTeamsController extends BaseController {
 
 					foreach ($students as $index => &$student) {
 						$student['teacher_id'] = Auth::user()->ID;
+						$student['school_id'] = $school_id;
 						$student['year'] = Carbon\Carbon::now()->year;
 						if(array_key_exists('id', $student)) {
 							$newStudent = Student::find($student['id']);

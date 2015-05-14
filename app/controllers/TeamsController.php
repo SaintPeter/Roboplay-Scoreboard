@@ -92,6 +92,7 @@ class TeamsController extends BaseController {
 
 					foreach ($students as $index => &$student) {
 						$student['teacher_id'] = Auth::user()->ID;
+						$student['school_id'] = $input['school_id'];
 						$student['year'] = Carbon\Carbon::now()->year;
 						if(array_key_exists('id', $student)) {
 							$newStudent = Student::find($student['id']);
@@ -213,6 +214,7 @@ class TeamsController extends BaseController {
 
 					foreach ($students as $index => &$student) {
 						$student['teacher_id'] = Input::get('teacher_id',0);
+						$student['school_id'] = $input['school_id'];
 						$student['year'] = Carbon\Carbon::now()->year;
 						if(array_key_exists('id', $student)) {
 							$newStudent = Student::find($student['id']);

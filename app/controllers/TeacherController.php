@@ -70,10 +70,13 @@ class TeacherController extends BaseController {
 		$current_students = Input::get('current_students', []);
 
 		if($teacher_id) {
-			$student_query = Student::where('teacher_id', $teacher_id);
+			$teacher_id = Wp_user::with('school')->find($teacher_id)->pluck('id');
 		} else {
-			$student_query = Student::where('teacher_id', Auth::user()->ID);
+			$teacher_id = Wp_user::with('school')->find(Auth::user()->ID)->pluck('id');
 		}
+
+		// Find all students from that school
+		$student_query = Student::where('school_id', $teacher_id);
 
 		switch($type) {
 			case 'teams':

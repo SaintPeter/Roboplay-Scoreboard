@@ -202,4 +202,15 @@ class Wp_fix extends BaseController {
 
 		return "true";
 	}
+
+	// Fix that students were no assigned a school_id initially
+	public function student_fix_school() {
+		$students = Student::with('teacher', 'teacher.usermeta')->get();
+		foreach($students as $student) {
+			$school_id = $student->teacher->getMeta('wp_school_id');
+			$student->school_id = $school_id;
+			echo $student->fullName() . ' Set to: ' . $school_id . '<br />';
+			$student->save();
+		}
+	}
 }

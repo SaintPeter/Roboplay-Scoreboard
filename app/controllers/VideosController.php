@@ -72,6 +72,7 @@ class VideosController extends BaseController {
 		// Skip check on video
 		$rules = Video::$rules;
 		unset($rules['yt_code']);
+
 		$input['year'] = Carbon\Carbon::now()->year;
 		$input['school_id'] = Wp_user::find(Input::get('teacher_id'))->getMeta('wp_school_id', 0);
 
@@ -101,6 +102,7 @@ class VideosController extends BaseController {
 
 					foreach ($students as $index => &$student) {
 						$student['teacher_id'] = Input::get('teacher_id',0);
+						$student['school_id'] = $input['school_id'];
 						$student['year'] = Carbon\Carbon::now()->year;
 						if(array_key_exists('id', $student)) {
 							$newStudent = Student::find($student['id']);
@@ -224,6 +226,7 @@ class VideosController extends BaseController {
 
 					foreach ($students as $index => &$student) {
 						$student['teacher_id'] = Input::get('teacher_id', 0);
+						$student['school_id'] = $input['school_id'];
 						$student['year'] = Carbon\Carbon::now()->year;
 						if(array_key_exists('id', $student)) {
 							$newStudent = Student::find($student['id']);
