@@ -34,7 +34,8 @@
 @stop
 
 
-@include('students.partial.js', [ 'type' => 'teams', 'use_teacher_id' => true ])
+@include('students.partial.js', [ 'type' => 'teams', 'use_teacher_id' => 'true' ])
+
 @section('main')
 {{ Form::model($team, array('method' => 'PATCH', 'route' => array('teams.update', $team->id), 'class' => 'col-md-8')) }}
 	<div class="form-group">
@@ -49,7 +50,7 @@
 
 	<div class="form-group">
 		<label for="teacher_id">Teacher:</label>
-		{{ Form::select('teacher_id', $teacher_list, null, [ 'class'=>'form-control' ]) }}
+		{{ Form::select('teacher_id', $teacher_list, null, [ 'class'=>'form-control', 'id' => 'teacher_id' ]) }}
 	</div>
 
 	@include('students.partial.fields', [ 'students' => $students ])
