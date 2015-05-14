@@ -3,25 +3,13 @@
 class Wp_fix extends BaseController {
 
 	public function user_schools() {
-		$users = Wp_user::with('usermeta')->get();
+		$invoices = Wp_invoice_table::where('invoice_type_id', 16)->with('user', 'user.usermeta')->get();
 		$counties = Counties::lists('name', 'county_id');
 
-		foreach($users as $user) {
-			$user->metadata = $user->usermeta()->lists('meta_value', 'meta_key');
-			$user->metadata['wp_school'] = array_key_exists('wp_school',$user->metadata) ?  $user->metadata['wp_school'] : 'Not Set';
-			$user->metadata['wp_district'] = array_key_exists('wp_district',$user->metadata) ?  $user->metadata['wp_district'] : 'Not Set';
-			$user->metadata['wp_county'] = array_key_exists('wp_county',$user->metadata) ?  $user->metadata['wp_county'] : 'Not Set';
-			$user->metadata['wp_school_id'] = array_key_exists('wp_school_id',$user->metadata) ?  $user->metadata['wp_school_id'] : 'Not Set';
-
-			if(array_key_exists('wp_capabilities',$user->metadata)) {
-				$roles = unserialize($user->metadata['wp_capabilities']);
-				$user->metadata['role'] = array_key_exists('teachers',$roles) ?  'Teacher' : 'nonTeacher';
-			}
-		}
 		Breadcrumbs::addCrumb('Set Users School','');
 		View::share('title', 'Set Users School');
 		return View::make('wp_fixes.user_school')
-					->with(compact('users','counties'));
+					->with(compact('invoices','counties'));
 	}
 
 	public function invoice_fix() {
@@ -201,5 +189,16 @@ class Wp_fix extends BaseController {
 		$um->save();
 
 		return "true";
+	}
+
+	// Fix that students were no assigned a school_id initially
+	public function student_fix_school() {
+		$students = Student::with('teacher', 'teacher.usermeta')->get();
+		foreach($students as $student) {
+			$school_id = $student->teacher->getMeta('wp_school_id');
+			$student->school_id = $school_id;
+			echo $student->fullName() . ' Set to: ' . $school_id . '<br />';
+			$student->save();
+		}
 	}
 }

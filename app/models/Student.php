@@ -20,7 +20,7 @@ class Student extends \Eloquent {
 	}
 
 	public function teacher() {
-		return $this->belongsTo('Wp_user', 'ID', 'teacher_id');
+		return $this->belongsTo('Wp_user', 'teacher_id', 'ID');
 	}
 
 	public function school() {

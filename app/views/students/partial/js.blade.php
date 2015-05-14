@@ -47,16 +47,23 @@ $(function() {
 		$('#choose_students_dialog').html('');
 		var data = $('.student_id').map(function() { return $(this).attr('value'); }).get();
 		var encoded_data = data.join('&');
-@if(defined('use_teacher_id'))
-		$.post('/scoreboard/ajax/student_list/{{ $type }}/' + $('#teacher_id').val(), { current_students: data }, function(data) {
-			$('#choose_students_dialog').html(data);
-		});
+@if(isset($use_teacher_id))
+		// Using Teacher ID
+		if($('#teacher_id').val() > 0 ) {
+			$.post('/scoreboard/ajax/student_list/{{ $type }}/' + $('#teacher_id').val(), { current_students: data }, function(data) {
+				$('#choose_students_dialog').html(data);
+				$('#choose_students_dialog').dialog('open');
+			});
+		} else {
+			alert('You must select a teacher first.');
+		}
 @else
+		// Not Using Teacher ID
 		$.post('/scoreboard/ajax/student_list/{{ $type }}', { current_students: data }, function(data) {
 			$('#choose_students_dialog').html(data);
+			$('#choose_students_dialog').dialog('open');
 		});
 @endif
-		$('#choose_students_dialog').dialog('open');
 	});
 
 	// Mass Upload Students dialog
