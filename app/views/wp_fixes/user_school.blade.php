@@ -56,7 +56,6 @@ html, body { position: relative }
 <table class="table table-striped table-bordered">
 	<thead>
 		<tr>
-			<th>Role</th>
 			<th>Name</th>
 			<th>County</th>
 			<th>Division</th>
@@ -66,15 +65,14 @@ html, body { position: relative }
 		</tr>
 	</thead>
 	<tbody>
-	@foreach($users as $user)
-		<tr id="row_id_{{ $user->ID }}">
-			<td>{{ $user->metadata['role'] }}</td>
-			<td>{{ $user->metadata['first_name'] }} {{ $user->metadata['last_name'] }}</td>
-			<td>{{ $user->metadata['wp_county'] }}</td>
-			<td>{{ $user->metadata['wp_district'] }}</td>
-			<td>{{ $user->metadata['wp_school'] }}</td>
-			<td id="school_id_{{ $user->ID }}">{{ $user->metadata['wp_school_id'] }}</td>
-			<td><button user_id="{{ $user->ID }}" class="btn btn-primary set_school">Set School</button></td>
+	@foreach($invoices as $invoice)
+		<tr id="row_id_{{ $invoice->user->ID }}">
+			<td>{{ $invoice->user->getMeta('first_name') }} {{ $invoice->user->getMeta('last_name') }}</td>
+			<td>{{ Schools::with('district', 'district.county')->find($invoice->user->getMeta('wp_school_id'))->district->county->name }}</td>
+			<td>{{ Schools::with('district')->find($invoice->user->getMeta('wp_school_id'))->district->name }}</td>
+			<td>{{ Schools::find($invoice->user->getMeta('wp_school_id'))->name }}</td>
+			<td id="school_id_{{ $invoice->user->ID }}">{{ $invoice->user->getMeta('wp_school_id') }}</td>
+			<td><button user_id="{{ $invoice->user->ID }}" class="btn btn-primary set_school">Set School</button></td>
 		</tr>
 	@endforeach
 	</tbody>

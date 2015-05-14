@@ -55,10 +55,12 @@ class VideosController extends BaseController {
 
 		// Ethnicity List Setup
 		$ethnicity_list = array_merge([ 0 => "- Select Ethnicity -" ], Ethnicity::all()->lists('name','id'));
+		// Student Setup
+		$students = [];
 
 		$index = 0;
 		View::share('index', $index);
-		return View::make('videos.create', compact('vid_divisions', 'teacher_list', 'ethnicity_list'));
+		return View::make('videos.create', compact('vid_divisions', 'teacher_list', 'ethnicity_list', 'students'));
 	}
 
 	/**
@@ -101,13 +103,13 @@ class VideosController extends BaseController {
 					$sync_list = [];
 
 					foreach ($students as $index => &$student) {
-						$student['teacher_id'] = Input::get('teacher_id',0);
-						$student['school_id'] = $input['school_id'];
 						$student['year'] = Carbon\Carbon::now()->year;
 						if(array_key_exists('id', $student)) {
 							$newStudent = Student::find($student['id']);
 							$newStudent->update($student);
 						} else {
+							$student['teacher_id'] = Input::get('teacher_id',Auth::user()->ID);
+							$student['school_id'] = $input['school_id'];
 							$newStudent = Student::create($student);
 						}
 						$sync_list[] = $newStudent->id;
@@ -225,13 +227,13 @@ class VideosController extends BaseController {
 					$video->update($input);
 
 					foreach ($students as $index => &$student) {
-						$student['teacher_id'] = Input::get('teacher_id', 0);
-						$student['school_id'] = $input['school_id'];
 						$student['year'] = Carbon\Carbon::now()->year;
 						if(array_key_exists('id', $student)) {
 							$newStudent = Student::find($student['id']);
 							$newStudent->update($student);
 						} else {
+							$student['teacher_id'] = Input::get('teacher_id',Auth::user()->ID);
+							$student['school_id'] = $input['school_id'];
 							$newStudent = Student::create($student);
 						}
 						$sync_list[] = $newStudent->id;

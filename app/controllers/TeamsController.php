@@ -48,11 +48,13 @@ class TeamsController extends BaseController {
 
 		// Ethnicity List Setup
 		$ethnicity_list = array_merge([ 0 => "- Select Ethnicity -" ], Ethnicity::all()->lists('name','id'));
+		// Student Setup
+		$students = [];
 
 		View::share('index', 0);
 
 		return View::make('teams.create')
-				   ->with(compact('division_list', 'teacher_list', 'ethnicity_list'));
+				   ->with(compact('division_list', 'teacher_list', 'ethnicity_list', 'students'));
 	}
 
 	/**
@@ -91,13 +93,13 @@ class TeamsController extends BaseController {
 					$sync_list = [];
 
 					foreach ($students as $index => &$student) {
-						$student['teacher_id'] = Auth::user()->ID;
-						$student['school_id'] = $input['school_id'];
 						$student['year'] = Carbon\Carbon::now()->year;
 						if(array_key_exists('id', $student)) {
 							$newStudent = Student::find($student['id']);
 							$newStudent->update($student);
 						} else {
+							$student['teacher_id'] = Input::get('teacher_id',Auth::user()->ID);
+							$student['school_id'] = $input['school_id'];
 							$newStudent = Student::create($student);
 						}
 						$sync_list[] = $newStudent->id;
@@ -213,13 +215,13 @@ class TeamsController extends BaseController {
 					$team->update($input);
 
 					foreach ($students as $index => &$student) {
-						$student['teacher_id'] = Input::get('teacher_id',0);
-						$student['school_id'] = $input['school_id'];
 						$student['year'] = Carbon\Carbon::now()->year;
 						if(array_key_exists('id', $student)) {
 							$newStudent = Student::find($student['id']);
 							$newStudent->update($student);
 						} else {
+							$student['teacher_id'] = Input::get('teacher_id',Auth::user()->ID);
+							$student['school_id'] = $input['school_id'];
 							$newStudent = Student::create($student);
 						}
 						$sync_list[] = $newStudent->id;

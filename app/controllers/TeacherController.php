@@ -70,13 +70,13 @@ class TeacherController extends BaseController {
 		$current_students = Input::get('current_students', []);
 
 		if($teacher_id) {
-			$teacher_id = Wp_user::with('school')->find($teacher_id)->pluck('id');
+			$school_id = Wp_user::with('usermeta')->find($teacher_id)->getMeta('wp_school_id');
 		} else {
-			$teacher_id = Wp_user::with('school')->find(Auth::user()->ID)->pluck('id');
+			$school_id = Wp_user::with('usermeta')->find(Auth::user()->ID)->getMeta('wp_school_id');
 		}
 
 		// Find all students from that school
-		$student_query = Student::where('school_id', $teacher_id);
+		$student_query = Student::where('school_id', $school_id);
 
 		switch($type) {
 			case 'teams':
@@ -91,12 +91,18 @@ class TeacherController extends BaseController {
 		}
 
 		if(count($current_students) > 0) {
-			$student_query = $student_query->whereNotIn('id', $current_students);
+			$student_query = $student_query->with('teacher','teacher.usermeta')->whereNotIn('id', $current_students);
 		}
 
 		$student_list = $student_query->get();
+		
+		// Get teacher names
+		$students = [];
+		foreach($student_list as $student) {
+			$students[$student->teacher->getName()][$student->id] = $student->fullName();
+		}
 
-		return View::make('students.partial.list')->with(compact('student_list'));
+		return View::make('students.partial.list')->with(compact('students'));
 	}
 
 	// Return the forms for editable students based on a POSTed list
