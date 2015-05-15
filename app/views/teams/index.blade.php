@@ -51,7 +51,7 @@
 			<th>Name</th>
 			<th>Students</th>
 			<th>Division</th>
-			<th>County/District/School</th>
+			<th>Teacher/County/District/School</th>
 			<th>Year</th>
 			<th>Actions</th>
 		</tr>
@@ -62,10 +62,11 @@
 			@foreach ($teams as $team)
 			<tr>
 				<td>{{{ $team->name }}}</td>
-				<td>{{ $team->student_count() }}</td>
+				<td>{{ join('<br />', $team->student_list()) }}</td>
 				<td>{{{ $team->division->longname() }}}</td>
 				<td>
 					@if(isset($team->school))
+						{{ isset($team->teacher) ? $team->teacher->getName() : 'Not Set' }}<br />
 						<strong>C:</strong> {{ $team->school->district->county->name }}<br />
 						<strong>D:</strong> {{ $team->school->district->name }}<br />
 						<strong>S:</strong> {{ $team->school->name }}

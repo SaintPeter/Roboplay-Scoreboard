@@ -25,7 +25,7 @@ class VideosController extends BaseController {
 		// Selected year set in filters.php -> App::before()
 		$selected_year = Session::get('selected_year', false);
 
-		$video_query = Video::with('vid_division', 'school', 'school.district', 'school.district.county')
+		$video_query = Video::with('vid_division', 'school', 'school.district', 'school.district.county', 'students', 'teacher', 'teacher.usermeta')
 							->orderBy('year', 'desc')
 							->orderBy('teacher_id');
 

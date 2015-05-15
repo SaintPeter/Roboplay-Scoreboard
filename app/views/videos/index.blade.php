@@ -58,7 +58,7 @@
 		@foreach ($videos as $video)
 			<tr>
 				<td>{{{ $video->name }}}</td>
-				<td>{{ $video->student_count() }}</td>
+				<td>{{ join('<br />', $video->student_list()) }}</td>
 				<td>
 					{{ $video->has_custom==1 ? '<span class="btn btn-warning btn-xs">Custom</span>' : '' }} <br />
 					{{ $video->has_vid==1 ? '<span class="btn btn-success btn-xs">Video File</span>' : '<span class="btn btn-danger btn-xs">No Video</span>' }} <br />
