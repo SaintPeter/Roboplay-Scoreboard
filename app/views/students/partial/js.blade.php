@@ -28,7 +28,7 @@ $(function() {
 		autoOpen: false,
 		width: 500,
 		open: function() {
-			$(this).css({ "max-height", $(window).height(), 'overflow-y': 'auto'});
+			$(this).css({ "max-height": $(window).height()*0.6, 'overflow-y': 'auto'});
 		},
 		buttons: {
 			"Add Students": function() {
