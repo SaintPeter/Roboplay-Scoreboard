@@ -69,15 +69,20 @@ class TeacherController extends BaseController {
 	public function ajax_student_list($type, $teacher_id = null) {
 		$current_students = Input::get('current_students', []);
 
-		if($teacher_id) {
-			$school_id = Wp_user::with('usermeta')->find($teacher_id)->getMeta('wp_school_id');
-		} else {
-			$school_id = Wp_user::with('usermeta')->find(Auth::user()->ID)->getMeta('wp_school_id');
+		// If the teacher_id is not set, use the current user's id
+		if(!$teacher_id) {
+			$teacher_id = Auth::user()->ID;
 		}
 
-		// Find all students from that school
-		$student_query = Student::where('school_id', $school_id);
+		//  Get the school the teacher teaches at
+		$school_id = Wp_user::with('usermeta')->find($teacher_id)->getMeta('wp_school_id');
 
+		// Find all students from that school OR from that teacher
+		$student_query = Student::with('teacher','teacher.usermeta')
+						->where('school_id', $school_id)
+						->orWhere('teacher_id', $teacher_id);
+
+		// Select students where they are not attached to the given type
 		switch($type) {
 			case 'teams':
 				$student_query = $student_query->has('teams', '=', 0);
@@ -90,17 +95,22 @@ class TeacherController extends BaseController {
 				break;
 		}
 
+		// Ignore students who are already on the current form
 		if(count($current_students) > 0) {
-			$student_query = $student_query->with('teacher','teacher.usermeta')->whereNotIn('id', $current_students);
+			$student_query = $student_query->whereNotIn('id', $current_students);
 		}
 
+		// Run query
 		$student_list = $student_query->get();
-		
+
+
 		// Get teacher names
 		$students = [];
 		foreach($student_list as $student) {
 			$students[$student->teacher->getName()][$student->id] = $student->fullName();
 		}
+
+		//dd(DB::getQueryLog());
 
 		return View::make('students.partial.list')->with(compact('students'));
 	}
