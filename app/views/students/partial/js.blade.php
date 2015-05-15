@@ -27,8 +27,8 @@ $(function() {
 	$('#choose_students_dialog').dialog({
 		autoOpen: false,
 		width: 500,
-		create: function() {
-			$(this).css("maxHeight", 600);
+		open: function() {
+			$(this).css({ "max-height", $(window).height(), 'overflow-y': 'auto'});
 		},
 		buttons: {
 			"Add Students": function() {
