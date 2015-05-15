@@ -27,6 +27,9 @@ $(function() {
 	$('#choose_students_dialog').dialog({
 		autoOpen: false,
 		width: 500,
+		create: function() {
+			$(this).css("maxHeight", 600);
+		},
 		buttons: {
 			"Add Students": function() {
 				var data = $( "#student_list" ).serialize();
