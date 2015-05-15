@@ -239,7 +239,7 @@ class VideosController extends BaseController {
 						$sync_list[] = $newStudent->id;
 					}
 					$video->students()->sync($sync_list);
-					return Redirect::route('teacher.index');
+					return Redirect::route('videos.index');
 				} else {
 					return Redirect::route('videos.edit', $id)
 						->withInput(Input::except('students'))
