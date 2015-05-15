@@ -38,6 +38,10 @@ class Team extends Eloquent {
 	public function students() {
 		return $this->morphToMany('Student', 'studentable');
 	}
+	
+	public function teacher() {
+		return $this->belongsTo('Wp_user', 'teacher_id', 'ID');
+	}
 
 
 	public function longname()

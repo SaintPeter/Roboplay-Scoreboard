@@ -19,7 +19,7 @@ class TeamsController extends BaseController {
 		$selected_year = Session::get('selected_year', false);
 
 		if($selected_year) {
-			$teams = Team::where('year', $selected_year)->with('division', 'school', 'school.district', 'school.district.county')->get();
+			$teams = Team::where('year', $selected_year)->with('division', 'school', 'school.district', 'school.district.county', 'teacher', 'teacher.usermeta', 'students')->get();
 		} else {
 			$teams = Team::with('division', 'school', 'school.district', 'school.district.county')
 						->orderBy('year', 'desc')
