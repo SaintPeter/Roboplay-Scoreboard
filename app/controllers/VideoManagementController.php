@@ -162,8 +162,13 @@ class VideoManagementController extends \BaseController {
 
 	public function scores_csv($year = null) {
 		$video_scores = Video_scores::with('division', 'division.competition', 'judge')
-							->orderBy('total', 'desc')
-							->get();
+							->orderBy('total', 'desc');
+		if($year) {
+			$video_scores = $video_scores->where(DB::raw("year(created_at)"), intval($year))->get();
+		} else {
+			$video_scores = $video_scores->get();
+		}
+
 		$videos = [];
 		//dd(DB::getQueryLog());
 		$types = Vid_score_type::orderBy('id')->lists('name', 'id');

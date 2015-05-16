@@ -95,6 +95,9 @@ tr.score_row:nth-child(odd){
 			</tbody>
 		</table>
 		@if(count($videos))
+		<span class="pull-left" style="margin-top: 10px">
+			{{ link_to_route('video_scores.manage.scores_csv', 'Export to CSV', [ $year ], [ 'class' => 'btn btn-success']) }}
+		</span>
 		<span class="pull-right clearfix" style="margin-top: 10px">
 			{{ Form::select('types', [ 0 => '-- Select Type --', 1 => 'General Scores', 2 => 'Custom Part', 3 => 'Computational Thinking', 'all' => 'All Types' ]) }}
 			{{ Form::submit('Clear Selected Types', [ 'class' => 'btn btn-danger btn-margin' ]) }}
