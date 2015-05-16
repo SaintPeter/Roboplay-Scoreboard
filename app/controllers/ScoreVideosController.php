@@ -107,10 +107,13 @@ class ScoreVideosController extends \BaseController {
 			$judge_custom = false;
 		}
 
+		// Get the accurate date
+		$date = Carbon\Carbon::now()->setTimezone('America/Los_Angeles')->toDateString();
+
 		// Get a list of active Video Competitions
 		$comps = Vid_competition::with('divisions')
-								->where('event_start', '<=', date('Y-m-d'))
-								->where('event_end', '>=', date('Y-m-d'))
+								->where('event_start', '<=', $date)
+								->where('event_end', '>=', $date)
 								->get();
 		$divs = [0];
 		foreach($comps as $comp) {
