@@ -23,40 +23,24 @@ class ChallengesController extends BaseController {
 	 */
 	public function index()
 	{
-		if(Input::has('selected_year')) {
-			$selected_year = Input::get('selected_year');
-			if($selected_year == 'clear') {
-				Session::forget('selected_year');
-				$selected_year = false;
-			} else {
-				Session::put('selected_year', $selected_year);
-			}
-		} else {
-			$selected_year = Session::get('selected_year', false);
-		}
-
-		if(Input::has('level_select')) {
-			$level_select = Input::get('level_select');
-			if($level_select == 0) {
-				Session::forget('level_select');
-				$level_select = false;
-			} else {
-				Session::put('level_select', $level_select);
-			}
-		} else {
-			$level_select = Session::get('level_select', false);
-		}
-
+		// Initialize Challenge Query
 		$challenge_query = Challenge::with('score_elements');
 
+		// Selected year, level select set in filters.php -> App::before()
+		$selected_year = Session::get('selected_year', false);
+		$level_select= Session::get('level_select', false);
+
+		// Filter on Level, if set
 		if($level_select) {
 			$challenge_query = $challenge_query->where('level', $level_select);
 		}
 
+		// Filter on year, if set
 		if($selected_year) {
 			$challenge_query = $challenge_query->where('year', $selected_year);
 		}
 
+		// Get Challenges
 		$challenges = $challenge_query->get();
 
 		View::share('title', 'Manage Challenges');

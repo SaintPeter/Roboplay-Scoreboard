@@ -76,7 +76,7 @@
 				</tr>
 			@endforeach
 		@else
-			<tr><td colspan="5">There are no Challenges</td></tr>
+			<tr><td colspan="8">There are no Challenges</td></tr>
 		@endif
 	</tbody>
 </table>

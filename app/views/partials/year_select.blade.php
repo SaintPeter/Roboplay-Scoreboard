@@ -3,7 +3,7 @@
 	<ul class="nav nav-pills">
 		<?php $selected_year = isset($year) ? intval($year) : Session::get('selected_year', false); ?>
 		@for($year_counter = 2014; $year_counter <= Carbon\Carbon::now()->year; $year_counter++)
-			<li @if($year_counter == $selected_year) class="active" @endif>{{ link_to_route(Route::currentRouteName(), $year_counter, [ 'selected_year' => $year_counter ]) }}</li>
+			<li @if($year_counter == $selected_year) class="active" @endif>{{ link_to_route(Route::currentRouteName(), $year_counter, array_merge([ 'selected_year' => $year_counter ], Route::current()->parameters() ) ) }}</li>
 		@endfor
 		@if($selected_year)
 			<li>
