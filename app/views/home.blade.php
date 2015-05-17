@@ -63,8 +63,8 @@
 	<p>Lost?  Confused?  Frustrated?<br />
 		<ol>
 			<li>Read the <a href="/scoreboard/docs/teacher_guide_2015.pdf" data-ajax="false">Teacher Guide</a></li>
-			<li>Still stuck?<br /> E-mail <a href="mailto:rex.schrader@gmail.com?subject=RoboPlay 2015 - Scoreboard Question&cc=hespindola@ucdavis.edu">rex.schrader@gmail.com</a></li>			
-		</ol>		
+			<li>Still stuck?<br /> E-mail <a href="mailto:rex.schrader@gmail.com?subject=RoboPlay 2015 - Scoreboard Question&cc=hespindola@ucdavis.edu">rex.schrader@gmail.com</a></li>
+		</ol>
 		</p>
 @endif
 
@@ -77,6 +77,8 @@
 
 <h2>Admin Menu</h2>
 <ul data-role="listview" data-inset="true">
+	<li data-role="list-divider">Competition Year</li>
+	<li>{{ link_to('compyears', 'Competition Years', $noajax) }}</li>
 	<li data-role="list-divider">Challenge Competition</li>
 	<li>{{ link_to('competitions', 'Competitions', $noajax) }}</li>
 	<li>{{ link_to('divisions', 'Competition Divisions', $noajax) }}</li>
@@ -88,6 +90,7 @@
 	<li>{{ link_to('videos', 'Manage Videos', $noajax) }}</li>
 	<li data-role="list-divider">Other Management</li>
 	<li>{{ link_to('invoice_review', 'Invoice Review', $noajax) }}</li>
+	<li>{{ link_to_route('list_judges', 'User List', null, $noajax) }}</li>
 </ul>
 @endif
 
