@@ -10,6 +10,7 @@ class Vid_division extends Eloquent {
 		'competition_id' => 'required'
 	);
 
+	// Relationships
 	public function competition() {
 		return $this->belongsTo('Vid_competition');
 	}
@@ -22,6 +23,10 @@ class Vid_division extends Eloquent {
 	public function videos()
 	{
 		return $this->hasMany('Videos');
+	}
+
+	public function comp_year() {
+		return $this->morphToMany('CompYear', 'yearable');
 	}
 
 	/**

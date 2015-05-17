@@ -70,8 +70,12 @@ Route::group(array('before' => 'auth'), function() {
 	}]);
 
 	Route::group(array('before' => 'admin'), function () {
+		// Export Functions
 		Route::get('challenge_students_csv', [ 'uses' => 'DisplayController@challenge_students_csv' ] );
 		Route::get('video_students_csv', [ 'uses' => 'DisplayController@video_students_csv' ] );
+
+		// Manage CompYears
+		Route::resource('compyears', 'CompYearsController');
 
 		// Manage Competitions
 		Route::resource('competitions', 'CompetitionsController');
