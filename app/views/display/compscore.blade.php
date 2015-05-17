@@ -117,7 +117,7 @@
 				<tr class="bold_row">
 					<th>Team</th>
 					<th>School</th>
-					<th>Score</th>
+					<th>Score (Runs)</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -127,10 +127,10 @@
 							{{ link_to_route('display.teamscore', $division->teams->find($team_id)->name, $team_id) }}
 						</td>
 						<td>
-							{{ $division->teams->find($team_id)->school->name }}
+							{{-- $division->teams->find($team_id)->school->name --}}
 						</td>
 						<td>
-							{{ $score }}
+							{{ $score['total'] }} ({{ $score['runs'] }})
 						</td>
 					</tr>
 				@endforeach

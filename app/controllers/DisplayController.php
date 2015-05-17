@@ -113,7 +113,7 @@ class DisplayController extends BaseController {
 
 			// Calculate the max score for each team and challenge
 			$scores = DB::table('score_runs')
-					->select('team_id', 'challenge_id', DB::raw('max(total) as chal_score'))
+					->select('team_id', 'challenge_id', DB::raw('max(total) as chal_score'), DB::raw('count(total) as chal_runs'))
 					->groupBy('team_id', 'challenge_id')
 					->orderBy('team_id', 'challenge_id')
 					->where('division_id', $division->id)
@@ -132,9 +132,11 @@ class DisplayController extends BaseController {
 			{
 				// Initalize the storage location for each team
 				if(!array_key_exists($score->team_id, $score_list[$division->id])) {
-					$score_list[$division->id][$score->team_id] = 0;
+					$score_list[$division->id][$score->team_id]['total'] = 0;
+					$score_list[$division->id][$score->team_id]['runs'] = 0;
 				}
-				$score_list[$division->id][$score->team_id] += $score->chal_score;
+				$score_list[$division->id][$score->team_id]['total'] += $score->chal_score;
+				$score_list[$division->id][$score->team_id]['runs'] += $score->chal_runs;
 			}
 
 
@@ -144,7 +146,19 @@ class DisplayController extends BaseController {
 			$score_list[$division->id] = $score_list[$division->id] + array_fill_keys($missing_list, 0);
 
 			// Descending sort by score
-			arsort($score_list[$division->id]);
+			//arsort($score_list[$division->id]);
+
+			// Sort descening by Score, runs
+			//    minus is a standin for the <=> operator
+			//    a - b roughly equals a <=> b
+			uasort($score_list[$division->id], function($a, $b) {
+				// Sort by score first:
+				if($a['total'] == $b['total']) {
+					return $a['runs'] - $b['runs'];
+				} else {
+					return $b['total'] - $a['total'];
+				}
+			});
 		}
 
 		// Setup column widths depending on number of divisions
