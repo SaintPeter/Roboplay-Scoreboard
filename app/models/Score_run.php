@@ -16,6 +16,8 @@ class Score_run extends Eloquent {
 		'division_id' => 'required'
 	);
 
+	protected $softDelete = true;
+
 	/* Mutators and Assignors
 	   ------------------------------ */
 	public function getScoresAttribute($value) {

@@ -39,10 +39,6 @@ Route::get('team/{team_id}', array('as' => 'display.teamscore', 'uses' => 'Displ
 		 ->where('team_id', '\d+');
 Route::get('team/{team_id}/{with_judges}', array('as' => 'display.teamscore', 'uses' => 'DisplayController@teamscore'))
 		 ->where('team_id', '\d+');
-Route::get('team/{team_id}/delete_score/{score_run_id}', [
-		   'as' => 'display.teamscore.delete_score',
-		   'uses' => 'DisplayController@delete_score' ] )
-		 ->where('team_id', '\d+');
 Route::get('comp/{competition_id}', array('as' => 'display.compscore', 'uses' => 'DisplayController@compscore'))
 		 ->where('competition_id', '\d+');
 
@@ -136,6 +132,8 @@ Route::group(array('before' => 'auth'), function() {
 		Route::get('invoice_management',					[ 'as' => 'invoice_set', 	'uses' => 'Wp_fix@invoice_set']);
 		Route::get('invoice_csv',							[ 'as' => 'invoice_csv', 	'uses' => 'Wp_fix@invoice_csv']);
 		Route::get('student_fix_school',					[ 'as' => 'student_fix_school',  'uses' => 'Wp_fix@student_fix_school']);
+		Route::get('switch_user/{user_id}',					[ 'as' => 'switch_user',  	'uses' => 'Wp_fix@switch_user']);
+		Route::get('list_judges',							[ 'as' => 'list_judges', 	'uses' => 'Wp_fix@list_judges']);
 		Route::get('ajax/set_paid/{invoice_no}/{value}', 	[ 'as' => 'ajax.set_paid', 	'uses' => 'Wp_fix@ajax_set_paid']);
 		Route::get('ajax/set_div/{invoice_no}/{value}', 	[ 'as' => 'ajax.set_div', 	'uses' => 'Wp_fix@ajax_set_div']);
 		Route::get('ajax/set_vid_div/{invoice_no}/{value}', [ 'as' => 'ajax.set_vid_div', 'uses' => 'Wp_fix@ajax_set_vid_div']);
@@ -181,6 +179,15 @@ Route::group(array('before' => 'auth'), function() {
 	});
 
 	Route::group(array('before' => 'judge'), function () {
+		// Delete individual score
+		Route::get('team/{team_id}/delete_score/{score_run_id}', [
+		   'as' => 'display.teamscore.delete_score',
+		   'uses' => 'DisplayController@delete_score' ] )
+		 ->where('team_id', '\d+');
+		 Route::get('team/{team_id}/restore_score/{score_run_id}', [
+		   'as' => 'display.teamscore.restore_score',
+		   'uses' => 'DisplayController@restore_score' ] )
+		 ->where('team_id', '\d+');
 
 		// Challenge Scoring
 		Route::get('score', array(

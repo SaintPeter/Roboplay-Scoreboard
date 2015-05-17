@@ -201,4 +201,23 @@ class Wp_fix extends BaseController {
 			$student->save();
 		}
 	}
+
+	// Switch to a different user
+	public function switch_user($user_id) {
+		if(Roles::isAdmin()) {
+			//$user = Wp_user::with('usermeta')->findOrFail($user_id);
+			Auth::logout();
+			Auth::loginUsingId($user_id);
+			return Redirect::to('/')->with('message', 'Logged in');
+		}
+		return Redirect::to('/')->with('message', 'You do not have permission to do that.');
+	}
+
+	// List all Judges
+	public function list_judges() {
+		$judges = Judge::all();
+
+		return View::make('wp_fixes.list_judges')->with(compact('judges'));
+	}
+
 }

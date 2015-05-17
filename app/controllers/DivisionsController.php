@@ -160,10 +160,29 @@ class DivisionsController extends BaseController {
 		Breadcrumbs::addCrumb('Show Division', route('divisions.show', $division_id));
 		Breadcrumbs::addCrumb('Assign Challenges', '');
 		View::share('title', 'Assign Challenges');
-	 	$all_challenges = Challenge::with('divisions')->get();
 
-		$all_list = array();
-		$selected_list = array();
+		// Setup challenge query
+		$challenge_query = Challenge::with('divisions');
+
+		// Selected year, level select set in filters.php -> App::before()
+		$selected_year = Session::get('selected_year', false);
+		$level_select= Session::get('level_select', false);
+
+		// Filter on selected year
+		if($selected_year) {
+			$challenge_query = $challenge_query->where('year', $selected_year);
+		}
+
+		// Filter on Level, if set
+		if($level_select) {
+			$challenge_query = $challenge_query->where('level', $level_select);
+		}
+
+		// Get challenges
+	 	$all_challenges = $challenge_query->get();
+
+		$all_list = [];
+		$selected_list = [];
 
 		$all_list = $all_challenges->lists('internal_name', 'id');
 

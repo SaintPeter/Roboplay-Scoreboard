@@ -45,4 +45,9 @@ class Challenge extends Eloquent {
 	{
 		return $this->hasMany('Score_run')->orderBy('run_number', 'asc');
 	}
+
+	public function scores_with_trash()
+	{
+		return $this->hasMany('Score_run')->orderBy('run_number', 'asc')->withTrashed();
+	}
 }

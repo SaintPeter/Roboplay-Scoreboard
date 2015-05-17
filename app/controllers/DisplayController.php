@@ -13,10 +13,18 @@ class DisplayController extends BaseController {
 		$team = Team::with('division', 'division.competition')->find($team_id);
 		$division_id = $team->division->id;
 
-		$challenges = Challenge::with(array('scores' => function($q) use ($team_id)
-						{
-							$q->where('team_id', $team_id);
-						}, 'scores.judge'))->get();
+		if(Roles::isJudge()) {
+			$challenges = Challenge::with(array('scores_with_trash' => function($q) use ($team_id)
+							{
+								$q->where('team_id', $team_id);
+							}, 'scores.judge'))->get();
+		} else {
+			$challenges = Challenge::with(array('scores' => function($q) use ($team_id)
+							{
+								$q->where('team_id', $team_id);
+							}, 'scores.judge'))->get();
+
+		}
 
 		//dd(DB::getQueryLog());
 
@@ -28,19 +36,34 @@ class DisplayController extends BaseController {
 			$challenge_number = $div_challenge->pivot->display_order;
 			$challenge_list[$challenge_number]['name'] = $div_challenge->display_name;
 			$challenge_list[$challenge_number]['points'] = $div_challenge->points;
-			if($challenges->find($div_challenge->id)->scores->count() > 0)
+
+			if(Roles::isJudge()) {
+				$count = $challenges->find($div_challenge->id)->scores_with_trash->count();
+			} else {
+				$count = $challenges->find($div_challenge->id)->scores->count();
+			}
+
+			if($count > 0)
 			{
-				$score_runs = $challenges->find($div_challenge->id)->scores;
+				// Judges may see deleted scores
+				if(Roles::isJudge()) {
+					$score_runs = $challenges->find($div_challenge->id)->scores_with_trash;
+				} else {
+					$score_runs = $challenges->find($div_challenge->id)->scores;
+				}
 				//$score_runs->load('judge');
 				$challenge_list[$challenge_number]['score_count'] = $score_runs->count();
-				$challenge_list[$challenge_number]['score_max'] = $score_runs->max('total');
+				$challenge_list[$challenge_number]['score_max'] = $score_runs->filter(function($sr) { return !$sr->trashed(); } )->max('total');
 				$grand_total += $challenge_list[$challenge_number]['score_max'];
+				//dd($score_runs);
 				foreach($score_runs as $score_run)
 				{
 					$challenge_list[$challenge_number]['runs'][$score_run->run_number]['run_time'] = $score_run->run_time;
 					$challenge_list[$challenge_number]['runs'][$score_run->run_number]['total'] = $score_run->total;
 					$challenge_list[$challenge_number]['runs'][$score_run->run_number]['judge'] = $score_run->judge->display_name;
+					$challenge_list[$challenge_number]['runs'][$score_run->run_number]['is_judge'] = Auth::check() ? ($score_run->judge->id == Auth::user()->ID) : 0;
 					$challenge_list[$challenge_number]['runs'][$score_run->run_number]['id'] = $score_run->id;
+					$challenge_list[$challenge_number]['runs'][$score_run->run_number]['deleted'] = $score_run->trashed();
 					$score_index = 0;
 					foreach($score_run->scores as $score_element)
 					{
@@ -94,6 +117,7 @@ class DisplayController extends BaseController {
 					->groupBy('team_id', 'challenge_id')
 					->orderBy('team_id', 'challenge_id')
 					->where('division_id', $division->id)
+					->whereNull('deleted_at')
 					->whereIn('challenge_id', $challenge_list);  // Limit to currently attached challenges
 
 			// If we're frozen, limit scores we count by the freeze time
@@ -147,11 +171,24 @@ class DisplayController extends BaseController {
 
 	public function delete_score($team_id, $score_run_id)
 	{
-		if(Roles::isAdmin()) {
-			$score_run = Score_run::find($score_run_id);
+		$score_run = Score_run::find($score_run_id);
+		if(Roles::isAdmin() OR $score_run->judge_id == Auth::user()->ID) {
 			$score_run->delete();
+			return Redirect::route('display.teamscore', [ $team_id ])->with('message', 'Score Deleted');
 		}
-		return Redirect::route('display.teamscore', [ $team_id ]);
+		return Redirect::route('display.teamscore', [ $team_id ])->with('message', 'You do not have permission to delete this score.');
+	}
+
+	public function restore_score($team_id, $score_run_id)
+	{
+		$score_run = Score_run::withTrashed()->find($score_run_id);
+
+		// Allow Admins or the judge who deleted the scores to restore them
+		if(Roles::isAdmin() or $score_run->judge_id == Auth::user()->ID ) {
+			$score_run->restore();
+			return Redirect::route('display.teamscore', [ $team_id ])->with('message', 'Score Restored');
+		}
+		return Redirect::route('display.teamscore', [ $team_id ])->with('message', 'You do not have permission to restore this score.');
 	}
 
 	public function challenge_students_csv() {

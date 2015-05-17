@@ -22,6 +22,17 @@ App::before(function($request)
 			Session::put('selected_year', $selected_year);
 		}
 	}
+
+	// Store changes to selected level
+	if(Input::has('level_select')) {
+		$level_select = Input::get('level_select');
+		if($level_select == 0) {
+			Session::forget('level_select');
+		} else {
+			Session::put('level_select', $level_select);
+		}
+	}
+
 });
 
 

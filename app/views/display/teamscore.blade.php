@@ -4,6 +4,10 @@
 	.bold_row > td {
 		font-weight: bold;
 	}
+	.deleted_score > td {
+		text-decoration: line-through;
+		color: darkgrey;
+	}
 @stop
 
 @section('script')
@@ -56,10 +60,14 @@
 					</tr>
 					<?php $first = true; ?>
 					@foreach($challenge['runs'] as $run_number => $score_run)
-					<tr>
+					<tr {{ $score_run['deleted'] ? 'class="deleted_score"' : '' }}>
 						<td class="text-right">
-							@if(Roles::isAdmin())
-								<a href="{{ route('display.teamscore.delete_score', [ $team->id, $score_run['id'] ]) }}" class="delete_button btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
+							@if(Roles::isAdmin() or $score_run['is_judge'])
+								@if($score_run['deleted'])
+									<a href="{{ route('display.teamscore.restore_score', [ $team->id, $score_run['id'] ]) }}" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
+								@else
+									<a href="{{ route('display.teamscore.delete_score', [ $team->id, $score_run['id'] ]) }}" class="delete_button btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
+								@endif
 							@endif
 							Run {{ $run_number }} ({{ $score_run['run_time'] }})
 							<span class="judge_name hidden"><br />{{ $score_run['judge'] }}</span>
