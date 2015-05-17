@@ -58,7 +58,7 @@
 					@foreach($challenge['runs'] as $run_number => $score_run)
 					<tr>
 						<td class="text-right">
-							@if(Roles::isAdmin())
+							@if(Roles::isAdmin() or $score_run['is_judge'])
 								<a href="{{ route('display.teamscore.delete_score', [ $team->id, $score_run['id'] ]) }}" class="delete_button btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
 							@endif
 							Run {{ $run_number }} ({{ $score_run['run_time'] }})

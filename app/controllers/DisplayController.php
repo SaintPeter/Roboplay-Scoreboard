@@ -40,6 +40,7 @@ class DisplayController extends BaseController {
 					$challenge_list[$challenge_number]['runs'][$score_run->run_number]['run_time'] = $score_run->run_time;
 					$challenge_list[$challenge_number]['runs'][$score_run->run_number]['total'] = $score_run->total;
 					$challenge_list[$challenge_number]['runs'][$score_run->run_number]['judge'] = $score_run->judge->display_name;
+					$challenge_list[$challenge_number]['runs'][$score_run->run_number]['is_judge'] = ($score_run->judge->id == Auth::user()->ID);
 					$challenge_list[$challenge_number]['runs'][$score_run->run_number]['id'] = $score_run->id;
 					$score_index = 0;
 					foreach($score_run->scores as $score_element)
