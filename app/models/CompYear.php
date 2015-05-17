@@ -36,7 +36,7 @@ class CompYear extends \Eloquent {
 
 	// Get the current Comp Year
 	public static function current() {
-		return CompYear::where('year', Carbon\Carbon::now()->year)->get();
+		return CompYear::where('year', Carbon\Carbon::now()->year);
 	}
 
 }

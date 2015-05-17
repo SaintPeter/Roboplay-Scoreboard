@@ -5,7 +5,8 @@
 @stop
 
 @section('script')
-@if(isset($next_event) AND isset($this_event))
+
+@if(isset($next_event) AND isset($this_event) AND $display_timer)
 		var serverTime = moment("{{ $start_time }}", "hh:mm:ss");
 		var delta = moment().diff(serverTime);
 		var endTime = moment("{{ $next_event->start }}", "hh:mm:ss");
@@ -74,35 +75,37 @@
 
 <?php View::share( [ 'skip_title' => true, 'skip_breadcrumbs' => true ] ); ?>
 @section('before_header')
-<div class="clearfix header_container">
-	@if(isset($next_event) AND isset($this_event))
-		<div class="pull-right well well-sm timing col-md-6">
-			<div class="clock_holder">
-				<h1>
-					<span id="clock" class="label label-primary">{{ $this_event->start }}</span>
-					<small>{{ $this_event->display }}</small>
-				</h1>
-			</div>
-			<div class="timer_holder">
-				<h1>
-					<span id="timer" class="label label-info">0:00:00</span>
-					<small>Next: {{ $next_event->display }}</small>
-				</h1>
-			</div>
-			@if($frozen)
-				@if(Roles::isAdmin())
-					<a href="{{ route('display.compscore.do_not_freeze', [ $comp->id, "do_not_freeze" ]) }}">
-						<span class="label label-info">Scores Frozen</span>
-					</a>
-				@else
-					<span class="label label-info">Scores Frozen</span>
-				@endif
+	<div class="clearfix header_container">
+		@if(isset($next_event) AND isset($this_event) AND $display_timer)
+			@if(isset($next_event) AND isset($this_event))
+				<div class="pull-right well well-sm timing col-md-6">
+					<div class="clock_holder">
+						<h1>
+							<span id="clock" class="label label-primary">{{ $this_event->start }}</span>
+							<small>{{ $this_event->display }}</small>
+						</h1>
+					</div>
+					<div class="timer_holder">
+						<h1>
+							<span id="timer" class="label label-info">0:00:00</span>
+							<small>Next: {{ $next_event->display }}</small>
+						</h1>
+					</div>
+					@if($frozen)
+						@if(Roles::isAdmin())
+							<a href="{{ route('display.compscore.do_not_freeze', [ $comp->id, "do_not_freeze" ]) }}">
+								<span class="label label-info">Scores Frozen</span>
+							</a>
+						@else
+							<span class="label label-info">Scores Frozen</span>
+						@endif
+					@endif
+				</div>
 			@endif
-		</div>
-	@endif
-	<h1>{{ $title }}</h1>
-	{{ link_to_route('home', 'Home', null, [ 'class' => 'btn btn-primary btn-margin' ]) }}
-</div>
+		@endif
+		<h1>{{ $title }}</h1>
+		{{ link_to_route('home', 'Home', null, [ 'class' => 'btn btn-primary btn-margin' ]) }}
+	</div>
 @stop
 
 @section('main')
@@ -112,9 +115,10 @@
 		<table class="table table-striped table-bordered table-condensed">
 			<thead>
 				<tr class="info">
-					<th colspan="3">{{ $division->name }} Division</th>
+					<th colspan="4">{{ $division->name }} Division</th>
 				</tr>
 				<tr class="bold_row">
+					<th>#</th>
 					<th>Team</th>
 					<th>School</th>
 					<th>Score (Runs)</th>
@@ -123,11 +127,12 @@
 			<tbody>
 				@foreach($score_list[$division->id] as $team_id => $score)
 					<tr>
+						<td>{{ $score['place'] }}</td>
 						<td>
 							{{ link_to_route('display.teamscore', $division->teams->find($team_id)->name, $team_id) }}
 						</td>
 						<td>
-							{{-- $division->teams->find($team_id)->school->name --}}
+							{{ $division->teams->find($team_id)->school->name }}
 						</td>
 						<td>
 							{{ $score['total'] }} ({{ $score['runs'] }})

@@ -22,16 +22,24 @@
 
 @section('main')
 <h2>Competition Scores</h2>
-<ul data-role="listview" data-inset="true">
-	@if(!$competitions->isEmpty())
-		@foreach($competitions as $comp)
-			<li>{{ link_to_route('display.compscore', $comp->name . ' Scoreboard', $comp->id, $noajax) }} </li>
-		@endforeach
-	@else
-		<p>No Active Competitions</p>
-	@endif
-</ul>
+@if(!$compyears->isEmpty())
+	@foreach($compyears as $compyear)
+		@if(!$compyear->competitions->isEmpty())
+			<h3>{{ $compyear->year }}</h3>
+			<ul data-role="listview" data-inset="true">
+			@foreach($compyear->competitions as $comp)
+				<li>{{ link_to_route('display.compscore', $comp->name . ' Scoreboard', $comp->id, $noajax) }} </li>
+			@endforeach
+			</ul>
+		@else
+			<p>No Active Competitions</p>
+		@endif
+	@endforeach
+@else
+	<p>No Active Years</p>
+@endif
 
+{{--
 @if(!$vid_competitions->isEmpty())
 <h2>Videos</h2>
 <ul data-role="listview" data-inset="true">
@@ -40,7 +48,7 @@
 		@endforeach
 </ul>
 @endif
-
+--}}
 @if(Roles::isJudge())
 <h2>Judge Menu</h2>
 <ul data-role="listview" data-inset="true">
