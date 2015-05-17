@@ -184,6 +184,10 @@ Route::group(array('before' => 'auth'), function() {
 		   'as' => 'display.teamscore.delete_score',
 		   'uses' => 'DisplayController@delete_score' ] )
 		 ->where('team_id', '\d+');
+		 Route::get('team/{team_id}/restore_score/{score_run_id}', [
+		   'as' => 'display.teamscore.restore_score',
+		   'uses' => 'DisplayController@restore_score' ] )
+		 ->where('team_id', '\d+');
 
 		// Challenge Scoring
 		Route::get('score', array(
