@@ -41,7 +41,7 @@ class TeacherVideoController extends BaseController {
 		$school = Schools::find($school_id);
 
 		// Create a list of Divisions to choose from
-		$competitions = Vid_competition::where('event_end', ">", Carbon\Carbon::now())->with(
+		$competitions = Vid_competition::with(
 									[ 'divisions' => function($q) {
 											return $q->orderby('display_order');
 										} ] )
@@ -162,7 +162,7 @@ class TeacherVideoController extends BaseController {
 		$video = Video::with('students')->find($id);
 
 		// Create a list of Divisions to choose from
-		$competitions = Vid_competition::where('event_end', '>', Carbon\Carbon::now())->with(
+		$competitions = Vid_competition::with(
 									[ 'divisions' => function($q) {
 											return $q->orderby('display_order');
 										} ] )
@@ -173,7 +173,7 @@ class TeacherVideoController extends BaseController {
 				$division_list[$competition->name][$division->id] = $division->name;
 			}
 		}
-
+		
 		// Student Setup
 		$ethnicity_list = array_merge([ 0 => "- Select Ethnicity -" ], Ethnicity::all()->lists('name','id'));
 		if(!Session::has('students')) {
