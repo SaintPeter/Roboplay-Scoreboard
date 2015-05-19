@@ -1,7 +1,17 @@
 @extends('layouts.scaffold')
 
+@section('head')
+	{{ HTML::script('js/jquery.filtertable.min.js') }}
+@stop
+
+@section('script')
+	$(function() {
+		$("#user_table").filterTable();
+	});
+@stop
+
 @section('main')
-<table class="table table-striped table-bordered">
+<table class="table table-striped table-bordered" id="user_table">
 	<thead>
 		<tr>
 			<th>User</th>

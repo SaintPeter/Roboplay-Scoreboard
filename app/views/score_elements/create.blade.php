@@ -50,7 +50,7 @@
 <div class="col-md-6">
 	<h3>Validation Errors</h3>
 	<ul>
-		{{ implode('', $errors->all('<li class="error">:message</div>')) }}
+		{{ implode('', $errors->all('<li class="error">:message</li>')) }}
 	</ul>
 </div>
 @endif

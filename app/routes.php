@@ -28,10 +28,11 @@ Route::get('/', [ 'as' => 'home', function()
 {
 	$date = Carbon\Carbon::now()->setTimezone('America/Los_Angeles')->toDateString();
 
-	$competitions = Competition::where('event_date', '<=', $date)->where('active', true)->get();
-	$vid_competitions = Vid_competition::where('event_end', '<', $date)->get();
+	$compyears = CompYear::with('competitions', 'competitions.divisions', 'vid_competitions', 'vid_competitions.divisions')->get();
+	//$competitions = Competition::where('event_date', '<=', $date)->where('active', true)->get();
+	//$vid_competitions = Vid_competition::where('event_end', '<', $date)->get();
 	$noajax = array('data-ajax' => "false");
-	return View::make('home', compact('competitions','vid_competitions', 'noajax'));
+	return View::make('home', compact('compyears', 'noajax'));
 }]);
 
 /* ----------------------- Score Display ---------------------------- */
@@ -41,6 +42,8 @@ Route::get('team/{team_id}/{with_judges}', array('as' => 'display.teamscore', 'u
 		 ->where('team_id', '\d+');
 Route::get('comp/{competition_id}', array('as' => 'display.compscore', 'uses' => 'DisplayController@compscore'))
 		 ->where('competition_id', '\d+');
+Route::post('comp/{competition_id}/settings', [ 'as' => 'display.compsettings', 'uses' => 'DisplayController@compsettings' ])
+		->where('competition_id', '\d+');
 
 /* ----------------------- Video Display ---------------------------- */
 Route::get('video_list/{comp_id}', [ 'as' => 'display.video_list', 'uses' => 'DisplayController@video_list'] );
@@ -70,8 +73,12 @@ Route::group(array('before' => 'auth'), function() {
 	}]);
 
 	Route::group(array('before' => 'admin'), function () {
+		// Export Functions
 		Route::get('challenge_students_csv', [ 'uses' => 'DisplayController@challenge_students_csv' ] );
 		Route::get('video_students_csv', [ 'uses' => 'DisplayController@video_students_csv' ] );
+
+		// Manage CompYears
+		Route::resource('compyears', 'CompYearsController');
 
 		// Manage Competitions
 		Route::resource('competitions', 'CompetitionsController');

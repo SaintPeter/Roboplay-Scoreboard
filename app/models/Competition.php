@@ -18,6 +18,10 @@ class Competition extends Eloquent {
 		return $this->hasMany('Division')->orderBy('display_order', 'asc');
 	}
 
+	public function comp_year() {
+		return $this->morphToMany('CompYear', 'yearable');
+	}
+
 	public function getFreezeTimeAttribute($value)
 	{
 		return Carbon::parse($value)->format('g:i A');
