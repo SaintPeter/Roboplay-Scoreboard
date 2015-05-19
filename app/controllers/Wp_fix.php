@@ -216,7 +216,9 @@ class Wp_fix extends BaseController {
 	// List all Judges
 	public function list_judges() {
 		$judges = Judge::all();
+		Breadcrumbs::addCrumb('List Users','');
 
+		View::share('title', 'List Users');
 		return View::make('wp_fixes.list_judges')->with(compact('judges'));
 	}
 

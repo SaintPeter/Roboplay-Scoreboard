@@ -10,6 +10,7 @@ class Division extends Eloquent {
 		'competition_id' => 'required'
 	);
 
+	// Relationships
 	public function competition()
 	{
 		return $this->belongsTo('Competition')->orderBy('name');
@@ -25,6 +26,9 @@ class Division extends Eloquent {
 		return $this->hasMany('Team');
 	}
 
+	public function comp_year() {
+		return $this->morphToMany('CompYear', 'yearable');
+	}
 
 	/**
 	 * Return a list of id => long name keypairs

@@ -1,5 +1,7 @@
 <?php
 
+use \Carbon\Carbon;
+
 class DisplayController extends BaseController {
 
 	/**
@@ -90,14 +92,14 @@ class DisplayController extends BaseController {
 		$divisions = $comp->divisions;
 
 		// Event Timing
-		$start_time = Carbon\Carbon::now()->setTimezone('America/Los_Angeles')->toTimeString();
+		$start_time = Carbon::now()->setTimezone('America/Los_Angeles')->toTimeString();
 		$this_event = Schedule::where('start', '<', $start_time)->orderBy('start', 'DESC')->first();
 		$next_event = Schedule::where('start', '>', $start_time)->orderBy('start')->first();
 
 		//dd(DB::getQueryLog());
 
 		// Frozen Calculation
-		$freeze_time = new Carbon\Carbon($comp->freeze_time);
+		$freeze_time = new Carbon($comp->freeze_time);
 		if($comp->frozen AND isset($start_time->freeze_time) AND !isset($do_not_freeze)) {
 			$frozen = true;
 		} else {
@@ -143,7 +145,7 @@ class DisplayController extends BaseController {
 			// Find all of the teams with no scores yet and add them to the end of the list
 			$team_list = $division->teams->lists('id');
 			$missing_list = array_diff($team_list, array_keys($score_list[$division->id]));
-			$score_list[$division->id] = $score_list[$division->id] + array_fill_keys($missing_list, 0);
+			$score_list[$division->id] = $score_list[$division->id] + array_fill_keys($missing_list, [ 'total' => 0, 'runs' => 0 ] );
 
 			// Descending sort by score
 			//arsort($score_list[$division->id]);
@@ -159,6 +161,17 @@ class DisplayController extends BaseController {
 					return $b['total'] - $a['total'];
 				}
 			});
+
+			// Populate Places
+			$place = 1;
+			foreach($score_list[$division->id] as $team_id => $scores) {
+				if($score_list[$division->id][$team_id]['runs'] > 0) {
+					$score_list[$division->id][$team_id]['place'] = $place++;
+				} else {
+					// Teams with no runs have no place
+					$score_list[$division->id][$team_id]['place'] = '-';
+				}
+			}
 		}
 
 		// Setup column widths depending on number of divisions
@@ -177,10 +190,22 @@ class DisplayController extends BaseController {
 				$col_class = "col-md-2 col-lg-2";
 		}
 
+		$now = Carbon::now()->setTimezone('America/Los_Angeles');
+		$event = new Carbon($comp->event_date);
+		$display_timer = $now->isSameDay($event) || Input::get('display_timer', false);
 
+		// Pull settings from the session variable
+		$session_variable = "compsettings_$competition_id";
+		$settings['columns'] = Session::get($session_variable . '_columns', 1);
+		$settings['rows'] = Session::get($session_variable . '_rows', 15);
+		$settings['delay'] = Session::get($session_variable . '_delay', 3000);
+		$settings['font-size'] = Session::get($session_variable . '_font-size', 'x-large');
 
 		View::share('title', $comp->name . ' Scores');
-		return View::make('display.compscore', compact('comp', 'divisions', 'score_list', 'col_class', 'this_event', 'next_event', 'frozen', 'start_time'));
+		return View::make('display.compscore', compact('comp', 'divisions', 'score_list',
+													   'col_class', 'this_event', 'next_event',
+													   'frozen', 'start_time', 'display_timer',
+													   'settings'));
 	}
 
 	public function delete_score($team_id, $score_run_id)
@@ -286,5 +311,15 @@ class DisplayController extends BaseController {
 		}
 
 		return View::make('display.show_video', compact('video'));
+	}
+
+	public function compsettings($competition_id) {
+		$session_variable = "compsettings_$competition_id";
+		Session::set($session_variable . '_columns', Input::get('columns', 1));
+		Session::set($session_variable . '_rows', Input::get('rows', 15));
+		Session::set($session_variable . '_delay', Input::get('delay', 3000));
+		Session::set($session_variable . '_font-size', Input::get('font-size', 'x-large'));
+
+		return Redirect::route('display.compscore', [ $competition_id ]);
 	}
 }

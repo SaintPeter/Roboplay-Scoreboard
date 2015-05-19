@@ -15,6 +15,10 @@ class Vid_competition extends Eloquent {
 		return $this->hasMany('Vid_division', 'competition_id', 'id');
 	}
 
+	public function comp_year() {
+		return $this->morphToMany('CompYear', 'yearable');
+	}
+
 	public function is_active() {
 		if(Carbon::now()->between(new Carbon($this->event_start), new Carbon($this->event_end))) {
 			return true;
