@@ -1,7 +1,9 @@
-@extends('layouts.scaffold')
+@extends('layouts.scaffold', [ 'fluid' => true ])
 
 @section('head')
 	{{ HTML::script('js/moment.min.js') }}
+	{{ HTML::style('//cdn.jsdelivr.net/jquery.slick/1.5.0/slick.css') }}
+	{{ HTML::script('//cdn.jsdelivr.net/jquery.slick/1.5.0/slick.min.js') }}
 @stop
 
 @section('script')
@@ -51,6 +53,37 @@
 	    return (input < 10 ? '0' : '') + input;
 	}
 @endif
+	$(function(){
+		$('#slick_container').slick({
+			slidesToShow: {{ $settings['columns'] }},
+			autoplay: true,
+			autoplaySpeed:  {{ $settings['delay'] }},
+			speed: 700,
+			pauseOnHover: false,
+			prevArrow: '',
+			nextArrow: ''
+		});
+
+		$("#show_settings").click(function(e) {
+			e.preventDefault();
+			$("#dialog-settings").dialog('open');
+		});
+
+		$( "#dialog-settings" ).dialog({
+			resizable: false,
+			autoOpen: false,
+			width:320,
+			buttons: {
+				"Apply Settings": function() {
+					$( this ).dialog( "close" );
+					$('#settings_form').submit();
+				},
+				Cancel: function() {
+					$( this ).dialog( "close" );
+				}
+			}
+		});
+	});
 @stop
 
 @section('style')
@@ -70,6 +103,9 @@
 	}
 	.header_container {
 		margin: 5px 15px;
+	}
+	#slick_container {
+		font-size: {{ $settings['font-size'] }};
 	}
 @stop
 
@@ -105,27 +141,28 @@
 		@endif
 		<h1>{{ $title }}</h1>
 		{{ link_to_route('home', 'Home', null, [ 'class' => 'btn btn-primary btn-margin' ]) }}
+		<a href="#" id="show_settings" class="btn btn-info btn-margin"><span class="glyphicon glyphicon-cog"></span></a>
 	</div>
 @stop
 
 @section('main')
-@foreach($divisions as $division)
-
-	<div class="{{ $col_class }}">
+<div id="slick_container">
+	<div class="col-md-12 col-lg-12">
 		<table class="table table-striped table-bordered table-condensed">
-			<thead>
+			<?php $rowcount = 0; ?>
+			@foreach($divisions as $division)
 				<tr class="info">
-					<th colspan="4">{{ $division->name }} Division</th>
+					<td colspan="4">{{ $division->name }} Division</td>
 				</tr>
 				<tr class="bold_row">
-					<th>#</th>
-					<th>Team</th>
-					<th>School</th>
-					<th>Score (Runs)</th>
+					<td>#</td>
+					<td>Team</td>
+					<td>School</td>
+					<td>Score (Runs)</td>
 				</tr>
-			</thead>
-			<tbody>
+				<?php $rowcount += 2; ?>
 				@foreach($score_list[$division->id] as $team_id => $score)
+					<?php $rowcount++; ?>
 					<tr>
 						<td>{{ $score['place'] }}</td>
 						<td>
@@ -138,10 +175,57 @@
 							{{ $score['total'] }} ({{ $score['runs'] }})
 						</td>
 					</tr>
+					@if($rowcount >  $settings['rows'])
+						</table>
+					</div>
+					<div class="col-md-12 col-lg-12">
+					<table class="table table-striped table-bordered table-condensed">
+
+						<tr class="info">
+							<td colspan="4">{{ $division->name }} Division</td>
+						</tr>
+						<tr class="bold_row">
+							<td>#</td>
+							<td>Team</td>
+							<td>School</td>
+							<td>Score (Runs)</td>
+						</tr>
+						<?php $rowcount = 2; ?>
+					@endif
 				@endforeach
-			</tbody>
+			@endforeach
 		</table>
 	</div>
-@endforeach
+</div>
+
+<div id="dialog-settings" title="Adjust Settings">
+	{{ Form::open( [ 'route' => [ 'display.compsettings', $comp->id ], 'class' => 'form-horizontal', 'id' => 'settings_form', 'style' => 'margin: 5px;' ] ) }}
+		<div class="form-group">
+			{{ Form::label('columns', 'Columns:', [ 'class' => 'col-sm-4 control-label' ]) }}
+			<div class="col-sm-7">
+				{{ Form::text('columns', $settings['columns'] , [ 'class'=>'form-control' ]) }}
+			</div>
+		</div>
+		<div class="form-group">
+			{{ Form::label('rows', 'Rows:', [ 'class' => 'col-sm-4 control-label' ]) }}
+			<div class="col-sm-7">
+				{{ Form::text('rows', $settings['rows'] , [ 'class'=>'form-control' ]) }}
+			</div>
+		</div>
+		<div class="form-group">
+			{{ Form::label('delay', 'Delay (ms):', [ 'class' => 'col-sm-4 control-label' ]) }}
+			<div class="col-sm-7">
+				{{ Form::text('delay', $settings['delay'] , [ 'class'=>'form-control' ]) }}
+			</div>
+		</div>
+		<div class="form-group">
+			{{ Form::label('font-size', 'Font Size:', [ 'class' => 'col-sm-4 control-label' ]) }}
+			<div class="col-sm-7">
+				{{ Form::text('font-size', $settings['font-size'] , [ 'class'=>'form-control' ]) }}
+			</div>
+		</div>
+
+	{{ Form::close() }}
+</div>
 
 @stop

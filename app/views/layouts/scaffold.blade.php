@@ -39,7 +39,11 @@
 
 	<body>
 
+@if(isset($fluid))
+		<div class="container-fluid">
+@else
 		<div class="container">
+@endif
 			@yield('before_header')
 
 			@if(isset($title) and !isset($skip_title))
