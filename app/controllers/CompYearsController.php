@@ -14,7 +14,7 @@ class CompYearsController extends \BaseController {
 	 */
 	public function index()
 	{
-		$compyears = Compyear::with('competitions', 'divisions', 'vid_competitions', 'vid_divisions')->get();
+		$compyears = CompYear::with('competitions', 'divisions', 'vid_competitions', 'vid_divisions')->get();
 
 
 		View::share('title', 'Manage Competition Years');
@@ -41,14 +41,14 @@ class CompYearsController extends \BaseController {
 	 */
 	public function store()
 	{
-		$validator = Validator::make($data = Input::except('_token','competitions','vid_competitions'), Compyear::$rules);
+		$validator = Validator::make($data = Input::except('_token','competitions','vid_competitions'), CompYear::$rules);
 
 		if ($validator->fails())
 		{
 			return Redirect::back()->withErrors($validator)->withInput();
 		}
 
-		$compyear = Compyear::firstOrCreate($data);
+		$compyear = CompYear::firstOrCreate($data);
 
 		$competition_list = Input::get('competitions', [ 0 ]);
 		$vid_competition_list = Input::get('vid_competitions', [ 0 ]);
@@ -75,7 +75,7 @@ class CompYearsController extends \BaseController {
 	 */
 	public function show($id)
 	{
-		$compyear = Compyear::findOrFail($id);
+		$compyear = CompYear::findOrFail($id);
 
 		return View::make('compyears.show')->with(compact('compyear'));
 	}
@@ -88,7 +88,7 @@ class CompYearsController extends \BaseController {
 	 */
 	public function edit($id)
 	{
-		$compyear = Compyear::find($id);
+		$compyear = CompYear::find($id);
 
 		$competition_list = Competition::all()->lists('name', 'id');
 		$comp_selected = $compyear->competitions()->lists('yearable_id');
@@ -106,9 +106,9 @@ class CompYearsController extends \BaseController {
 	 */
 	public function update($id)
 	{
-		$compyear = Compyear::findOrFail($id);
+		$compyear = CompYear::findOrFail($id);
 
-		$validator = Validator::make($data = Input::all(), Compyear::$rules);
+		$validator = Validator::make($data = Input::all(), CompYear::$rules);
 
 		if ($validator->fails())
 		{
@@ -142,7 +142,7 @@ class CompYearsController extends \BaseController {
 	 */
 	public function destroy($id)
 	{
-		Compyear::destroy($id);
+		CompYear::destroy($id);
 
 		return Redirect::route('compyears.index');
 	}
