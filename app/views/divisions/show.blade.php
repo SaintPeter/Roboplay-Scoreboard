@@ -40,6 +40,7 @@
 			<th>Name</th>
 			<th>Description</th>
 			<th>Competition</th>
+			<th>Level</th>
 			<th colspan="2">Actions</th>
 		</tr>
 	</thead>
@@ -49,6 +50,7 @@
 			<td>{{{ $division->name }}}</td>
 			<td>{{{ $division->description }}}</td>
 			<td>{{{ $division->competition->name }}}</td>
+			<td>{{{ $division->level }}}</td>
             <td>{{ link_to_route('divisions.edit', 'Edit', array($division->id), array('class' => 'btn btn-info')) }}</td>
             <td>
                 {{ Form::open(array('method' => 'DELETE', 'route' => array('divisions.destroy', $division->id))) }}

@@ -25,6 +25,7 @@ $(function() {
 				<th>Name</th>
 				<th>Description</th>
 				<th>Order</th>
+				<th>Level</th>
 				<th>Competition</th>
 				<th>Challenges</th>
 				<th colspan="4">Actions</th>
@@ -37,6 +38,7 @@ $(function() {
 					<td>{{{ $division->name }}}</td>
 					<td>{{{ $division->description }}}</td>
 					<td>{{{ $division->display_order }}}</td>
+					<td>{{{ $division->level }}}</td>
 					<td>{{{ $division->competition->name }}}</td>
 					<td>{{{ $division->challenges->count() }}}</td>
 					<td>{{ link_to_route('divisions.show', 'Show', array($division->id), array('class' => 'btn btn-default')) }}</td>

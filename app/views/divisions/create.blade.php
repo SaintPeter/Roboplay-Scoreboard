@@ -2,39 +2,44 @@
 
 @section('main')
 {{ Form::open(array('route' => 'divisions.store')) }}
-	<ul>
-        <li>
+	<div>
+        <div class="form-group">
             {{ Form::label('name', 'Name') }}
             {{ Form::text('name') }}
-        </li>
+        </div>
 
-        <li>
+        <div class="form-group">
             {{ Form::label('description', 'Description') }}
             {{ Form::text('description') }}
-        </li>
+        </div>
 
-        <li>
+        <div class="form-group">
             {{ Form::label('display_order', 'Display Order') }}
             {{ Form::input('number', 'display_order') }}
-        </li>
+        </div>
 
-        <li>
+		<div class="form-group">
+            {{ Form::label('level', 'Level:') }}
+            {{ Form::input('number', 'level') }}
+        </div>
+
+        <div class="form-group">
             {{ Form::label('competition_id', 'Competition') }}
             {{ Form::select('competition_id', $competitions) }}
-        </li>
+        </div>
 
-		<li>
+		<div class="form-group">
 			{{ Form::submit('Submit', array('class' => 'btn btn-info')) }}
-		</li>
-	</ul>
+		</div>
+	</div>
 {{ Form::close() }}
 
 @if ($errors->any())
 <div class="col-md-6">
-	<h3>Validation Errors</h3>
-	<ul>
-		{{ implode('', $errors->all('<li class="error">:message</li>')) }}
-	</ul>
+	<h3>Vadivdation Errors</h3>
+	<div>
+		{{ implode('', $errors->all('<div class="error">:message</div>')) }}
+	</div>
 </div>
 @endif
 
