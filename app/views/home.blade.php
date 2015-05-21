@@ -20,22 +20,42 @@
 @endif
 @stop
 
+@section('style')
+.ui-li-static.ui-collapsible > .ui-collapsible-heading {
+    margin: 0;
+}
+.ui-li-static.ui-collapsible {
+    padding: 0;
+}
+.ui-li-static.ui-collapsible > .ui-collapsible-heading > .ui-btn {
+    border-top-width: 0;
+}
+.ui-li-static.ui-collapsible > .ui-collapsible-heading.ui-collapsible-heading-collapsed > .ui-btn,
+.ui-li-static.ui-collapsible > .ui-collapsible-content {
+    border-bottom-width: 0;
+}
+@stop
+
 @section('main')
 <h2>Competition Scores</h2>
 @if(!$compyears->isEmpty())
+	<ul data-role="listview" data-inset="true" data-shadow="false">
 	@foreach($compyears as $compyear)
 		@if(!$compyear->competitions->isEmpty())
-			<h3>{{ $compyear->year }}</h3>
-			<ul data-role="listview" data-inset="true">
+		<li data-role="collapsible" data-iconpos="right" data-inset="false">
+			<h2>{{ $compyear->year }}</h2>
+			<ul data-role="listview">
 			<li>{{ link_to_route('display.compyearscore',  'Combined Scoreboard', $compyear->id, $noajax) }} </li>
 			@foreach($compyear->competitions as $comp)
 				<li>{{ link_to_route('display.compscore', $comp->name . ' Scoreboard', $comp->id, $noajax) }} </li>
 			@endforeach
 			</ul>
+		</li>
 		@else
 			<p>No Active Competitions</p>
 		@endif
 	@endforeach
+	</ul>
 @else
 	<p>No Active Years</p>
 @endif
