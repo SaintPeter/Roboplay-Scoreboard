@@ -208,6 +208,129 @@ class DisplayController extends BaseController {
 													   'settings'));
 	}
 
+	public function compyearscore($compyear_id)
+	{
+		Breadcrumbs::addCrumb('Statewide Score', 'compyearscore');
+
+		$compyear = CompYear::with('divisions', 'divisions.teams', 'divisions.challenges')->find($compyear_id);
+		$divisions = $compyear->divisions;
+
+		// Get score list and calculate totals
+		$score_list = [];
+		$teams = NULL;
+		foreach($divisions as $division)
+		{
+			if($teams) {
+				$teams = $teams->merge($division->teams);
+			} else {
+				$teams = $division->teams;
+			}
+
+			//echo '<pre>' . print_r($teams->lists('name'),true) . '</pre>';
+
+			if(!array_key_exists($division->level, $score_list)) {
+				$score_list[$division->level] = [];
+			}
+			$challenge_list = $division->challenges->lists('id');
+
+			// Calculate the max score for each team and challenge
+			$scores = DB::table('score_runs')
+					->select('team_id', 'challenge_id', DB::raw('max(total) as chal_score'), DB::raw('count(total) as chal_runs'))
+					->groupBy('team_id', 'challenge_id')
+					->orderBy('team_id', 'challenge_id')
+					->where('division_id', $division->id)
+					->whereNull('deleted_at')
+					->whereIn('challenge_id', $challenge_list)  // Limit to currently attached challenges
+					->get();
+
+//dd($scores);
+
+			// Sum up all of the scores by team
+			foreach($scores as $score)
+			{
+				// Initalize the storage location for each team
+				if(!array_key_exists($score->team_id, $score_list[$division->level])) {
+					$score_list[$division->level][$score->team_id]['total'] = 0;
+					$score_list[$division->level][$score->team_id]['runs'] = 0;
+				}
+				$score_list[$division->level][$score->team_id]['total'] += $score->chal_score;
+				$score_list[$division->level][$score->team_id]['runs'] += $score->chal_runs;
+			}
+
+
+			// Find all of the teams with no scores yet and add them to the end of the list
+			$team_list = $division->teams->lists('id');
+			$missing_list = array_diff($team_list, array_keys($score_list[$division->level]));
+			$score_list[$division->level] = $score_list[$division->level] + array_fill_keys($missing_list, [ 'total' => 0, 'runs' => 0 ] );
+
+			//echo '<pre>' . print_r($score_list,true) . '</pre>';
+
+			// Sort descening by Score, runs
+			//    minus is a standin for the <=> operator
+			//    a - b roughly equals a <=> b
+			uasort($score_list[$division->level], function($a, $b) {
+				// Sort by score first:
+				if($a['total'] == $b['total']) {
+					return $a['runs'] - $b['runs'];
+				} else {
+					return $b['total'] - $a['total'];
+				}
+			});
+
+			// Populate Places
+			$place = 1;
+			foreach($score_list[$division->level] as $team_id => $scores) {
+				if($score_list[$division->level][$team_id]['runs'] > 0) {
+					$score_list[$division->level][$team_id]['place'] = $place++;
+				} else {
+					// Teams with no runs have no place
+					$score_list[$division->level][$team_id]['place'] = '-';
+				}
+			}
+		}
+
+		// Setup column widths depending on number of divisions
+		switch($divisions->count())
+		{
+			case 1:
+				$col_class = "";
+				break;
+			case 2:
+				$col_class = "col-md-6 col-lg-6";
+				break;
+			case 3:
+				$col_class = "col-md-4 col-lg-4";
+				break;
+			default:
+				$col_class = "col-md-2 col-lg-2";
+		}
+
+		$now = Carbon::now()->setTimezone('America/Los_Angeles');
+		//$event = new Carbon($comp->event_date);
+		$display_timer = true; //$now->isSameDay($event) || Input::get('display_timer', false);
+
+		// Event Timing
+		$start_time = Carbon::now()->setTimezone('America/Los_Angeles')->toTimeString();
+		$this_event = Schedule::where('start', '<', $start_time)->orderBy('start', 'DESC')->first();
+		$next_event = Schedule::where('start', '>', $start_time)->orderBy('start')->first();
+		$frozen = false;
+
+		// Pull settings from the session variable
+		$session_variable = "compyearsettings_$compyear_id";
+		$settings['columns'] = Session::get($session_variable . '_columns', 1);
+		$settings['rows'] = Session::get($session_variable . '_rows', 15);
+		$settings['delay'] = Session::get($session_variable . '_delay', 3000);
+		$settings['font-size'] = Session::get($session_variable . '_font-size', 'x-large');
+
+//dd($teams);
+//exit;
+		View::share('title', 'RoboPlay ' . $compyear->year . ' Scores');
+		return View::make('display.compyearscore', compact('compyear', 'teams', 'score_list',
+													   'col_class', 'this_event', 'next_event',
+													   'frozen', 'start_time', 'display_timer',
+													   'settings'));
+	}
+
 	public function delete_score($team_id, $score_run_id)
 	{
 		$score_run = Score_run::find($score_run_id);
@@ -321,5 +444,15 @@ class DisplayController extends BaseController {
 		Session::set($session_variable . '_font-size', Input::get('font-size', 'x-large'));
 
 		return Redirect::route('display.compscore', [ $competition_id ]);
+	}
+
+	public function compyearsettings($compyear_id) {
+		$session_variable = "compyearsettings_$compyear_id";
+		Session::set($session_variable . '_columns', Input::get('columns', 1));
+		Session::set($session_variable . '_rows', Input::get('rows', 15));
+		Session::set($session_variable . '_delay', Input::get('delay', 3000));
+		Session::set($session_variable . '_font-size', Input::get('font-size', 'x-large'));
+
+		return Redirect::route('display.compyearscore', [ $compyear_id ]);
 	}
 }

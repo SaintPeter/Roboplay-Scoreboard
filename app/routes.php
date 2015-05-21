@@ -42,8 +42,12 @@ Route::get('team/{team_id}/{with_judges}', array('as' => 'display.teamscore', 'u
 		 ->where('team_id', '\d+');
 Route::get('comp/{competition_id}', array('as' => 'display.compscore', 'uses' => 'DisplayController@compscore'))
 		 ->where('competition_id', '\d+');
+Route::get('compyear/{compyear_id}', array('as' => 'display.compyearscore', 'uses' => 'DisplayController@compyearscore'))
+		 ->where('compyear_id', '\d+');
 Route::post('comp/{competition_id}/settings', [ 'as' => 'display.compsettings', 'uses' => 'DisplayController@compsettings' ])
 		->where('competition_id', '\d+');
+Route::post('compyear/{compyear_id}/settings', [ 'as' => 'display.compyearsettings', 'uses' => 'DisplayController@compyearsettings' ])
+		->where('compyear_id', '\d+');
 
 /* ----------------------- Video Display ---------------------------- */
 Route::get('video_list/{comp_id}', [ 'as' => 'display.video_list', 'uses' => 'DisplayController@video_list'] );

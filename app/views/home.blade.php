@@ -27,6 +27,7 @@
 		@if(!$compyear->competitions->isEmpty())
 			<h3>{{ $compyear->year }}</h3>
 			<ul data-role="listview" data-inset="true">
+			<li>{{ link_to_route('display.compyearscore',  'Combined Scoreboard', $compyear->id, $noajax) }} </li>
 			@foreach($compyear->competitions as $comp)
 				<li>{{ link_to_route('display.compscore', $comp->name . ' Scoreboard', $comp->id, $noajax) }} </li>
 			@endforeach
