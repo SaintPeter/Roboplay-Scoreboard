@@ -36,7 +36,7 @@ class Student extends \Eloquent {
 	}
 
 	public function maths() {
-		return $this->morphedByMany('Math', 'studentable');
+		return $this->morphedByMany('MathTeam', 'studentable');
 	}
 
 	public function fullName() {

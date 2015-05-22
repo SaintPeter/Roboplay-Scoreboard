@@ -22,16 +22,15 @@
 					<td>{{{ $vid_division->description }}}</td>
 					<td>{{{ $vid_division->display_order }}}</td>
 					<td>{{{ $vid_division->competition->name }}}</td>
-                    <td>{{ link_to_route('vid_divisions.edit', 'Edit', array($vid_division->id), array('class' => 'btn btn-info')) }}</td>
-                    <td>
-                        {{ Form::open(array('method' => 'DELETE', 'route' => array('vid_divisions.destroy', $vid_division->id))) }}
+                    <td>{{ link_to_route('vid_divisions.edit', 'Edit', array($vid_division->id), array('class' => 'btn btn-info')) }}
+                        {{ Form::open(array('method' => 'DELETE', 'route' => array('vid_divisions.destroy', $vid_division->id), 'style' => 'display:inline;')) }}
                             {{ Form::submit('Delete', array('class' => 'btn btn-danger')) }}
                         {{ Form::close() }}
                     </td>
 				</tr>
 			@endforeach
 		@else
-			<tr><td colspan="5">No Video Divisions</td></tr>
+			<tr><td colspan="5"  class="text-center">No Video Divisions</td></tr>
 		@endif
 	</tbody>
 </table>

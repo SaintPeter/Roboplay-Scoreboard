@@ -10,15 +10,10 @@
 </div>
 @endif
 
-{{ Form::open(array('route' => 'vid_divisions.store', 'class' => 'col-md-8')) }}
+{{ Form::model($math_division, array('method' => 'PATCH', 'route' => array('math_divisions.update', $math_division->id), 'class' => 'col-md-6')) }}
 	<div class="form-group">
 		{{ Form::label('name', 'Name:') }}
 		{{ Form::text('name') }}
-	</div>
-
-	<div class="form-group">
-		{{ Form::label('description', 'Description:') }}
-		{{ Form::text('description') }}
 	</div>
 
 	<div class="form-group">
@@ -27,15 +22,13 @@
 	</div>
 
 	<div class="form-group">
-		{{ Form::label('competition_id', 'Video Competition:') }}
-		{{ Form::select('competition_id', $competitions) }}
+		{{ Form::label('competition_id', 'Math Competition:') }}
+		{{ Form::select('competition_id', $math_competitions, $math_division->competition_id) }}
 	</div>
 
 	<div class="form-group">
-		{{ Form::submit('Submit', array('class' => 'btn btn-info')) }}
+		{{ Form::submit('Update', array('class' => 'btn btn-primary')) }}
+		{{ link_to_route('math_divisions.show', 'Cancel', $math_division->id, array('class' => 'btn btn-info')) }}
 	</div>
-
 {{ Form::close() }}
 @stop
-
-

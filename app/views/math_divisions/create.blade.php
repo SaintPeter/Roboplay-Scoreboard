@@ -10,15 +10,10 @@
 </div>
 @endif
 
-{{ Form::open(array('route' => 'vid_divisions.store', 'class' => 'col-md-8')) }}
+{{ Form::open(array('route' => 'math_divisions.store', 'class' => 'col-md-8')) }}
 	<div class="form-group">
 		{{ Form::label('name', 'Name:') }}
 		{{ Form::text('name') }}
-	</div>
-
-	<div class="form-group">
-		{{ Form::label('description', 'Description:') }}
-		{{ Form::text('description') }}
 	</div>
 
 	<div class="form-group">
@@ -27,8 +22,8 @@
 	</div>
 
 	<div class="form-group">
-		{{ Form::label('competition_id', 'Video Competition:') }}
-		{{ Form::select('competition_id', $competitions) }}
+		{{ Form::label('competition_id', 'Math Competition:') }}
+		{{ Form::select('competition_id', $math_competitions) }}
 	</div>
 
 	<div class="form-group">

@@ -34,18 +34,18 @@
 @stop
 
 
-@include('students.partial.js', [ 'type' => 'teams', 'use_teacher_id' => 'true' ])
+@include('students.partial.js', [ 'type' => 'math_teams', 'use_teacher_id' => 'true' ])
 
 @section('main')
-{{ Form::model($team, array('method' => 'PATCH', 'route' => array('teams.update', $team->id), 'class' => 'col-md-8')) }}
+{{ Form::model($math_team, array('method' => 'PATCH', 'route' => array('math_teams.update', $math_team->id), 'class' => 'col-md-8')) }}
 	<div class="form-group">
-		{{ Form::label('name', 'Team Name:') }}
-		{{ Form::text('name',$team->name, array('class'=>'form-control col-md-4')) }}
+		{{ Form::label('name', 'Math Team Name:') }}
+		{{ Form::text('name',$math_team->name, array('class'=>'form-control col-md-4')) }}
 	</div>
 
 	<div class="form-group">
 		{{ Form::label('division_id', 'Division:') }}
-		{{ Form::select('division_id', $division_list, $team->division_id, [ 'class'=>'form-control col-md-4' ]) }}
+		{{ Form::select('division_id', $division_list, $math_team->division_id, [ 'class'=>'form-control col-md-4' ]) }}
 	</div>
 
 	<div class="form-group">
@@ -62,7 +62,7 @@
 
 	{{ Form::submit('Submit', array('class' => 'btn btn-primary ')) }}
 	&nbsp;
-	{{ link_to_route('teams.index', 'Cancel', [], ['class' => 'btn btn-info']) }}
+	{{ link_to_route('math_teams.index', 'Cancel', [], ['class' => 'btn btn-info']) }}
 
 {{ Form::close() }}
 

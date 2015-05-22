@@ -1,0 +1,1 @@
+D:\wamp\scoreboard\app/views/math_challenges/index.blade.php

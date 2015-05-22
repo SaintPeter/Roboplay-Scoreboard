@@ -45,17 +45,19 @@ class TeacherController extends BaseController {
 					->where('year', Carbon::now()->year)
 					->get();
 
-	 	//dd($teams);
-
-		$videos = Video::with('school', 'vid_division')
+		$videos = Video::with('school', 'students', 'vid_division')
 					->where('teacher_id', Auth::user()->ID)
 					->where('year', Carbon::now()->year)
 					->get();
 
-		$math = new Illuminate\Database\Eloquent\Collection;
+		$math_teams = MathTeam::with('school','students', 'division')
+					->where('teacher_id', Auth::user()->ID)
+					->where('year', Carbon::now()->year)
+					->get();
+//dd(DB::getQueryLog());
 
 		View::share('title', 'Manage Teams');
-        return View::make('teacher.index', compact('invoice', 'teams', 'videos', 'math', 'school', 'paid'));
+        return View::make('teacher.index', compact('invoice', 'teams', 'videos', 'math_teams', 'school', 'paid'));
 
 	}
 

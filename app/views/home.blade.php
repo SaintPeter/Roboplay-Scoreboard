@@ -81,7 +81,7 @@
 	<li><a href="/scoreboard/docs/teacher_guide_2015.pdf" data-ajax="false">Teacher Guide</a></li>
 	<li>
 		<a href="{{ route('teacher.index') }}" data-ajax="false">
-			Manage Teams and Videos
+			Manage Challenge, Math, and Video Teams
 		</a>
 	</li>
 
@@ -114,6 +114,11 @@
 	<li>{{ link_to('vid_competitions', 'Video Competitions', $noajax) }}</li>
 	<li>{{ link_to('vid_divisions', 'Video Competition Divisions', $noajax) }}</li>
 	<li>{{ link_to('videos', 'Manage Videos', $noajax) }}</li>
+	<li data-role="list-divider">Math Competition</li>
+	<li>{{ link_to('math_competitions', 'Math Competitions', $noajax) }}</li>
+	<li>{{ link_to('math_divisions', 'Math Competition Divisions', $noajax) }}</li>
+	<li>{{ link_to('math_challenges', 'Math Challenges', $noajax) }}</li>
+	<li>{{ link_to('math_teams', 'Math Teams', $noajax) }}</li>
 	<li data-role="list-divider">Other Management</li>
 	<li>{{ link_to('invoice_review', 'Invoice Review', $noajax) }}</li>
 	<li>{{ link_to_route('list_judges', 'User List', null, $noajax) }}</li>

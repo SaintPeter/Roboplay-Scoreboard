@@ -91,6 +91,12 @@ Route::group(array('before' => 'auth'), function() {
 		Route::get('competitions/unfreeze/all', [ 'as' => 'competitions.unfreeze.all', 'uses' => 'CompetitionsController@unfreeze_all' ]);
 		Route::get('competitions/toggle_active/{competition_id}', [ 'as' => 'competition.toggle_active', 'uses' => 'CompetitionsController@toggle_active' ]);
 
+		// Manage Math Competitions
+		Route::resource('math_competitions', 'MathCompetitionsController');
+		Route::resource('math_challenges', 'MathChallengesController');
+		Route::resource('math_divisions', 'MathDivisionsController');
+		Route::resource('math_teams', 'MathTeamsController');
+
 		// Display Competition Scores Unfrozen
 		Route::get('comp/{competition_id}/{do_not_freeze}', array('as' => 'display.compscore.do_not_freeze', 'uses' => 'DisplayController@compscore'))
 		 ->where('competition_id', '\d+');
@@ -261,6 +267,7 @@ Route::group(array('before' => 'auth'), function() {
 	{
 		Route::resource('teacher/teams', 'TeacherTeamsController');
 		Route::resource('teacher/videos', 'TeacherVideoController');
+		Route::resource('teacher/math_teams', 'TeacherMathTeamsController');
 
 		Route::get('teacher/video/{video_id}/delete/{file_id}', [
 					'as' => 'uploader.delete_file',
