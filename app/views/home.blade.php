@@ -37,39 +37,36 @@
 @stop
 
 @section('main')
-<h2>Competition Scores</h2>
+<h2>Scores and Videos</h2>
+<ul data-role="listview" data-inset="true" data-shadow="false">
 @if(!$compyears->isEmpty())
-	<ul data-role="listview" data-inset="true" data-shadow="false">
 	@foreach($compyears as $compyear)
-		@if(!$compyear->competitions->isEmpty())
 		<li data-role="collapsible" data-iconpos="right" data-inset="false">
 			<h2>{{ $compyear->year }}</h2>
-			<ul data-role="listview">
-			<li>{{ link_to_route('display.compyearscore',  'Combined Scoreboard', $compyear->id, $noajax) }} </li>
-			@foreach($compyear->competitions as $comp)
-				<li>{{ link_to_route('display.compscore', $comp->name . ' Scoreboard', $comp->id, $noajax) }} </li>
-			@endforeach
+			<ul data-role="listview" data-theme="c">
+				@if(!$compyear->competitions->isEmpty() )
+					<li>{{ link_to_route('display.compyearscore',  'Combined Scoreboard', $compyear->id, $noajax) }} </li>
+					@foreach($compyear->competitions as $comp)
+						<li>{{ link_to_route('display.compscore', $comp->name . ' Scoreboard', $comp->id, $noajax) }} </li>
+					@endforeach
+				@else
+					<li>No Active Competition</li>
+				@endif
+				@if(!$compyear->vid_competitions->isEmpty())
+					@foreach($compyear->vid_competitions as $comp)
+						<li>{{ link_to_route('display.video_list', $comp->name . ' - Video List', $comp->id, $noajax) }} </li>
+					@endforeach
+				@else
+					<li>No Video Competitions</li>
+				@endif
 			</ul>
 		</li>
-		@else
-			<p>No Active Competitions</p>
-		@endif
 	@endforeach
-	</ul>
 @else
-	<p>No Active Years</p>
+	<li>No Active Years</li>
 @endif
-
-{{--
-@if(!$vid_competitions->isEmpty())
-<h2>Videos</h2>
-<ul data-role="listview" data-inset="true">
-		@foreach($vid_competitions as $comp)
-			<li>{{ link_to_route('display.video_list', $comp->name . ' - Video List', $comp->id, $noajax) }} </li>
-		@endforeach
 </ul>
-@endif
---}}
+
 @if(Roles::isJudge())
 <h2>Judge Menu</h2>
 <ul data-role="listview" data-inset="true">

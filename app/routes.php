@@ -28,7 +28,7 @@ Route::get('/', [ 'as' => 'home', function()
 {
 	$date = Carbon\Carbon::now()->setTimezone('America/Los_Angeles')->toDateString();
 
-	$compyears = CompYear::with('competitions', 'competitions.divisions', 'vid_competitions', 'vid_competitions.divisions')->get();
+	$compyears = CompYear::with('competitions', 'competitions.divisions', 'vid_competitions')->get();
 	//$competitions = Competition::where('event_date', '<=', $date)->where('active', true)->get();
 	//$vid_competitions = Vid_competition::where('event_end', '<', $date)->get();
 	$noajax = array('data-ajax' => "false");
