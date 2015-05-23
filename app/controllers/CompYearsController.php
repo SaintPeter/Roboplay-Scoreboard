@@ -14,7 +14,9 @@ class CompYearsController extends \BaseController {
 	 */
 	public function index()
 	{
-		$compyears = CompYear::with('competitions', 'divisions', 'vid_competitions', 'vid_divisions')->get();
+		$compyears = CompYear::with('competitions', 'divisions',
+									'vid_competitions', 'vid_divisions',
+									'math_competitions', 'math_divisions')->get();
 
 
 		View::share('title', 'Manage Competition Years');
@@ -30,8 +32,9 @@ class CompYearsController extends \BaseController {
 	{
 		$competition_list = Competition::has('comp_year', 0)->lists('name', 'id');
 		$vid_competition_list = Vid_competition::has('comp_year', 0)->lists('name', 'id');
+		$math_competition_list = MathCompetition::has('comp_year', 0)->lists('name', 'id');
 
-		return View::make('compyears.create')->with(compact('competition_list', 'vid_competition_list'));
+		return View::make('compyears.create')->with(compact('competition_list', 'vid_competition_list','math_competition_list'));
 	}
 
 	/**
@@ -52,6 +55,7 @@ class CompYearsController extends \BaseController {
 
 		$competition_list = Input::get('competitions', [ 0 ]);
 		$vid_competition_list = Input::get('vid_competitions', [ 0 ]);
+		$math_competition_list = Input::get('math_competitions', [ 0 ]);
 
 		$divison_list = [];
 		$division_list = Division::whereIn('competition_id', $competition_list)->lists('id');
@@ -59,10 +63,15 @@ class CompYearsController extends \BaseController {
 		$vid_divison_list = [];
 		$vid_divison_list = Vid_division::whereIn('competition_id', $vid_competition_list)->lists('id');
 
+		$math_divison_list = [];
+		$math_divison_list = MathDivision::whereIn('competition_id', $math_competition_list)->lists('id');
+
 		$compyear->competitions()->sync($competition_list);
 		$compyear->divisions()->sync($division_list);
 		$compyear->vid_competitions()->sync($vid_competition_list);
 		$compyear->vid_divisions()->sync($vid_divison_list);
+		$compyear->math_competitions()->sync($math_competition_list);
+		$compyear->math_divisions()->sync($math_divison_list);
 
 		return Redirect::route('compyears.index');
 	}
@@ -94,8 +103,10 @@ class CompYearsController extends \BaseController {
 		$comp_selected = $compyear->competitions()->lists('yearable_id');
 		$vid_competition_list = Vid_competition::all()->lists('name', 'id');
 		$vid_selected = $compyear->vid_competitions()->lists('yearable_id');
+		$math_competition_list = MathCompetition::all()->lists('name', 'id');
+		$math_selected = $compyear->math_competitions()->lists('yearable_id');
 
-		return View::make('compyears.edit', compact('compyear','competition_list', 'vid_competition_list', 'comp_selected', 'vid_selected'));
+		return View::make('compyears.edit', compact('compyear','competition_list', 'vid_competition_list','math_competition_list', 'comp_selected', 'vid_selected', 'math_selected'));
 	}
 
 	/**
@@ -119,6 +130,7 @@ class CompYearsController extends \BaseController {
 
 		$competition_list = Input::get('competitions', [ 0 ]);
 		$vid_competition_list = Input::get('vid_competitions', [ 0 ]);
+		$math_competition_list = Input::get('math_competitions', [ 0 ]);
 
 		$divison_list = [];
 		$division_list = Division::whereIn('competition_id', $competition_list)->lists('id');
@@ -126,10 +138,16 @@ class CompYearsController extends \BaseController {
 		$vid_divison_list = [];
 		$vid_divison_list = Vid_division::whereIn('competition_id', $vid_competition_list)->lists('id');
 
+		$math_divison_list = [];
+		$math_divison_list = MathDivision::whereIn('competition_id', $math_competition_list)->lists('id');
+		//dd($math_divison_list, $math_competition_list);
+
 		$compyear->competitions()->sync($competition_list);
 		$compyear->divisions()->sync($division_list);
 		$compyear->vid_competitions()->sync($vid_competition_list);
 		$compyear->vid_divisions()->sync($vid_divison_list);
+		$compyear->math_competitions()->sync($math_competition_list);
+		$compyear->math_divisions()->sync($math_divison_list);
 
 		return Redirect::route('compyears.index');
 	}

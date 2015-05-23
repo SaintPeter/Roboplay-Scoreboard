@@ -10,7 +10,7 @@
 </div>
 @endif
 
-{{ Form::model($compyear, ['route' => 'compyears.store', 'class' => 'col-md-6' ]) }}
+{{ Form::model($compyear, ['route' => [ 'compyears.update', $compyear->id ], 'method' => 'PATCH', 'class' => 'col-md-6' ]) }}
 	<div class="form-group">
 		{{ Form::label('year', 'Year') }}
 		{{ Form::text('year', null, [ 'class'=>'form-control col-md-4' ]) }}
@@ -24,6 +24,11 @@
 	<div class="form-group">
 		{{ Form::label('vid_competitions', 'Video Competitions') }}
 		{{ Form::select('vid_competitions[]', $vid_competition_list, $vid_selected, [ 'class'=>'form-control', 'multiple' => 'multiple', 'size' => 10 ]) }}
+	</div>
+
+	<div class="form-group">
+		{{ Form::label('math_competitions', 'Math Competitions') }}
+		{{ Form::select('math_competitions[]', $math_competition_list, $math_selected, [ 'class'=>'form-control', 'multiple' => 'multiple', 'size' => 10 ]) }}
 	</div>
 
 	{{ Form::submit('Submit', array('class' => 'btn btn-primary btn-margin')) }}

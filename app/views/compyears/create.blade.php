@@ -26,6 +26,11 @@
 		{{ Form::select('vid_competitions[]', $vid_competition_list, null, [ 'class'=>'form-control', 'multiple' => 'multiple', 'size' => 10 ]) }}
 	</div>
 
+	<div class="form-group">
+		{{ Form::label('math_competitions', 'Video Competitions') }}
+		{{ Form::select('math_competitions[]', $math_competition_list, null, [ 'class'=>'form-control', 'multiple' => 'multiple', 'size' => 10 ]) }}
+	</div>
+
 	{{ Form::submit('Submit', array('class' => 'btn btn-primary btn-margin')) }}
 	{{ link_to_route('compyears.index', 'Cancel', null, [ 'class'=>'btn btn-info btn-margin' ]) }}
 

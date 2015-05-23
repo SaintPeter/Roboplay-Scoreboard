@@ -14,6 +14,10 @@ protected $guarded = array();
 		return $this->belongsTo('MathCompetition');
 	}
 
+	public function teams() {
+		return $this->hasMany('MathTeam', 'division_id');
+	}
+
 	public function scores()
 	{
 		return $this->hasMany('MathRun');

@@ -28,7 +28,7 @@ Route::get('/', [ 'as' => 'home', function()
 {
 	$date = Carbon\Carbon::now()->setTimezone('America/Los_Angeles')->toDateString();
 
-	$compyears = CompYear::with('competitions', 'competitions.divisions', 'vid_competitions')->get();
+	$compyears = CompYear::with('competitions', 'competitions.divisions', 'vid_competitions','math_competitions')->get();
 	//$competitions = Competition::where('event_date', '<=', $date)->where('active', true)->get();
 	//$vid_competitions = Vid_competition::where('event_end', '<', $date)->get();
 	$noajax = array('data-ajax' => "false");
@@ -48,6 +48,8 @@ Route::post('comp/{competition_id}/settings', [ 'as' => 'display.compsettings', 
 		->where('competition_id', '\d+');
 Route::post('compyear/{compyear_id}/settings', [ 'as' => 'display.compyearsettings', 'uses' => 'DisplayController@compyearsettings' ])
 		->where('compyear_id', '\d+');
+Route::get('mathcomp/{competition_id}', array('as' => 'mathdisplay.mathcompscore', 'uses' => 'MathDisplayController@mathcompscore'))
+		 ->where('competition_id', '\d+');
 
 /* ----------------------- Video Display ---------------------------- */
 Route::get('video_list/{comp_id}', [ 'as' => 'display.video_list', 'uses' => 'DisplayController@video_list'] );

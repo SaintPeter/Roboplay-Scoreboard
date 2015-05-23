@@ -37,11 +37,11 @@
 	<div class="form-group mix clearfix">
 		<div class="col-md-6">
 		{{ Form::label('points', 'Points', [ 'class' => 'form-label' ]) }}
-		{{ Form::text( 'points', 5, [ 'class' => 'form-control numeric' ]) }}
+		{{ Form::text( 'points', null, [ 'class' => 'form-control numeric' ]) }}
 		</div>
 		<div class="col-md-6">
 		{{ Form::label('multiplier', 'Multiplier', [ 'class' => 'form-label' ]) }}
-		{{ Form::text( 'multiplier', 1.0, [ 'class' => 'form-control decimal' ]) }}
+		{{ Form::text( 'multiplier', null, [ 'class' => 'form-control decimal' ]) }}
 		</div>
 	</div>
 

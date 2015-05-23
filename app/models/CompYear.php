@@ -27,11 +27,11 @@ class CompYear extends \Eloquent {
 	}
 
 	public function math_competitions() {
-		return $this->morphedByMany('Math_compeitions', 'yearable');
+		return $this->morphedByMany('MathCompetition', 'yearable');
 	}
 
 	public function math_divisions() {
-		return $this->morphedByMany('Math_divisions', 'yearable');
+		return $this->morphedByMany('MathDivision', 'yearable');
 	}
 
 	// Get the current Comp Year
