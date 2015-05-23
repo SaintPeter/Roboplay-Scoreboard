@@ -3,105 +3,110 @@
 class MathChallengesController extends \BaseController {
 
 	/**
-	 * Display a listing of mathchallenges
+	 * Display a listing of math_challenges
 	 *
 	 * @return Response
 	 */
 	public function index()
 	{
-		$mathchallenges = Mathchallenge::all();
+		$math_challenges = MathChallenge::all();
 
-		return View::make('mathchallenges.index', compact('mathchallenges'));
+		return View::make('math_challenges.index', compact('math_challenges'));
 	}
 
 	/**
-	 * Show the form for creating a new mathchallenge
+	 * Show the form for creating a new math_challenge
 	 *
 	 * @return Response
 	 */
-	public function create()
+	public function create($division_id = null)
 	{
-		return View::make('mathchallenges.create');
+		$division_list = MathDivision::longname_array();
+		$order = MathChallenge::where('division_id', $division_id)->max('order') + 1;
+
+		return View::make('math_challenges.partial.create',compact('order','division_list','division_id'));
 	}
 
 	/**
-	 * Store a newly created mathchallenge in storage.
+	 * Store a newly created math_challenge in storage.
 	 *
 	 * @return Response
 	 */
 	public function store()
 	{
-		$validator = Validator::make($data = Input::all(), Mathchallenge::$rules);
+		$data = Input::all();
+		$data['year'] = Carbon\Carbon::now()->year;
+		$validator = Validator::make($data, MathChallenge::$rules);
 
 		if ($validator->fails())
 		{
-			return Redirect::back()->withErrors($validator)->withInput();
+			return Redirect::route('math_challenges.create', Input::get('division_id'))->withErrors($validator)->withInput();
 		}
 
-		Mathchallenge::create($data);
+		MathChallenge::create($data);
 
-		return Redirect::route('mathchallenges.index');
+		return 'true';
 	}
 
 	/**
-	 * Display the specified mathchallenge.
+	 * Display the specified math_challenge.
 	 *
 	 * @param  int  $id
 	 * @return Response
 	 */
 	public function show($id)
 	{
-		$mathchallenge = Mathchallenge::findOrFail($id);
+		$math_challenge = MathChallenge::findOrFail($id);
 
-		return View::make('mathchallenges.show', compact('mathchallenge'));
+		return View::make('math_challenges.show', compact('math_challenge'));
 	}
 
 	/**
-	 * Show the form for editing the specified mathchallenge.
+	 * Show the form for editing the specified math_challenge.
 	 *
 	 * @param  int  $id
 	 * @return Response
 	 */
 	public function edit($id)
 	{
-		$mathchallenge = Mathchallenge::find($id);
+		$math_challenge = MathChallenge::find($id);
 
-		return View::make('mathchallenges.edit', compact('mathchallenge'));
+		return View::make('math_challenges.partial.edit', compact('math_challenge'));
 	}
 
 	/**
-	 * Update the specified mathchallenge in storage.
+	 * Update the specified math_challenge in storage.
 	 *
 	 * @param  int  $id
 	 * @return Response
 	 */
 	public function update($id)
 	{
-		$mathchallenge = Mathchallenge::findOrFail($id);
+		$math_challenge = MathChallenge::findOrFail($id);
 
-		$validator = Validator::make($data = Input::all(), Mathchallenge::$rules);
+		$validator = Validator::make($data = Input::all(), array_except(MathChallenge::$rules, [ 'year', 'division_id'] ));
 
 		if ($validator->fails())
 		{
-			return Redirect::back()->withErrors($validator)->withInput();
+			return Redirect::route('math_challenges.edit', $id)->withErrors($validator)->withInput();
 		}
 
-		$mathchallenge->update($data);
+		$math_challenge->update($data);
 
-		return Redirect::route('mathchallenges.index');
+		return 'true';
 	}
 
 	/**
-	 * Remove the specified mathchallenge from storage.
+	 * Remove the specified math_challenge from storage.
 	 *
 	 * @param  int  $id
 	 * @return Response
 	 */
 	public function destroy($id)
 	{
-		Mathchallenge::destroy($id);
+		MathChallenge::destroy($id);
 
-		return Redirect::route('mathchallenges.index');
+		return Redirect::route('math_challenges.index');
 	}
 
 }

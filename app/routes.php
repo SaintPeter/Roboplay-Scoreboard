@@ -96,6 +96,8 @@ Route::group(array('before' => 'auth'), function() {
 		Route::resource('math_challenges', 'MathChallengesController');
 		Route::resource('math_divisions', 'MathDivisionsController');
 		Route::resource('math_teams', 'MathTeamsController');
+		Route::get('math_challenges/{division_id}/create', [ 'as' => 'math_challenges.create',	'uses' => 'MathChallengesController@create']);
+
 
 		// Display Competition Scores Unfrozen
 		Route::get('comp/{competition_id}/{do_not_freeze}', array('as' => 'display.compscore.do_not_freeze', 'uses' => 'DisplayController@compscore'))

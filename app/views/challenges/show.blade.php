@@ -93,7 +93,6 @@ function setup_random_handler() {
 .mix .col-md-6 {
 	margin-left: 0px;
 }
-
 @stop
 
 @section('main')

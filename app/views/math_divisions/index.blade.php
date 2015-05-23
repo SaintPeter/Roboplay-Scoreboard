@@ -9,6 +9,7 @@
 			<th>Name</th>
 			<th>Display Order</th>
 			<th>Competition</th>
+			<th>Challenges</th>
 			<th>Actions</th>
 		</tr>
 	</thead>
@@ -20,7 +21,10 @@
 					<td>{{{ $math_division->name }}}</td>
 					<td>{{{ $math_division->display_order }}}</td>
 					<td>{{{ $math_division->competition->name }}}</td>
-                    <td>{{ link_to_route('math_divisions.edit', 'Edit', array($math_division->id), array('class' => 'btn btn-info')) }}
+					<td>{{ $math_division->challenges->count() }}</td>
+                    <td>
+                    	{{ link_to_route('math_divisions.show', 'Show', array($math_division->id), array('class' => 'btn btn-default')) }}
+                    	{{ link_to_route('math_divisions.edit', 'Edit', array($math_division->id), array('class' => 'btn btn-info')) }}
                         {{ Form::open(array('method' => 'DELETE', 'route' => array('math_divisions.destroy', $math_division->id), 'style' => 'display:inline;')) }}
                             {{ Form::submit('Delete', array('class' => 'btn btn-danger')) }}
                         {{ Form::close() }}

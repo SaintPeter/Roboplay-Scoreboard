@@ -16,12 +16,12 @@ protected $guarded = array();
 
 	public function scores()
 	{
-		return $this->hasMany('MathScores');
+		return $this->hasMany('MathRun');
 	}
 
-	public function videos()
+	public function challenges()
 	{
-		return $this->hasMany('MathChallenges');
+		return $this->hasMany('MathChallenge', 'division_id');
 	}
 
 	public function comp_year() {

@@ -2,11 +2,10 @@
 
 class MathDivisionsController extends \BaseController {
 
-	public function __construct(Vid_division $vid_division)
+	public function __construct()
 	{
 		parent::__construct();
-		Breadcrumbs::addCrumb('Video Divisions', 'vid_division');
-		$this->vid_division = $vid_division;
+		Breadcrumbs::addCrumb('Math Divisions', 'math_divisions');
 	}
 
 	/**
@@ -17,7 +16,7 @@ class MathDivisionsController extends \BaseController {
 	public function index()
 	{
 		View::share('title', 'Math Divisions');
-		$math_divisions = MathDivision::all();
+		$math_divisions = MathDivision::with('challenges')->get();
 
 		return View::make('math_divisions.index', compact('math_divisions'));
 	}
@@ -65,7 +64,7 @@ class MathDivisionsController extends \BaseController {
 	{
 		Breadcrumbs::addCrumb('Show Math Division', 'create');
 		View::share('title', 'Show Math Division');
-		$math_division = MathDivision::findOrFail($id);
+		$math_division = MathDivision::with('challenges')->findOrFail($id);
 
 		return View::make('math_divisions.show', compact('math_division'));
 	}
