@@ -258,7 +258,7 @@ class MathTeamsController extends \BaseController {
 	 */
 	public function destroy($id)
 	{
-		Mathteam::destroy($id);
+		MathTeam::destroy($id);
 
 		return Redirect::route('math_teams.index');
 	}

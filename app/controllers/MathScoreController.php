@@ -22,7 +22,7 @@ class MathScoreController extends BaseController {
 		}
 
 		if($team_id == 0) {
-			$teams = MathTeam::where('division_id', $division_id)->get();
+			$teams = MathTeam::with('school')->where('division_id', $division_id)->get();
 			return View::make('math_score.team_list', compact('teams', 'division_id', 'competition_id'));
 		}
 

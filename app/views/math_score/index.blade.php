@@ -43,7 +43,7 @@
 </div>
 
 <script>
-	$("#back_button").attr("href", "{{ route('score.choose_team', [$competition_id, $division_id]) }}");
+	$("#back_button").attr("href", "{{ route('math_score.choose_team', [$competition_id, $division_id]) }}");
 </script>
 
 @stop
