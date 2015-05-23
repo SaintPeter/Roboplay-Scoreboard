@@ -95,8 +95,8 @@ function set_max_height() {
 	<thead>
 		<tr>
 			<th>#</th>
-			<th>Internal Name</th>
 			<th>Display Name</th>
+			<th>File Name</th>
 			<th>Description</th>
 			<th>Points</th>
 			<th>Multiplier</th>
@@ -110,8 +110,8 @@ function set_max_height() {
 		@foreach($math_division->challenges as $challenge)
 		<tr>
 			<td>{{ $challenge->order }}</td>
-			<td>{{ $challenge->internal_name }}</td>
 			<td>{{ $challenge->display_name }}</td>
+			<td>{{ $challenge->file_name }}</td>
 			<td>{{ nl2br($challenge->description) }}</td>
 			<td>{{ $challenge->points }}</td>
 			<td>{{ sprintf('%1.2f', $challenge->multiplier) }}</td>

@@ -20,14 +20,15 @@
 	</div>
 
 	<div class="form-group">
-		{{ Form::label('internal_name', 'Internal Name', [ 'class' => 'form-label' ]) }}
-		{{ Form::text('internal_name', null, [ 'class' => 'form-control' ]) }}
-	</div>
-
-	<div class="form-group">
 		{{ Form::label('display_name', 'Display Name', [ 'class' => 'form-label' ]) }}
 		{{ Form::text('display_name', null, [ 'class' => 'form-control' ]) }}
 	</div>
+
+	<div class="form-group">
+		{{ Form::label('file_name', 'File Name', [ 'class' => 'form-label' ]) }}
+		{{ Form::text('file_name', null, [ 'class' => 'form-control' ]) }}
+	</div>
+
 
 	<div class="form-group">
 		{{ Form::label('description', 'Description', [ 'class' => 'form-label' ]) }}

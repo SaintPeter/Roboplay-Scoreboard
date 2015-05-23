@@ -3,7 +3,7 @@
 class MathChallenge extends \Eloquent {
 	protected $fillable = [
 		'order',
-		'internal_name',
+		'file_name',
 		'display_name',
 		'description',
 		'points',
@@ -14,7 +14,7 @@ class MathChallenge extends \Eloquent {
 
 	public static $rules = [
 		'order' => 'required',
-		'internal_name' => 'required',
+		'file_name' => 'required',
 		'display_name' => 'required',
 		'description' => 'required',
 		'points' => 'required|integer',
