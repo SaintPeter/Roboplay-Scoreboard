@@ -27,8 +27,8 @@
 			{{ $challenge->order }}.&nbsp;{{ $challenge->display_name }} ({{ $challenge->points }} Points Possible)<span class="ui-li-count">{{ $challenge->run_count($team_id) }}</span> <br />
 			@if($challenge->run_count($team_id) > 0)
 				<p>
-					<strong>Last Score:</strong> {{ $challenge->runs($team_id)->last()->total }}
-					<strong>Best Score:</strong> {{ $challenge->runs($team_id)->max('total') }}
+					<strong>Last Score:</strong> {{ $challenge->runs($team_id)->last()->score }}
+					<strong>Best Score:</strong> {{ $challenge->runs($team_id)->max('score') }}
 				</p>
 			@else
 

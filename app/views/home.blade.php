@@ -117,8 +117,7 @@
 	<li>{{ link_to('videos', 'Manage Videos', $noajax) }}</li>
 	<li data-role="list-divider">Math Competition</li>
 	<li>{{ link_to('math_competitions', 'Math Competitions', $noajax) }}</li>
-	<li>{{ link_to('math_divisions', 'Math Competition Divisions', $noajax) }}</li>
-	<li>{{ link_to('math_challenges', 'Math Challenges', $noajax) }}</li>
+	<li>{{ link_to('math_divisions', 'Math Divisions and Challenges', $noajax) }}</li>
 	<li>{{ link_to('math_teams', 'Math Teams', $noajax) }}</li>
 	<li data-role="list-divider">Other Management</li>
 	<li>{{ link_to('invoice_review', 'Invoice Review', $noajax) }}</li>

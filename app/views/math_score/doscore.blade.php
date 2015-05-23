@@ -1,6 +1,6 @@
 @extends('layouts.mobile')
 
-@section('header', 'Score')
+@section('header', 'Math Programming Score')
 
 @section('style')
 	.ui-li-static {
@@ -46,18 +46,16 @@
 	</p>
 </div>
 
-{{ Form::open(array('route' => array('math_score.save', $team->id, $challenge->id), 'method' => 'post', 'id' => 'math_form', 'data-ajax' => 'false' )) }}
+{{ Form::open( [ 'route' => [ 'math_score.save', $team->id, $challenge->id ], 'method' => 'post', 'id' => 'math_form', 'data-ajax' => 'false' ] ) }}
 	<ul data-role="listview">
 		<li class="ui-field-contain ui-li-static ui-body-inherit ui-first-child" data-type="vertical">
 		<p>Score</p>
-		<input class="ui-clear-both" name="points" min="0" max="{{ $challenge->points }}" step="1" value="0" type="range">
+		<input class="ui-clear-both" name="score" min="0" max="{{ $challenge->points }}" step="1" value="0" type="range">
 		</li>
 		<li>
 			<fieldset class="ui-grid-a">
-				<div class="ui-block-a">
-					<a href="{{ route('math_score.save') }}" class="ui-btn ui-corner-all ui-shadow" data-role="button">Submit</a>
-				</div>
-				<div class="ui-block-b">{{ Form::submit('Cancel', array('class' => 'ui-btn', 'name' => 'cancel')) }}</div>
+				<div class="ui-block-a">{{ Form::submit('Submit', [ 'class' => 'ui-btn', 'name' => 'submit' ] ) }}</div>
+				<div class="ui-block-b">{{ Form::submit('Cancel', [ 'class' => 'ui-btn', 'name' => 'cancel' ] ) }}</div>
 			</fieldset>
 		</li>
 		<input type="hidden" name="changeme" id="submit_action" value="1">
