@@ -70,8 +70,9 @@
 @if(Roles::isJudge())
 <h2>Judge Menu</h2>
 <ul data-role="listview" data-inset="true">
-	<li>{{ link_to('score', 'Score Challenges', $noajax) }}</li>
-	<li>{{ link_to_route('video.judge.index', 'Score Videos', [], $noajax) }}</li>
+	<li>{{ link_to_route('score.choose_competition', 'Score Challenges', null, $noajax) }}</li>
+	<li>{{ link_to_route('video.judge.index', 'Score Videos', null, $noajax) }}</li>
+	<li>{{ link_to_route('math_score.choose_competition', 'Score Math Challenges', null, $noajax) }}</li>
 </ul>
 @endif
 

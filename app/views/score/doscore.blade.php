@@ -66,7 +66,7 @@
 @stop
 
 @section('main')
-<div class="ui-body ui-body-a">
+<div class="ui-body ui-body-a" style="margin-bottom: 2em;">
 	<p>
 		<strong>Judge: </strong>{{ $judge->display_name }}<br />
 		<strong>Division: </strong>{{{ $team->division->name }}}<br />

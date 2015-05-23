@@ -209,32 +209,36 @@ Route::group(array('before' => 'auth'), function() {
 		 ->where('team_id', '\d+');
 
 		// Challenge Scoring
-		Route::get('score', array(
-				   'as' => 'score.choose_competition',
-				   'uses' =>'ScoreController@index'));
-		Route::get('score/c/{competition_id}', array(
-				   'as' => 'score.choose_division',
-				   'uses' =>'ScoreController@index'))
-				   ->where('competition_id', '\d+');
-		Route::get('score/c/{competition_id}/d/{division_id}', array(
-				   'as' => 'score.choose_team',
-				   'uses' =>'ScoreController@index'))
-				   ->where('competition_id', '\d+')
-				   ->where('division_id', '\d+');
-		Route::get('score/c/{competition_id}/d/{division_id}/t/{team_id}', array(
-				   'as' => 'score.score_team',
-				   'uses' =>'ScoreController@index'))
-				   ->where('competition_id', '\d+')
-				   ->where('division_id', '\d+')
+		Route::get('score', 									[ 'as' => 'score.choose_competition',	'uses' =>'ScoreController@index' ] );
+		Route::get('score/c/{comp_id}', 						[ 'as' => 'score.choose_division',		'uses' =>'ScoreController@index' ] )
+					->where('competition_id', '\d+');
+		Route::get('score/c/{comp_id}/d/{div_id}',				[ 'as' => 'score.choose_team',			'uses' =>'ScoreController@index' ] )
+					->where('competition_id', '\d+')
+					->where('division_id', '\d+');
+		Route::get('score/c/{comp_id}/d/{div_id}/t/{team_id}',	[ 'as' => 'score.score_team',			'uses' =>'ScoreController@index' ] )
+				   ->where('comp_id', '\d+')
+				   ->where('div_id', '\d+')
 				   ->where('team_id', '\d+');
-		Route::get('score/{team_id}/{challenge_id}', array(
-				   'as' => 'score.doscore',
-				   'uses' =>'ScoreController@doscore'))
+		Route::get('score/{team_id}/{challenge_id}', 			[ 'as' => 'score.doscore',	'uses' =>'ScoreController@doscore' ] )
 				   ->where('team_id', '\d+')
 				   ->where('challenge_id', '\d+');
-		Route::post('score/save/{team_id}/{challenge_id}', array(
-				   'as' => 'score.save',
-				   'uses' =>'ScoreController@save'));
+		Route::post('score/save/{team_id}/{challenge_id}', 		[ 'as' => 'score.save',	'uses' =>'ScoreController@save' ] );
+
+		// Math Challenge Scoring
+		Route::get('math_score', 									[ 'as' => 'math_score.choose_competition',	'uses' =>'MathScoreController@index' ] );
+		Route::get('math_score/c/{comp_id}', 						[ 'as' => 'math_score.choose_division',		'uses' =>'MathScoreController@index' ] )
+					->where('competition_id', '\d+');
+		Route::get('math_score/c/{comp_id}/d/{div_id}',				[ 'as' => 'math_score.choose_team',			'uses' =>'MathScoreController@index' ] )
+					->where('competition_id', '\d+')
+					->where('division_id', '\d+');
+		Route::get('math_score/c/{comp_id}/d/{div_id}/t/{team_id}',	[ 'as' => 'math_score.score_team',			'uses' =>'MathScoreController@index' ] )
+				   ->where('comp_id', '\d+')
+				   ->where('div_id', '\d+')
+				   ->where('team_id', '\d+');
+		Route::get('math_score/{team_id}/{challenge_id}', 			[ 'as' => 'math_score.doscore',	'uses' =>'MathScoreController@doscore' ] )
+				   ->where('team_id', '\d+')
+				   ->where('challenge_id', '\d+');
+		Route::post('math_score/save/{team_id}/{challenge_id}', 		[ 'as' => 'math_score.save',	'uses' =>'MathScoreController@save' ] );
 
 		// Video Judging
 		//Route::resource('video/judge', 'ScoreVideosController');

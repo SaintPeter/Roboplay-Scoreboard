@@ -33,6 +33,17 @@ class MathChallenge extends \Eloquent {
 		return $this->hasMany('MathRun', 'challenge_id');
 	}
 
+	// Utility Functions
+	public function run_count($team_id)
+	{
+		return MathRun::where('team_id', $team_id)->where('challenge_id', $this->id)->count();
+	}
+
+	public function runs($team_id)
+	{
+		return MathRun::where('team_id', $team_id)->where('challenge_id', $this->id)->orderBy('run', 'asc')->get();
+	}
+
 
 
 }
