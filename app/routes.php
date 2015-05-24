@@ -48,8 +48,12 @@ Route::post('comp/{competition_id}/settings', [ 'as' => 'display.compsettings', 
 		->where('competition_id', '\d+');
 Route::post('compyear/{compyear_id}/settings', [ 'as' => 'display.compyearsettings', 'uses' => 'DisplayController@compyearsettings' ])
 		->where('compyear_id', '\d+');
-Route::get('mathcomp/{competition_id}', array('as' => 'mathdisplay.mathcompscore', 'uses' => 'MathDisplayController@mathcompscore'))
+Route::get('mathcomp/{competition_id}', array('as' => 'display.mathcompscore', 'uses' => 'MathDisplayController@mathcompscore'))
 		 ->where('competition_id', '\d+');
+Route::get('mathteam/{team_id}', array('as' => 'display.mathteamscore', 'uses' => 'MathDisplayController@mathteamscore'))
+		 ->where('team_id', '\d+');
+Route::get('mathteam/{team_id}/{with_judges}', array('as' => 'display.mathteamscore', 'uses' => 'MathDisplayController@mathteamscore'))
+		 ->where('team_id', '\d+');
 
 /* ----------------------- Video Display ---------------------------- */
 Route::get('video_list/{comp_id}', [ 'as' => 'display.video_list', 'uses' => 'DisplayController@video_list'] );
@@ -210,6 +214,16 @@ Route::group(array('before' => 'auth'), function() {
 		   'uses' => 'DisplayController@restore_score' ] )
 		 ->where('team_id', '\d+');
 
+		 // Delete individual score
+		Route::get('mathteam/{team_id}/delete_score/{score_run_id}', [
+		   'as' => 'display.mathteamscore.delete_score',
+		   'uses' => 'MathDisplayController@delete_score' ] )
+		 ->where('team_id', '\d+');
+		 Route::get(',athteam/{team_id}/restore_score/{score_run_id}', [
+		   'as' => 'display.mathteamscore.restore_score',
+		   'uses' => 'MathDisplayController@restore_score' ] )
+		 ->where('team_id', '\d+');
+
 		// Challenge Scoring
 		Route::get('score', 									[ 'as' => 'score.choose_competition',	'uses' =>'ScoreController@index' ] );
 		Route::get('score/c/{comp_id}', 						[ 'as' => 'score.choose_division',		'uses' =>'ScoreController@index' ] )
@@ -241,6 +255,9 @@ Route::group(array('before' => 'auth'), function() {
 				   ->where('team_id', '\d+')
 				   ->where('challenge_id', '\d+');
 		Route::post('math_score/save/{team_id}/{challenge_id}', 		[ 'as' => 'math_score.save',	'uses' =>'MathScoreController@save' ] );
+		Route::get('math_score/{score_id}/edit',	[ 'as' => 'math_score.editscore',			'uses' =>'MathScoreController@editscore' ] )
+				   ->where('score_id', '\d+');
+		Route::post('math_score/update/{score_id}', 		[ 'as' => 'math_score.update',	'uses' =>'MathScoreController@update' ] );
 
 		// Video Judging
 		//Route::resource('video/judge', 'ScoreVideosController');

@@ -24,13 +24,20 @@ class MathChallenge extends \Eloquent {
 		'division_id' => 'required|integer'
 	];
 
+	public $total;
+
 	// Relationships
 	public function division() {
 		return $this->belongsTo('MathDivision', 'division_id');
 	}
 
 	public function scores() {
-		return $this->hasMany('MathRun', 'challenge_id');
+		return $this->hasMany('MathRun', 'challenge_id')->orderBy('run', 'asc');
+	}
+
+	public function scores_with_trash()
+	{
+		return $this->hasMany('MathRun', 'challenge_id')->orderBy('run', 'asc')->withTrashed();
 	}
 
 	// Utility Functions
@@ -43,6 +50,8 @@ class MathChallenge extends \Eloquent {
 	{
 		return MathRun::where('team_id', $team_id)->where('challenge_id', $this->id)->orderBy('run', 'asc')->get();
 	}
+
+
 
 
 

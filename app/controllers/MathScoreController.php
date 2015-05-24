@@ -90,4 +90,31 @@ class MathScoreController extends BaseController {
 
 		return Redirect::route('math_score.score_team', ['team_id' => $team_id, 'competition_id' => $team->division->competition->id, 'divison_id' => $team->division_id]);
 	}
+
+	public function editscore($score_id)
+	{
+		$score = MathRun::with('division', 'challenge', 'team', 'team.school', 'judge')->find($score_id);
+
+		$challenge = $score->challenge;
+		$team = $score->team;
+		$judge = $score->judge;
+		$run_number = $score->run;
+
+		return View::make('math_score.editscore')
+					->with(compact('challenge', 'team', 'run_number', 'judge', 'score'))
+					->with('competition_id', $team->division->competition->id)
+					->with('division_id', $team->division->id);
+
+	}
+
+	public function update($score_id) {
+		$score = MathRun::findOrFail($score_id);
+		$data = Input::all();
+		if(Input::has('cancel')) {
+			return Redirect::route('display.mathteamscore', ['team_id' => $score->team_id ])
+				->with('message', 'Edit Canceled');
+		}
+		$score->update(Input::all());
+		return Redirect::route('display.mathteamscore', ['team_id' => $score->team_id ]);
+	}
 }

@@ -6,17 +6,17 @@ class Roles {
 
 	public static function isAdmin()
 	{
-		return Roles::is('administrator');
+		return Roles::is('administrator','scoreboard_admin');
 	}
 
 	public static function isJudge()
 	{
-		return Roles::is('judges','administrator');
+		return Roles::is('judges','administrator','scoreboard_admin');
 	}
 
 	public static function isTeacher()
 	{
-		return Roles::is('teachers','administrator');
+		return Roles::is('teachers','administrator','scoreboard_admin');
 	}
 
 	public static function is()

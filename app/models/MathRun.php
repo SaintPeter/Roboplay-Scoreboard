@@ -27,7 +27,7 @@ class MathRun extends \Eloquent {
 	);
 
 	// Mutators and Accessors
-	public function getRunAttribute($value) {
+	public function getRunTimeAttribute($value) {
 		if(isset($value)) {
 			// Get time from this event return as a time string
 			return Carbon::parse($value)->format('g:i a');
@@ -37,19 +37,19 @@ class MathRun extends \Eloquent {
 	}
 
 	// Relationships
-	public function teams()
+	public function team()
 	{
-		return $this->hasMany('MathTeam','team_id');
+		return $this->belongsTo('MathTeam','team_id');
 	}
 
-	public function challenges()
+	public function challenge()
 	{
-		return $this->hasMany('MathChallenge','challenge_id');
+		return $this->belongsTo('MathChallenge','challenge_id');
 	}
 
-	public function divisions()
+	public function division()
 	{
-		return $this->hasMany('MathDivision','division_id');
+		return $this->belongsTo('MathDivision','division_id');
 	}
 
 	public function judge()

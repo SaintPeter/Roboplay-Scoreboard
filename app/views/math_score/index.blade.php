@@ -39,7 +39,7 @@
 </ul>
 
 <div class="ui-body ui-body-a ui-corner-all">
-	<a href="{{ route('display.teamscore', $team_id) }}" class="ui-btn" data-ajax="false">Show Team Score</a>
+	<a href="{{ route('display.mathteamscore', $team_id) }}" class="ui-btn" data-ajax="false">Show Team Score</a>
 </div>
 
 <script>

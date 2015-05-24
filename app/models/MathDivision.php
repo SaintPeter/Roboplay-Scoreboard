@@ -25,7 +25,7 @@ protected $guarded = array();
 
 	public function challenges()
 	{
-		return $this->hasMany('MathChallenge', 'division_id');
+		return $this->hasMany('MathChallenge', 'division_id')->orderBy('order');
 	}
 
 	public function comp_year() {

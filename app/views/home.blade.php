@@ -61,7 +61,7 @@
 				@endif
 				@if(!$compyear->math_competitions->isEmpty())
 					@foreach($compyear->math_competitions as $comp)
-						<li>{{ link_to_route('mathdisplay.mathcompscore', $comp->name . ' Scoreboard', $comp->id, $noajax) }} </li>
+						<li>{{ link_to_route('display.mathcompscore', $comp->name . ' Scoreboard', $comp->id, $noajax) }} </li>
 					@endforeach
 				@else
 					<li>No Math Competitions</li>

@@ -50,7 +50,7 @@
 				<tr>
 					<td>{{ $score['place'] }}</td>
 					<td>
-						{{ link_to_route('display.teamscore', $division->teams->find($team_id)->name, $team_id) }}
+						{{ link_to_route('display.mathteamscore', $division->teams->find($team_id)->name, $team_id) }}
 					</td>
 					<td>
 						{{ $division->teams->find($team_id)->school->name }}

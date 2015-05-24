@@ -90,129 +90,63 @@ class MathDisplayController extends BaseController {
 		return View::make('display.mathcompscore', compact('comp', 'divisions', 'score_list'));
 	}
 
+	public function mathteamscore($team_id, $show_judges = false) {
+		Breadcrumbs::addCrumb('Math Programming Team Score', 'mathteamscore');
+		$team = MathTeam::with('school', 'division', 'division.competition')->find($team_id);
+		$division_id = $team->division->id;
+
+		if(Roles::isJudge()) {
+			$challenges = MathChallenge::where('division_id', $division_id)
+						->with(array('scores_with_trash' => function($q) use ($team_id)
+							{
+								$q->where('team_id', $team_id);
+							}, 'scores_with_trash.judge'))->get();
+		} else {
+			$challenges = MathChallenge::where('division_id', $division_id)
+						->with(array('scores' => function($q) use ($team_id)
+							{
+								$q->where('team_id', $team_id);
+							}, 'scores.judge'))->get();
+		}
+
+		//$div_challenges = MathDivision::with('challenges')->find($division_id)->challenges;
+
+		$grand_total = 0;
+		foreach($challenges as $challenge) {
+			if(Roles::isJudge()) {
+				$challenge->scores_with_trash->sort(function($a, $b) { return $a->run - $b->run; });
+				$challenge->total = $challenge->scores_with_trash->filter(function($sr) { return !$sr->trashed(); } )->max('score');
+			} else {
+				$challenge->scores->sort(function($a, $b) { return $a->run - $b->run; });
+				$challenge->total = $challenge->scores->max('score');
+			}
+			$grand_total += $challenge->total;
+		}
+
+		View::share('title', $team->longname() . ' Scores');
+		return View::make('display.mathteamscore', compact('team','challenges', 'grand_total', 'show_judges'));
+	}
+
 
 	public function delete_score($team_id, $score_run_id)
 	{
-		$score_run = Score_run::find($score_run_id);
+		$score_run = MathRun::find($score_run_id);
 		if(Roles::isAdmin() OR $score_run->judge_id == Auth::user()->ID) {
 			$score_run->delete();
-			return Redirect::route('display.teamscore', [ $team_id ])->with('message', 'Score Deleted');
+			return Redirect::route('display.mathteamscore', [ $team_id ])->with('message', 'Score Deleted');
 		}
-		return Redirect::route('display.teamscore', [ $team_id ])->with('message', 'You do not have permission to delete this score.');
+		return Redirect::route('display.mathteamscore', [ $team_id ])->with('message', 'You do not have permission to delete this score.');
 	}
 
 	public function restore_score($team_id, $score_run_id)
 	{
-		$score_run = Score_run::withTrashed()->find($score_run_id);
+		$score_run = MathRun::withTrashed()->find($score_run_id);
 
 		// Allow Admins or the judge who deleted the scores to restore them
 		if(Roles::isAdmin() or $score_run->judge_id == Auth::user()->ID ) {
 			$score_run->restore();
-			return Redirect::route('display.teamscore', [ $team_id ])->with('message', 'Score Restored');
+			return Redirect::route('display.mathteamscore', [ $team_id ])->with('message', 'Score Restored');
 		}
-		return Redirect::route('display.teamscore', [ $team_id ])->with('message', 'You do not have permission to restore this score.');
-	}
-
-	public function challenge_students_csv() {
-		$content = 'School,Team,"Student Name"' . "\n";
-
-		$comps = Competition::with('divisions')->where('name', 'not like', DB::raw('"%test%"'))->get();
-		$div_list = [];
-		foreach($comps as $comp) {
-			$div_list = array_merge($div_list, $comp->divisions->lists('id'));
-		}
-		$teams = Team::with('school')->whereIn('division_id', $div_list)->get();
-
-		foreach($teams as $team) {
-			foreach($team->student_list() as $student) {
-				$content .= '"' . $team->school->name . '","' . $team->name	. '","' . $student . "\"\n";
-			}
-		}
-		// return an string as a file to the user
-		return Response::make($content, '200', array(
-			'Content-Type' => 'application/octet-stream',
-			'Content-Disposition' => 'attachment; filename="challenge_student.csv'
-		));
-	}
-
-	public function video_students_csv() {
-		$content = 'Division,School,Video,"Student Name"' . "\n";
-
-		$comps = Vid_competition::with('divisions')->where('name', 'not like', DB::raw('"%test%"'))->get();
-		$div_list = [];
-		foreach($comps as $comp) {
-			$div_list = array_merge($div_list, $comp->divisions->lists('id'));
-		}
-		$videos = Video::with('school', 'vid_division')->whereIn('vid_division_id', $div_list)->get();
-
-		foreach($videos as $video) {
-			foreach($video->student_list() as $student) {
-				$content .= '"' . $video->vid_division->name . '","'. $video->school->name . '","' . $video->name	. '","' . $student . "\"\n";
-			}
-		}
-		// return an string as a file to the user
-		return Response::make($content, '200', array(
-			'Content-Type' => 'application/octet-stream',
-			'Content-Disposition' => 'attachment; filename="video_student.csv'
-		));
-	}
-
-	public function video_list($competition_id)
-	{
-		$comp = Vid_competition::with('divisions')->find($competition_id);
-
-		Breadcrumbs::addCrumb($comp->name . ' Videos', route('display.video_list', [ $competition_id ]));
-		View::share('title', $comp->name . ' | Video List');
-
-		//dd(DB::getQueryLog());
-		$divs = [0];
-		foreach($comp->divisions as $div) {
-			$divs[] = $div->id;
-		}
-
-		$video_list = Video::with('school', 'vid_division')->whereIn('vid_division_id', $divs)->get();
-
-		$videos = [];
-		foreach($video_list as $video) {
-			$videos[$video->vid_division->name][$video->name] = $video;
-		}
-
-		return View::make('display.video_list', compact('videos', 'comp'));
-	}
-
-	public function show_video($competition_id, $video_id)
-	{
-		Breadcrumbs::addCrumb('Video List', route('display.video_list', [ $competition_id ]));
-		Breadcrumbs::addCrumb('Video', '');
-		View::share('title', 'Show Video');
-
-		$video = Video::find($video_id);
-		if(empty($video)) {
-			// Invalid video
-			return Redirect::route('display.show_videos', [ $competition_id ])
-							->with('message', "Invalid video id '$video_id'.  Video no longer exists or another error occured.");
-		}
-
-		return View::make('display.show_video', compact('video'));
-	}
-
-	public function compsettings($competition_id) {
-		$session_variable = "compsettings_$competition_id";
-		Session::set($session_variable . '_columns', Input::get('columns', 1));
-		Session::set($session_variable . '_rows', Input::get('rows', 15));
-		Session::set($session_variable . '_delay', Input::get('delay', 3000));
-		Session::set($session_variable . '_font-size', Input::get('font-size', 'x-large'));
-
-		return Redirect::route('display.compscore', [ $competition_id ]);
-	}
-
-	public function compyearsettings($compyear_id) {
-		$session_variable = "compyearsettings_$compyear_id";
-		Session::set($session_variable . '_columns', Input::get('columns', 1));
-		Session::set($session_variable . '_rows', Input::get('rows', 15));
-		Session::set($session_variable . '_delay', Input::get('delay', 3000));
-		Session::set($session_variable . '_font-size', Input::get('font-size', 'x-large'));
-
-		return Redirect::route('display.compyearscore', [ $compyear_id ]);
+		return Redirect::route('display.mathteamscore', [ $team_id ])->with('message', 'You do not have permission to restore this score.');
 	}
 }
