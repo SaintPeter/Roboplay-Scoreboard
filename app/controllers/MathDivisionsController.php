@@ -62,8 +62,8 @@ class MathDivisionsController extends \BaseController {
 	 */
 	public function show($id)
 	{
-		Breadcrumbs::addCrumb('Show Math Division', 'create');
-		View::share('title', 'Show Math Division');
+		Breadcrumbs::addCrumb('Challenges', 'create');
+		View::share('title', 'Math Division Challenges');
 		$math_division = MathDivision::with('challenges')->findOrFail($id);
 
 		return View::make('math_divisions.show', compact('math_division'));
@@ -108,6 +108,8 @@ class MathDivisionsController extends \BaseController {
 
 		return Redirect::route('math_divisions.index');
 	}
+
+
 
 	/**
 	 * Remove the specified math_division from storage.

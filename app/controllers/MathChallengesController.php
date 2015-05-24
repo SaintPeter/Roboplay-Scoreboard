@@ -93,6 +93,19 @@ class MathChallengesController extends \BaseController {
 
 		$math_challenge->update($data);
 
+		// Reorder challenges attachd to parent division_id
+		$order = 1;
+		$division = MathDivision::with('challenges')->find($math_challenge->division->id);
+		DB::transaction(function() use ($division) {
+			$order = 1;
+			foreach($division->challenges as $challenge) {
+				DB::table($challenge->getTable())
+					->where('id', $challenge->id)
+					->update([ 'order' => $order ]);
+				$order++;
+			}
+		});
+
 		return 'true';
 	}
 
