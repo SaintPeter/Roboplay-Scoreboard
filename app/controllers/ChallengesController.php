@@ -157,14 +157,24 @@ class ChallengesController extends BaseController {
 	}
 
 	public function duplicate($id) {
-		$challenge = Challenge::with('score_elements')->find($id);
+		$challenge = Challenge::with('score_elements','randoms')->findOrFail($id);
+
+		// Duplicate Challenge Record
 		$new_challenge = $challenge->replicate();
 		$new_challenge->push();
 
+		// Duplicate Score Elements
 		foreach($challenge->score_elements as $element) {
 			$new_element = $element->replicate();
 			$new_element->challenge_id = $new_challenge->id;
 			$new_element->push();
+		}
+
+		// Duplicate Random Numbers
+		foreach($challenge->randoms as $random) {
+			$new_random = $random->replicate();
+			$new_random->challenge_id = $new_challenge->id;
+			$new_random->push();
 		}
 
 		return Redirect::route('challenges.show', [ $new_challenge->id ]);
