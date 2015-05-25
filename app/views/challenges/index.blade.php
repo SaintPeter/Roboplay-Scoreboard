@@ -69,6 +69,7 @@
 					<td>{{{ $challenge->year }}}</td>
                     <td style="whitespace: nobreak;">{{ link_to_route('challenges.show', 'Show', array($challenge->id), array('class' => 'btn btn-default btn-margin')) }}
                     	{{ link_to_route('challenges.edit', 'Edit', array($challenge->id), array('class' => 'btn btn-info btn-margin')) }}
+                    	{{ link_to_route('challenges.duplicate', 'Copy', array($challenge->id), array('class' => 'btn btn-success btn-margin')) }}
 	                    {{ Form::open(array('method' => 'DELETE', 'route' => array('challenges.destroy', $challenge->id),'style' => 'display: inline-block')) }}
 	                        {{ Form::submit('Delete', array('class' => 'btn btn-danger btn-margin')) }}
 	                    {{ Form::close() }}

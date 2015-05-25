@@ -111,6 +111,7 @@ Route::group(array('before' => 'auth'), function() {
 
 		// Manage Challenges
 		Route::resource('challenges', 'ChallengesController');
+		Route::get('challenges/{id}/duplicate', [ 'as' => 'challenges.duplicate', 'uses' => 'ChallengesController@duplicate' ]);
 
 		// Manage Divisions
 		Route::resource('divisions', 'DivisionsController');

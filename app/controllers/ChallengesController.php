@@ -156,4 +156,18 @@ class ChallengesController extends BaseController {
 		return Redirect::route('challenges.index');
 	}
 
+	public function duplicate($id) {
+		$challenge = Challenge::with('score_elements')->find($id);
+		$new_challenge = $challenge->replicate();
+		$new_challenge->push();
+
+		foreach($challenge->score_elements as $element) {
+			$new_element = $element->replicate();
+			$new_element->challenge_id = $new_challenge->id;
+			$new_element->push();
+		}
+
+		return Redirect::route('challenges.show', [ $new_challenge->id ]);
+	}
+
 }
