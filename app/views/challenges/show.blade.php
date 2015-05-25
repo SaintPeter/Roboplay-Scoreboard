@@ -146,7 +146,7 @@ function setup_random_handler() {
 		@foreach( $challenge->score_elements as $score_element)
 			<tr>
 				<td>{{{ $score_element->name }}}</td>
-						<td>{{{ $score_element->display_text }}}</td>
+						<td>{{ $score_element->display_text }}</td>
 						<td>{{{ $score_element->element_number }}}</td>
 						<td>{{{ $score_element->base_value }}}</td>
 						<td>{{{ $score_element->multiplier }}}</td>
