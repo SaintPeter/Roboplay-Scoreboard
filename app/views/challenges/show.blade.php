@@ -111,8 +111,8 @@ function setup_random_handler() {
 	<tbody>
 		<tr>
 			<td>{{{ $challenge->internal_name }}}</td>
-					<td>{{{ $challenge->display_name }}}</td>
-					<td>{{{ $challenge->rules }}}</td>
+					<td>{{ $challenge->display_name }}</td>
+					<td>{{ nl2br($challenge->rules) }}</td>
 					<td>{{{ $challenge->points }}}</td>
 					<td>{{{ $challenge->level }}}</td>
 					<td>{{ link_to_route('challenges.edit', 'Edit', array($challenge->id), array('class' => 'btn btn-info btn-margin')) }}
