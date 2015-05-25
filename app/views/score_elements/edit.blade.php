@@ -51,6 +51,7 @@
 	</div>
 
 	<div class="form-group">
+		{{ Form::input('hidden', 'challenge_id', $score_element->challenge_id) }}
 		{{ Form::submit('Submit', array('class' => 'btn btn-info se_submit')) }}
 	</div>
 {{ Form::close() }}
