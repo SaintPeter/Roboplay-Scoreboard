@@ -74,7 +74,7 @@
 	</p>
 	<h2>Run {{{ $run_number }}}</h2>
 	<p>
-		<strong>{{{ $challenge->display_name }}}</strong><br />
+		<strong>{{ $challenge->display_name }}</strong><br />
 		{{ nl2br($challenge->rules) }}
 	</p>
 </div>
