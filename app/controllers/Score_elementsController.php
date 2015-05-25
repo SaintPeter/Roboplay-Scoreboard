@@ -8,8 +8,8 @@ class Score_elementsController extends BaseController {
 	 * @var Score_element
 	 */
 	protected $score_element;
-	public $input_types = [ 'yesno' => 'Yes/No',
-							'noyes' => 'No/Yes',
+	public $input_types = [ 'noyes' => 'No/Yes',
+							'yesno' => 'Yes/No',
 							'low_slider' => 'Low->High Slider',
 							'high_slider' => 'High->Low Slider',
 							'score_slider' => 'Score Slider' ];
