@@ -31,6 +31,9 @@
 			    background-color: rgba(0,0,0,.5);
 			    box-shadow: 0 0 1px rgba(255,255,255,.5);
 			}
+			.over {
+			 	text-decoration: overline;
+			}
 			@yield('style')
 		</style>
 

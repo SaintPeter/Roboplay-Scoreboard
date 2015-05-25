@@ -21,6 +21,9 @@
 			.breadcrumbs li {
 				float: left;
 			}
+			.over {
+			 	text-decoration: overline;
+			}
 
 	        @media all and (min-width: 600px) {
 			    div[data-role=page] {
