@@ -263,7 +263,7 @@ class Wp_fix extends BaseController {
 						$team_name,
 						$team_division,
 						$team_competition,
-						$video_name,
+						str_replace('"', '""', $video_name),
 						$video_division,
 						$video_competition,
 						$math_name,
