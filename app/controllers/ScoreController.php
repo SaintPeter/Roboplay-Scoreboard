@@ -12,7 +12,7 @@ class ScoreController extends BaseController {
 	public function index($competition_id = 0, $division_id = 0, $team_id = 0)
 	{
 		if($competition_id == 0) {
-			$competitions = Competition::all();
+			$competitions = Competition::where('active', 1)->get();
 			return View::make('score.competition_list', compact('competitions'));
 		}
 
