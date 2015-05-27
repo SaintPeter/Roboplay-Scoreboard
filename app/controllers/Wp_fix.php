@@ -224,13 +224,57 @@ class Wp_fix extends BaseController {
 
 	// List all students
 	public function student_list() {
-		$students = Student::with('teams', 'teams.division','teams.division.competition', 'school','teacher', 'teacher.usermeta')->get();
+		$students = Student::with('teams', 'teams.division','teams.division.competition','videos', 'videos.division','videos.division.competition','maths', 'maths.division','maths.division.competition','teams.division.competition.comp_year', 'school','teacher', 'teacher.usermeta')->get();
 
+		$content = "Student,School,Teacher,Challenge Team,Challenge Division,Challenge Competition,Video Team,Video Division,Video Competition,Math Team,Math Division,Math Competition\n";
 		foreach($students as $student) {
-			$team = ($student->teams()->first()) ? $student->teams()->first()->division->competition->name : 'No Team';
-			echo $student->fullName() . "," . $student->school->name . "," . $student->teacher->getName() . ",$team" . "<br />";
+			if($team = $student->teams()->first()) {
+				$team_name = $student->teams()->first()->name;
+				$team_division = $team->division->name;
+				$team_competition = $team->division->competition->name;
+			} else {
+				$team_name = "No Challenge Team";
+				$team_division = "No Challenge Division";
+				$team_competition = "No Challenge Competition";
+			}
+			if($video = $student->videos()->first()) {
+				$video_name = $student->videos()->first()->name;
+				$video_division = $video->division->name;
+				$video_competition = $video->division->competition->name;
+			} else {
+				$video_name = "No Video";
+				$video_division = "No Video Division";
+				$video_competition = "No Video Competition";
+			}
+			if($math = $student->maths()->first()) {
+				$math_name = $student->maths()->first()->name;
+				$math_division = $math->division->name;
+				$math_competition = $math->division->competition->name;
+			} else {
+				$math_name = "No Math Team";
+				$math_division = "No Math Division";
+				$math_competition = "No Math Competition";
+			}
 
+			$content .= '"' . join('","', [
+						str_replace('"', '""', $student->fullName()),
+						$student->school->name,
+						$student->teacher->getName(),
+						$team_name,
+						$team_division,
+						$team_competition,
+						$video_name,
+						$video_division,
+						$video_competition,
+						$math_name,
+						$math_division,
+						$math_competition ]) . "\"\n";
 		}
+		// return an string as a file to the user
+		return Response::make($content, '200', array(
+			'Content-Type' => 'application/octet-stream',
+			'Content-Disposition' => 'attachment; filename="student_list.csv"'
+		));
 
 	}
 
