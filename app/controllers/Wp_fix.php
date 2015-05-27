@@ -222,4 +222,16 @@ class Wp_fix extends BaseController {
 		return View::make('wp_fixes.list_judges')->with(compact('judges'));
 	}
 
+	// List all students
+	public function student_list() {
+		$students = Student::with('teams', 'teams.division','teams.division.competition', 'school','teacher', 'teacher.usermeta')->get();
+
+		foreach($students as $student) {
+			$team = ($student->teams()->first()) ? $student->teams()->first()->division->competition->name : 'No Team';
+			echo $student->fullName() . "," . $student->school->name . "," . $student->teacher->getName() . ",$team" . "<br />";
+
+		}
+
+	}
+
 }

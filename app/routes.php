@@ -164,6 +164,7 @@ Route::group(array('before' => 'auth'), function() {
 		Route::get('ajax/set_div/{invoice_no}/{value}', 	[ 'as' => 'ajax.set_div', 	'uses' => 'Wp_fix@ajax_set_div']);
 		Route::get('ajax/set_vid_div/{invoice_no}/{value}', [ 'as' => 'ajax.set_vid_div', 'uses' => 'Wp_fix@ajax_set_vid_div']);
 		Route::post('ajax/save_school', 					[ 'as' => 'ajax.save_school', 'uses' => 'Wp_fix@ajax_save_school']);
+		Route::get('student_list',							[ 'as' => 'student_list', 'uses' => 'Wp_fix@student_list'] );
 
 		// Invouce Review
 		Route::get('invoice_review',						[ 'as' => 'invoice_review',		'uses' => 'InvoiceReview@invoice_review' ]);
