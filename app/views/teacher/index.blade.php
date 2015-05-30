@@ -244,7 +244,7 @@
 	</table>
 
 <h3>Manage Math Teams</h3>
-@if( $math_teams->count() < ($invoice->getData('PreMath', 0) + $invoice->getData('AlgMath', 0)) AND ($invoice->getData('Challenge', 0) + $invoice->getData('Challenge2', 0)) > 0)
+@if( $math_teams->count() < ($invoice->getData('PreMath', 0) + $invoice->getData('AlgMath', 0)))
 	@if($invoice->paid == 1)
 		<p>{{ link_to_route('teacher.math_teams.create', 'Add Math Team',array(), array('class' => 'btn btn-primary')) }}</p>
 	@else
