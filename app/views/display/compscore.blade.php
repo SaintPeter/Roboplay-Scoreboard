@@ -1,6 +1,7 @@
 @extends('layouts.scaffold', [ 'fluid' => true ])
 
 @section('head')
+	<META HTTP-EQUIV="refresh" CONTENT="120">
 	{{ HTML::script('js/moment.min.js') }}
 	{{ HTML::style('//cdn.jsdelivr.net/jquery.slick/1.5.0/slick.css') }}
 	{{ HTML::script('//cdn.jsdelivr.net/jquery.slick/1.5.0/slick.min.js') }}
@@ -8,7 +9,7 @@
 
 @section('script')
 
-@if(isset($next_event) AND isset($this_event) AND $display_timer)
+@if(isset($next_event) AND isset($this_event) AND 0)
 		var serverTime = moment("{{ $start_time }}", "hh:mm:ss");
 		var delta = moment().diff(serverTime);
 		var endTime = moment("{{ $next_event->start }}", "hh:mm:ss");
@@ -112,7 +113,7 @@
 <?php View::share( [ 'skip_title' => true, 'skip_breadcrumbs' => true ] ); ?>
 @section('before_header')
 	<div class="clearfix header_container">
-		@if(isset($next_event) AND isset($this_event) AND $display_timer)
+		@if(isset($next_event) AND isset($this_event) AND 0)
 			@if(isset($next_event) AND isset($this_event))
 				<div class="pull-right well well-sm timing col-md-6">
 					<div class="clock_holder">
