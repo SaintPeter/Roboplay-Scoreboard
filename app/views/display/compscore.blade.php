@@ -170,10 +170,10 @@
 					<tr>
 						<td>{{ $score['place'] }}</td>
 						<td>
-							{{ link_to_route('display.teamscore', $division->teams->find($team_id)->name, $team_id) }}
+							{{ link_to_route('display.teamscore', $division->teams->find($team_id) ? $division->teams->find($team_id)->name : 'Not Found', $team_id) }}
 						</td>
 						<td>
-							{{ $division->teams->find($team_id)->school->name }}
+							{{ $division->teams->find($team_id) ? $division->teams->find($team_id)->school->name : 'Not Found' }}
 						</td>
 						<td>
 							{{ $score['total'] }} ({{ $score['runs'] }})
