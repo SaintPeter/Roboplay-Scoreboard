@@ -84,7 +84,7 @@ class DisplayController extends BaseController {
 		return View::make('display.teamscore', compact('team','challenge_list', 'grand_total', 'show_judges'));
 	}
 
-	public function compscore($competition_id, $do_not_freeze = null)
+	public function compscore($competition_id, $csv = null)
 	{
 		Breadcrumbs::addCrumb('Competition Score', 'compscore');
 
@@ -100,7 +100,7 @@ class DisplayController extends BaseController {
 
 		// Frozen Calculation
 		$freeze_time = new Carbon($comp->freeze_time);
-		if($comp->frozen AND isset($start_time->freeze_time) AND !isset($do_not_freeze)) {
+		if($comp->frozen AND isset($start_time->freeze_time)) {
 			$frozen = true;
 		} else {
 			$frozen = false;
@@ -173,22 +173,33 @@ class DisplayController extends BaseController {
 				}
 			}
 		}
-
-		// Setup column widths depending on number of divisions
-		switch($divisions->count())
-		{
-			case 1:
-				$col_class = "";
-				break;
-			case 2:
-				$col_class = "col-md-6 col-lg-6";
-				break;
-			case 3:
-				$col_class = "col-md-4 col-lg-4";
-				break;
-			default:
-				$col_class = "col-md-2 col-lg-2";
+		
+		// CSV Output
+		if($csv) {
+			$output = "Division,Place,Team,School,Score,Runs\n";
+			
+			foreach($divisions as $division) {
+				foreach($score_list[$division->id] as $team_id => $score) {
+					$output .= '"' . join('","', [
+						$division->name,
+						$score['place'],
+						$division->teams->find($team_id)->name,
+						$division->teams->find($team_id)->school->name,
+						$score['total'],
+						$score['runs']					
+					]) . "\"\n";
+				}	
+			}
+			
+			$filename = str_replace(' ', '_', $comp->name) . '.csv';
+			$headers = [
+				'Content-Type' => 'text/csv',
+				'Content-Disposition' => 'attachment; filename="' . $filename . '"'
+			];
+ 
+			return Response::make(rtrim($output, "\n"), 200, $headers);
 		}
+		
 
 		$now = Carbon::now()->setTimezone('America/Los_Angeles');
 		$event = new Carbon($comp->event_date);
@@ -208,7 +219,7 @@ class DisplayController extends BaseController {
 													   'settings'));
 	}
 
-	public function compyearscore($compyear_id)
+	public function compyearscore($compyear_id, $csv = null)
 	{
 		Breadcrumbs::addCrumb('Statewide Score', 'compyearscore');
 
@@ -289,20 +300,30 @@ class DisplayController extends BaseController {
 			}
 		}
 
-		// Setup column widths depending on number of divisions
-		switch($divisions->count())
-		{
-			case 1:
-				$col_class = "";
-				break;
-			case 2:
-				$col_class = "col-md-6 col-lg-6";
-				break;
-			case 3:
-				$col_class = "col-md-4 col-lg-4";
-				break;
-			default:
-				$col_class = "col-md-2 col-lg-2";
+		// CSV Output
+		if($csv) {
+			$output = "Division,Place,Team,School,Score,Runs\n";
+			
+			foreach($score_list as $level => $scores) {
+				foreach($scores as $team_id => $score) {
+					$output .= '"' . join('","', [
+						'Division ' . $level,
+						$score['place'],
+						$teams->find($team_id)->name,
+						$teams->find($team_id)->school->name,
+						$score['total'],
+						$score['runs']					
+					]) . "\"\n";
+				}	
+			}
+			
+			$filename = str_replace(' ', '_', 'RoboPlay Competition ' . $compyear->year) . '.csv';
+			$headers = [
+				'Content-Type' => 'text/csv',
+				'Content-Disposition' => 'attachment; filename="' . $filename . '"'
+			];
+ 
+			return Response::make(rtrim($output, "\n"), 200, $headers);
 		}
 
 		$now = Carbon::now()->setTimezone('America/Los_Angeles');

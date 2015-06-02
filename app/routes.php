@@ -40,10 +40,12 @@ Route::get('team/{team_id}', array('as' => 'display.teamscore', 'uses' => 'Displ
 		 ->where('team_id', '\d+');
 Route::get('team/{team_id}/{with_judges}', array('as' => 'display.teamscore', 'uses' => 'DisplayController@teamscore'))
 		 ->where('team_id', '\d+');
-Route::get('comp/{competition_id}', array('as' => 'display.compscore', 'uses' => 'DisplayController@compscore'))
-		 ->where('competition_id', '\d+');
-Route::get('compyear/{compyear_id}', array('as' => 'display.compyearscore', 'uses' => 'DisplayController@compyearscore'))
-		 ->where('compyear_id', '\d+');
+Route::get('comp/{competition_id}/{csv?}', array('as' => 'display.compscore', 'uses' => 'DisplayController@compscore'))
+		 ->where('competition_id', '\d+')
+		 ->where('csv','csv');
+Route::get('compyear/{compyear_id}/{csv?}', array('as' => 'display.compyearscore', 'uses' => 'DisplayController@compyearscore'))
+		 ->where('compyear_id', '\d+')
+		 ->where('csv','csv');
 Route::post('comp/{competition_id}/settings', [ 'as' => 'display.compsettings', 'uses' => 'DisplayController@compsettings' ])
 		->where('competition_id', '\d+');
 Route::post('compyear/{compyear_id}/settings', [ 'as' => 'display.compyearsettings', 'uses' => 'DisplayController@compyearsettings' ])
@@ -106,8 +108,8 @@ Route::group(array('before' => 'auth'), function() {
 
 
 		// Display Competition Scores Unfrozen
-		Route::get('comp/{competition_id}/{do_not_freeze}', array('as' => 'display.compscore.do_not_freeze', 'uses' => 'DisplayController@compscore'))
-		 ->where('competition_id', '\d+');
+//		Route::get('comp/{competition_id}/{do_not_freeze}', array('as' => 'display.compscore.do_not_freeze', 'uses' => 'DisplayController@compscore'))
+//		 ->where('competition_id', '\d+');
 
 		// Manage Challenges
 		Route::resource('challenges', 'ChallengesController');
