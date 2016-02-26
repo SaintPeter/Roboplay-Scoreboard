@@ -57,6 +57,8 @@ Route::get('mathteam/{team_id}', array('as' => 'display.mathteamscore', 'uses' =
 Route::get('mathteam/{team_id}/{with_judges}', array('as' => 'display.mathteamscore', 'uses' => 'MathDisplayController@mathteamscore'))
 		 ->where('team_id', '\d+');
 
+Route::get('scores/{year}', [ 'as' => 'display.export_scores', 'uses' => 'DisplayController@export_year_scores']);
+
 /* ----------------------- Video Display ---------------------------- */
 Route::get('video_list/{comp_id}', [ 'as' => 'display.video_list', 'uses' => 'DisplayController@video_list'] );
 Route::get('video_list/{comp_id}/{video_id}', [ 'as' => 'display.show_video', 'uses' => 'DisplayController@show_video'] );

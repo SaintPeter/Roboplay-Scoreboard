@@ -173,11 +173,11 @@ class DisplayController extends BaseController {
 				}
 			}
 		}
-		
+
 		// CSV Output
 		if($csv) {
 			$output = "Division,Place,Team,School,Score,Runs\n";
-			
+
 			foreach($divisions as $division) {
 				foreach($score_list[$division->id] as $team_id => $score) {
 					$output .= '"' . join('","', [
@@ -186,20 +186,20 @@ class DisplayController extends BaseController {
 						$division->teams->find($team_id)->name,
 						$division->teams->find($team_id)->school->name,
 						$score['total'],
-						$score['runs']					
+						$score['runs']
 					]) . "\"\n";
-				}	
+				}
 			}
-			
+
 			$filename = str_replace(' ', '_', $comp->name) . '.csv';
 			$headers = [
 				'Content-Type' => 'text/csv',
 				'Content-Disposition' => 'attachment; filename="' . $filename . '"'
 			];
- 
+
 			return Response::make(rtrim($output, "\n"), 200, $headers);
 		}
-		
+
 
 		$now = Carbon::now()->setTimezone('America/Los_Angeles');
 		$event = new Carbon($comp->event_date);
@@ -303,7 +303,7 @@ class DisplayController extends BaseController {
 		// CSV Output
 		if($csv) {
 			$output = "Division,Place,Team,School,Score,Runs\n";
-			
+
 			foreach($score_list as $level => $scores) {
 				foreach($scores as $team_id => $score) {
 					$output .= '"' . join('","', [
@@ -312,17 +312,17 @@ class DisplayController extends BaseController {
 						$teams->find($team_id)->name,
 						$teams->find($team_id)->school->name,
 						$score['total'],
-						$score['runs']					
+						$score['runs']
 					]) . "\"\n";
-				}	
+				}
 			}
-			
+
 			$filename = str_replace(' ', '_', 'RoboPlay Competition ' . $compyear->year) . '.csv';
 			$headers = [
 				'Content-Type' => 'text/csv',
 				'Content-Disposition' => 'attachment; filename="' . $filename . '"'
 			];
- 
+
 			return Response::make(rtrim($output, "\n"), 200, $headers);
 		}
 
@@ -475,5 +475,64 @@ class DisplayController extends BaseController {
 		Session::set($session_variable . '_font-size', Input::get('font-size', 'x-large'));
 
 		return Redirect::route('display.compyearscore', [ $compyear_id ]);
+	}
+
+	public function export_year_scores($year) {
+	    $compyear = CompYear::with('divisions', 'divisions.teams', 'divisions.challenges')->where('year', $year)->first();
+		$divisions = $compyear->divisions;
+		$division_list = $divisions->lists('id');
+
+		$content = "Division,Challenge,Team,Run,Score,s1,s2,s3,s4,s5,s6,Used\n";
+
+		foreach ($divisions as $division) {
+		    $division_id = $division->id;
+
+//            $challenges = Challenge::with( [ 'scores' => function($q) use ($division_id)
+//							{
+//								$q->where('division_id', $division_id);
+//							} ] )->get();
+
+            $division->challenges = $division->challenges->filter( function($val) use ($division_id)
+							{
+								return ($val->pivot->division_id === $division_id);
+							});
+
+			foreach ($division->challenges as $challenge) {
+			    foreach ($challenge->scores as $score) {
+    			    $line = [];
+    			    $team = $division->teams->find($score->team_id);
+    			    if(!$team) {
+    			        continue;
+    			    }
+
+    			    $challenge_number = $challenge->pivot->display_order;
+    			    $num = sprintf('%02d ', $challenge_number);
+
+    			    $line = [
+    			              $division->name,
+    			              $num . $challenge->display_name,
+    			              $team->name,
+    			              $score->run_number,
+    			              $score->total
+    			            ];
+                    $used = 0;
+                    foreach ($score->scores as $points) {
+                        $line[] = $points;
+                        if($points != '-' and $points > 0) {
+                            $used = $used + 1;
+                        }
+                    }
+                    $line[] = $used;
+
+    			    $content .= join($line, ',') . "\n";
+			    }
+			}
+	    }
+
+	    // return an string as a file to the user
+		return Response::make($content, '200', [
+			'Content-Type' => 'application/octet-stream',
+			'Content-Disposition' => 'attachment; filename="raw_scores_' . $year . '.csv"'
+		]);
 	}
 }
