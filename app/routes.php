@@ -154,6 +154,9 @@ Route::group(array('before' => 'auth'), function() {
 		Route::resource('judges', 'JudgesController');
 		Route::resource('videos', 'VideosController');
 
+		// Unified Video Competition interface
+		Route::get('vidcomp',                    [ 'as' => 'vidcomp.index',  'uses' => 'VidCompController@index' ]);
+
 		// Magical WP Fix Stuff - Not for "production"
 		Route::get('user_schools', 							[ 'as' => 'user_schools', 	'uses' => 'Wp_fix@user_schools']);
 		Route::get('division_check', 						[ 'as' => 'division_check', 'uses' => 'Wp_fix@division_check']);

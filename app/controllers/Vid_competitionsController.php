@@ -38,7 +38,7 @@ class Vid_competitionsController extends BaseController {
 	{
 		Breadcrumbs::addCrumb('Add Video Competition', 'create');
 		View::share('title', 'Add Video Competition');
-		return View::make('vid_competitions.create');
+		return View::make('vidcomp.partial.create');
 	}
 
 	/**
@@ -55,10 +55,10 @@ class Vid_competitionsController extends BaseController {
 		{
 			$this->vid_competition->create($input);
 
-			return Redirect::route('vid_competitions.index');
+			return "true";
 		}
 
-		return Redirect::route('vid_competitions.create')
+		return Redirect::route('vidcomp.partial.create')
 			->withInput()
 			->withErrors($validation)
 			->with('message', 'There were validation errors.');
@@ -93,10 +93,10 @@ class Vid_competitionsController extends BaseController {
 
 		if (is_null($vid_competition))
 		{
-			return Redirect::route('vid_competitions.index');
+			return "true";
 		}
 
-		return View::make('vid_competitions.edit', compact('vid_competition'));
+		return View::make('vidcomp.partial.comp_edit', compact('vid_competition'));
 	}
 
 	/**
@@ -115,10 +115,10 @@ class Vid_competitionsController extends BaseController {
 			$vid_competition = $this->vid_competition->find($id);
 			$vid_competition->update($input);
 
-			return Redirect::route('vid_competitions.index');
+			return "true";
 		}
 
-		return Redirect::route('vid_competitions.edit', $id)
+		return Redirect::route('vidcomp.partial.comp_edit', $id)
 			->withInput()
 			->withErrors($validation)
 			->with('message', 'There were validation errors.');
@@ -134,7 +134,7 @@ class Vid_competitionsController extends BaseController {
 	{
 		$this->vid_competition->find($id)->delete();
 
-		return Redirect::route('vid_competitions.index');
+		return Redirect::route('vidcomp.index');
 	}
 
 }

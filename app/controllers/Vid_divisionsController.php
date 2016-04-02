@@ -34,13 +34,13 @@ class Vid_divisionsController extends BaseController {
 	 *
 	 * @return Response
 	 */
-	public function create()
+	public function create($year = 0)
 	{
 		Breadcrumbs::addCrumb('Add Division', 'create');
 		View::share('title', 'Add Division');
 		$competitions = Vid_competition::lists('name','id');
 
-		return View::make('vid_divisions.create')
+		return View::make('vidcomp.partial.div_create')
 					->with('competitions', $competitions);
 	}
 
@@ -53,15 +53,17 @@ class Vid_divisionsController extends BaseController {
 	{
 		$input = Input::all();
 		$validation = Validator::make($input, Vid_division::$rules);
+		$compyear = CompYear::findOrFail($input->year);
 
 		if ($validation->passes())
 		{
-			$this->vid_division->create($input);
+		    $div = new Vid_division($input);
+			$compyear->vid_divisions()->save($div);
 
-			return Redirect::route('vid_divisions.index');
+			return "true";
 		}
 
-		return Redirect::route('vid_divisions.create')
+		return Redirect::route('vidcomp.partial.div_create')
 			->withInput()
 			->withErrors($validation)
 			->with('message', 'There were validation errors.');
@@ -97,10 +99,10 @@ class Vid_divisionsController extends BaseController {
 
 		if (is_null($vid_division))
 		{
-			return Redirect::route('vid_divisions.index');
+			return Redirect::route('vidcomp.index');
 		}
 
-		return View::make('vid_divisions.edit', compact('vid_division'))
+		return View::make('vidcomp.partial.div_edit', compact('vid_division'))
 				   ->with('competitions',$competitions);
 	}
 
@@ -120,10 +122,10 @@ class Vid_divisionsController extends BaseController {
 			$vid_division = $this->vid_division->find($id);
 			$vid_division->update($input);
 
-			return Redirect::route('vid_divisions.show', $id);
+			return "true"
 		}
 
-		return Redirect::route('vid_divisions.edit', $id)
+		return Redirect::route('vidcomp.partial.div_edit', $id)
 			->withInput()
 			->withErrors($validation)
 			->with('message', 'There were validation errors.');

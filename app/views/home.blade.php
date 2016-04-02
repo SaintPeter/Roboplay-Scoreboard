@@ -119,6 +119,7 @@
 	<li>{{ link_to('challenges', 'Manage Challenges', $noajax) }}</li>
 	<li>{{ link_to('teams', 'Manage Teams', $noajax) }}</li>
 	<li data-role="list-divider">Video Competition</li>
+	<li>{{ link_to('vidcomp', 'Video Comp Unified', $noajax) }}</li>
 	<li>{{ link_to('vid_competitions', 'Video Competitions', $noajax) }}</li>
 	<li>{{ link_to('vid_divisions', 'Video Competition Divisions', $noajax) }}</li>
 	<li>{{ link_to('videos', 'Manage Videos', $noajax) }}</li>
