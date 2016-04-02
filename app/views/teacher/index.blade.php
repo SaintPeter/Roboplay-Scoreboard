@@ -67,32 +67,9 @@
 			width:500,
 			modal: true,
 			buttons: {
-				"Delete Math Team": function() {
-					$( this ).dialog( "close" );
-					$('#team_delete_form_' + delete_id).submit();
-				},
-				Cancel: function() {
-					$( this ).dialog( "close" );
-				}
-			}
-		});
-
-		$(".math_team_delete_button").click(function(e) {
-			e.preventDefault();
-			delete_id = $(this).attr('delete_id');
-			$("#math_team-dialog-confirm").dialog('open');
-		});
-
-		$( "#math_team-dialog-confirm" ).dialog({
-			resizable: false,
-			autoOpen: false,
-			height:200,
-			width:500,
-			modal: true,
-			buttons: {
 				"Delete Team": function() {
 					$( this ).dialog( "close" );
-					$('#math_team_delete_form_' + delete_id).submit();
+					$('#team_delete_form_' + delete_id).submit();
 				},
 				Cancel: function() {
 					$( this ).dialog( "close" );
@@ -127,8 +104,6 @@
 							({{ $invoice->getData('Challenge', 0) + $invoice->getData('Challenge2', 0) }}) <br />
 						<strong>Video:</strong> {{ $videos->count() }}
 							({{ $invoice->getData('Video', 0) }})<br />
-						<strong>Math:</strong> {{ $math_teams->count() }}
-							({{ $invoice->getData('PreMath', 0) + $invoice->getData('AlgMath', 0) }})
 					</td>
 					<td class="{{ $paid }}">{{ $paid }}</td>
 				</tr>
@@ -243,62 +218,12 @@
 		</tbody>
 	</table>
 
-<h3>Manage Math Teams</h3>
-@if( $math_teams->count() < ($invoice->getData('PreMath', 0) + $invoice->getData('AlgMath', 0)))
-	@if($invoice->paid == 1)
-		<p>{{ link_to_route('teacher.math_teams.create', 'Add Math Team',array(), array('class' => 'btn btn-primary')) }}</p>
-	@else
-		<p>Payment Not Recieved</p>
-	@endif
-@else
-	<p>Math Team Limit Reached</p>
-@endif
-
-<table class="table table-striped table-bordered">
-	<thead>
-		<tr>
-			<th>Name</th>
-			<th>Students</th>
-			<th>Division</th>
-			<th>Actions</th>
-		</tr>
-	</thead>
-
-	<tbody>
-		@if ($math_teams->count())
-			@foreach ($math_teams as $math_team)
-				<tr>
-					<td>{{{ $math_team->name }}}</td>
-					<td>{{ join('<br />', $math_team->student_list()) }}</td>
-					<td>{{ $math_team->division->longname() }}</td>
-	                <td>{{ link_to_route('teacher.math_teams.edit', 'Edit', array($math_team->id), array('class' => 'btn btn-info')) }}
-	                	&nbsp;
-	                    {{ Form::open(array('method' => 'DELETE', 'route' => array('teacher.math_teams.destroy', $math_team->id), 'id' => 'math_team_delete_form_' . $math_team->id, 'style' => 'display: inline-block;')) }}
-	                        {{ Form::submit('Delete', array('class' => 'btn btn-danger math_team_delete_button', 'delete_id' => $math_team->id)) }}
-	                    {{ Form::close() }}
-	                </td>
-				</tr>
-			@endforeach
-		@else
-			<tr><td colspan="4" class="text-center">No Math Teams Created</td></tr>
-		@endif
-
-	</tbody>
-</table>
-
-
-
 <div id="video-dialog-confirm" style="display:none;" title="Delete video?">
 <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
 	This video and all scores will be permanently deleted and cannot be recovered. Are you sure?</p>
 </div>
 
 <div id="team-dialog-confirm" title="Delete Team?">
-<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
-	This team and all scores will be permanently deleted and cannot be recovered. Are you sure?</p>
-</div>
-
-<div id="math_team-dialog-confirm" title="Delete Math Team?">
 <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
 	This team and all scores will be permanently deleted and cannot be recovered. Are you sure?</p>
 </div>

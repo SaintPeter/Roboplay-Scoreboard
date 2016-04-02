@@ -59,13 +59,6 @@
 				@else
 					<li>No Video Competitions</li>
 				@endif
-				@if(!$compyear->math_competitions->isEmpty())
-					@foreach($compyear->math_competitions as $comp)
-						<li>{{ link_to_route('display.mathcompscore', $comp->name . ' Scoreboard', $comp->id, $noajax) }} </li>
-					@endforeach
-				@else
-					<li>No Math Competitions</li>
-				@endif
 			</ul>
 		</li>
 	@endforeach
@@ -79,7 +72,6 @@
 <ul data-role="listview" data-inset="true">
 	<li>{{ link_to_route('score.choose_competition', 'Score Challenges', null, $noajax) }}</li>
 	<li>{{ link_to_route('video.judge.index', 'Score Videos', null, $noajax) }}</li>
-	<li>{{ link_to_route('math_score.choose_competition', 'Score Math Challenges', null, $noajax) }}</li>
 </ul>
 @endif
 
@@ -89,7 +81,7 @@
 	<li><a href="/scoreboard/docs/teacher_guide_2015.pdf" data-ajax="false">Teacher Guide</a></li>
 	<li>
 		<a href="{{ route('teacher.index') }}" data-ajax="false">
-			Manage Challenge, Math, and Video Teams
+			Manage Challenge and Video Teams
 		</a>
 	</li>
 
@@ -122,10 +114,6 @@
 	<li>{{ link_to('vid_competitions', 'Video Competitions', $noajax) }}</li>
 	<li>{{ link_to('vid_divisions', 'Video Competition Divisions', $noajax) }}</li>
 	<li>{{ link_to('videos', 'Manage Videos', $noajax) }}</li>
-	<li data-role="list-divider">Math Competition</li>
-	<li>{{ link_to('math_competitions', 'Math Competitions', $noajax) }}</li>
-	<li>{{ link_to('math_divisions', 'Math Divisions and Challenges', $noajax) }}</li>
-	<li>{{ link_to('math_teams', 'Math Teams', $noajax) }}</li>
 	<li data-role="list-divider">Other Management</li>
 	<li>{{ link_to('invoice_review', 'Invoice Review', $noajax) }}</li>
 	<li>{{ link_to_route('list_judges', 'User List', null, $noajax) }}</li>
