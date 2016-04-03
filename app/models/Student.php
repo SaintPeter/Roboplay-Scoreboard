@@ -10,6 +10,8 @@ class Student extends \Eloquent {
 		'ssid' => 'required|numeric|unique:students,ssid',
 		'gender' => 'required|not_in:0',
 		'ethnicity_id' => 'required|exists:ethnicities,id',
+		'math_level_id' => 'required|exists:math_level,id|not_in:0',
+		'tshirt' => 'required|in:XS,S,M,L,XL',
 		'grade' => 'required|numeric|min:5|max:14',
 		'email' => 'sometimes|email'
 	];
@@ -17,6 +19,10 @@ class Student extends \Eloquent {
 	// Relationships
 	public function ethnicity() {
 		return $this->belongsTo('Ethnicity');
+	}
+
+	public function math_level() {
+		return $this->belongsTo('Math_Level');
 	}
 
 	public function teacher() {

@@ -43,6 +43,13 @@
 			<label class="sr-only" for="students[{{$index}}][email]">E-mail</label>
 			<input type="text" class="form-control" id="students[{{$index}}][email]" name="students[{{$index}}][email]" placeholder="E-mail">
 		</div>
+		<div class="form-group">
+		    <label class="sr-only" for="students[{{ $index }}][math_level_id]">Math Level</label>
+		    {{ Form::select("students[$index][math_level_id]", Math_Level::getList(), null, [ 'class' => 'form-control' ] ) }}
+		</div>
+		<div class="form-group">
+			{{ Form::select("students[$index][tshirt]", [ 0 => '- Pick T-shirt Size -', 'XS' => 'XS - Extra Small', 'S' => 'S - Small', 'M' => 'M - Medium', 'L' => 'L - Large', 'XL' => 'XL - Extra Large' ], null, [ 'class' => 'form-control' ] ) }}
+		</div>
 	</div>
 	<div class="col-md-1 text-center">
 		<button type="button" class="btn btn-danger remove_student" aria-label="Remove Student" index="{{$index}}" title="Remove Student">

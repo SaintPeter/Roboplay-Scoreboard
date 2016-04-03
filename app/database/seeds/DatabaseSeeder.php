@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder {
 		$this->call('FiletypeTableSeeder');
 		$this->call('Vid_score_typeTableSeeder');
 		$this->call('EthnicityTableSeeder');
+		$this->call('MathLevelsTableSeeder');
 	}
 
 }
