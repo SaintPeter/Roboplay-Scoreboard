@@ -7,7 +7,7 @@ class CompYear extends \Eloquent {
 	];
 
 	// Don't forget to fill this array
-	protected $fillable = ['year'];
+	protected $fillable = ['year', 'invoice_type', 'invoice_type_id'];
 
 	// Relationships
 	public function competitions() {

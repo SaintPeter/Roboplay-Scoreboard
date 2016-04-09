@@ -13,8 +13,19 @@
 {{ Form::open(array('route' => 'compyears.store', 'class' => 'col-md-6')) }}
 	<div class="form-group">
 		{{ Form::label('year', 'Year') }}
-		{{ Form::text('year', null, [ 'class'=>'form-control col-md-4' ]) }}
+		{{ Form::text('year', Input::get('year',""), [ 'class'=>'form-control col-md-4' ]) }}
 	</div>
+
+	<div class="form-group">
+	    {{ Form::label('invoice_type', "Invoice Type") }}
+	    {{ Form::select('invoice_type', [ 1 => 'C-STEM Invoice' ], Input::get('invoice_type', 0), [ 'class'=>'form-control' ]) }}
+	</div>
+
+	<div class="form-group">
+	    {{ Form::label('invoice_type_id', "Invoice Type Id") }}
+	    {{ Form::text('invoice_type_id', Input::get('invoice_type_id', 0), [ 'class'=>'form-control col-md-1' ]) }}
+	</div>
+
 
 	<div class="form-group">
 		{{ Form::label('competitions', 'Competitions') }}

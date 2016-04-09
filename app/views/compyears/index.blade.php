@@ -12,6 +12,7 @@
 			<th>Video Divisions</th>
 			<th>Math Competitions</th>
 			<th>Math Divisions</th>
+			<th>Invoice Types</th>
 			<th>Actions</th>
 		</tr>
 	</thead>
@@ -26,6 +27,7 @@
 			<td>{{ join('<br />', $compyear->vid_divisions()->lists('name')) }}</td>
 			<td>{{ join('<br />', $compyear->math_competitions()->lists('name')) }}</td>
 			<td>{{ join('<br />', $compyear->math_divisions()->lists('name')) }}</td>
+            <td>{{ $invoice_types[$compyear->invoice_type] }} ({{  $compyear->invoice_type_id  }})</td>
 			<td>
 				{{ link_to_route('compyears.edit', 'Edit', array($compyear->id), array('class' => 'btn btn-info btn-margin')) }}
 				{{ Form::open(array('method' => 'DELETE', 'route' => array('compyears.destroy', $compyear->id), 'style' => 'display: inline-block')) }}

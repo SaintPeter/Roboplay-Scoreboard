@@ -14,13 +14,14 @@ class CompYearsController extends \BaseController {
 	 */
 	public function index()
 	{
+	    $invoice_types = Config::get('settings.invoice_types', []);
 		$compyears = CompYear::with('competitions', 'divisions',
 									'vid_competitions', 'vid_divisions',
 									'math_competitions', 'math_divisions')->get();
 
 
 		View::share('title', 'Manage Competition Years');
-		return View::make('compyears.index', compact('compyears'));
+		return View::make('compyears.index', compact('compyears','invoice_types'));
 	}
 
 	/**
@@ -30,11 +31,13 @@ class CompYearsController extends \BaseController {
 	 */
 	public function create()
 	{
+	    $invoice_types = Config::get('settings.invoice_types', []);
 		$competition_list = Competition::has('comp_year', 0)->lists('name', 'id');
 		$vid_competition_list = Vid_competition::has('comp_year', 0)->lists('name', 'id');
 		$math_competition_list = MathCompetition::has('comp_year', 0)->lists('name', 'id');
 
-		return View::make('compyears.create')->with(compact('competition_list', 'vid_competition_list','math_competition_list'));
+		return View::make('compyears.create')
+		           ->with(compact('competition_list', 'vid_competition_list','math_competition_list', 'invoice_types'));
 	}
 
 	/**
@@ -97,6 +100,7 @@ class CompYearsController extends \BaseController {
 	 */
 	public function edit($id)
 	{
+	    $invoice_types = Config::get('settings.invoice_types', []);
 		$compyear = CompYear::find($id);
 
 		$competition_list = Competition::all()->lists('name', 'id');
@@ -106,7 +110,7 @@ class CompYearsController extends \BaseController {
 		$math_competition_list = MathCompetition::all()->lists('name', 'id');
 		$math_selected = $compyear->math_competitions()->lists('yearable_id');
 
-		return View::make('compyears.edit', compact('compyear','competition_list', 'vid_competition_list','math_competition_list', 'comp_selected', 'vid_selected', 'math_selected'));
+		return View::make('compyears.edit', compact('compyear','competition_list', 'vid_competition_list','math_competition_list', 'comp_selected', 'vid_selected', 'math_selected', 'invoice_types'));
 	}
 
 	/**

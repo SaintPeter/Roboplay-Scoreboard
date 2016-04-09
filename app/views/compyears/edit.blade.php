@@ -17,6 +17,16 @@
 	</div>
 
 	<div class="form-group">
+	    {{ Form::label('invoice_type', "Invoice Type") }}
+	    {{ Form::select('invoice_type', [ 1 => 'C-STEM Invoice' ], null, [ 'class'=>'form-control' ]) }}
+	</div>
+
+	<div class="form-group">
+	    {{ Form::label('invoice_type_id', "Invoice Type Id") }}
+	    {{ Form::text('invoice_type_id', null, [ 'class'=>'form-control col-md-1' ]) }}
+	</div>
+
+	<div class="form-group">
 		{{ Form::label('competitions', 'Competitions') }}
 		{{ Form::select('competitions[]', $competition_list, $comp_selected, [ 'class'=>'form-control', 'multiple' => 'multiple', 'size' => 10 ]) }}
 	</div>
