@@ -17,7 +17,8 @@
 		"nesbot/Carbon": "*",
 		"easybook/geshi": "dev-master",
 		"doctrine/dbal": "dev-master",
-		"parsecsv/php-parsecsv": "0.4.5"
+		"parsecsv/php-parsecsv": "0.4.5",
+		"raveren/kint": "dev-master"
 	},
 	"autoload": {
 		"classmap": [
