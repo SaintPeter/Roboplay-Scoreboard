@@ -275,7 +275,7 @@ class TeamsController extends BaseController {
 
 		$teacher_list = [ 0 => '-- Select Teacher --'];
 		foreach($teachers as $teacher) {
-			if(array_key_exists($teacher->ID, $school_ids)) {
+			if(array_key_exists($teacher->ID, $school_ids) AND array_key_exists($school_ids[$teacher->ID], $school_list)) {
 				$teacher_list[$teacher->ID] = $teacher->getNameProper() . " (" . $school_list[$school_ids[$teacher->ID]] . ")";
 			} else {
 			 	$teacher_list[$teacher->ID] = $teacher->getNameProper() . " (No School Set)";
