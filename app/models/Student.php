@@ -11,7 +11,6 @@ class Student extends \Eloquent {
 		'gender' => 'required|not_in:0',
 		'ethnicity_id' => 'required|exists:ethnicities,id',
 		'math_level_id' => 'required|exists:math_level,id|not_in:0',
-		'tshirt' => 'required|in:XS,S,M,L,XL',
 		'grade' => 'required|numeric|min:5|max:14',
 		'email' => 'sometimes|email'
 	];

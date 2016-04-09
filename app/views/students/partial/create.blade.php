@@ -48,10 +48,10 @@
 		</div>
 		<div class="form-group">
 		    <label class="sr-only" for="students[{{ $index }}][math_level_id]">Math Level</label>
-		    {{ Form::select("students[$index][math_level_id]", Math_Level::getList(), null, [ 'class' => 'form-control' ] ) }}
+		    {{ Form::select("students[$index][math_level_id]", Math_Level::getList(), $student['math_level_id'], [ 'class' => 'form-control' ] ) }}
 		</div>
 		<div class="form-group">
-			{{ Form::select("students[$index][tshirt]", [ 0 => '- Pick T-shirt Size -', 'XS' => 'XS - Extra Small', 'S' => 'S - Small', 'M' => 'M - Medium', 'L' => 'L - Large', 'XL' => 'XL - Extra Large' ], null, [ 'class' => 'form-control' ] ) }}
+			{{ Form::select("students[$index][tshirt]", [ 0 => '- Pick T-shirt Size -', 'XS' => 'XS - Extra Small', 'S' => 'S - Small', 'M' => 'M - Medium', 'L' => 'L - Large', 'XL' => 'XL - Extra Large' ], $student['tshirt'], [ 'class' => 'form-control' ] ) }}
 		</div>
 	</div>
 	<div class="col-md-1 text-center">
