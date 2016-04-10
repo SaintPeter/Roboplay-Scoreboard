@@ -275,20 +275,21 @@ class VideosController extends BaseController {
 		return Redirect::route('videos.index');
 	}
 
-	public function populate_teacher_list(&$teacher_list) {
-		$teacher_ids = Wp_invoice_table::where('invoice_type_id', 16)->lists('user_id');
-		$teachers = Wp_user::whereIn('ID', $teacher_ids)->get();
-		$school_ids = Usermeta::whereIn('user_id', $teacher_ids)->where('meta_key', 'wp_school_id')->lists('meta_value','user_id');
-		$school_list = Schools::whereIn('school_id', $school_ids)->lists('name', 'school_id');
+    public function populate_teacher_list(&$teacher_list) {
+	    $invoices = Invoices::orderBy('year', 'asc')
+	                        ->with('wp_user','wp_user.usermeta', 'school')
+	                        ->get();
 
-		$teacher_list = [ 0 => '-- Select Teacher --'];
-		foreach($teachers as $teacher) {
-			if(array_key_exists($teacher->ID, $school_ids) AND array_key_exists($school_ids[$teacher->ID], $school_list)) {
-				$teacher_list[$teacher->ID] = $teacher->getNameProper() . " (" . $school_list[$school_ids[$teacher->ID]] . ")";
-			} else {
-			 	$teacher_list[$teacher->ID] = $teacher->getNameProper() . " (No School Set)";
-			}
-		}
+	    foreach($invoices as $invoice) {
+	        if($invoice->school) {
+	            $teacher_list[$invoice->user_id] = $invoice->wp_user->getNameProper() .
+	                                               ' (' . $invoice->school->name . ')';
+	        } else {
+	            $teacher_list[$invoice->user_id] = $invoice->wp_user->getNameProper() .
+	                                               ' (No School Set)';
+	        }
+	    }
+
 		asort($teacher_list);
 	}
 }

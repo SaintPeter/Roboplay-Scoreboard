@@ -5,6 +5,10 @@ class Invoices extends \Eloquent {
 
 	// Relationships
 	public function user() {
+		return $this->belongsTo('Judge');
+	}
+
+	public function wp_user() {
 		return $this->belongsTo('Wp_user', 'user_id', 'ID');
 	}
 
@@ -12,12 +16,16 @@ class Invoices extends \Eloquent {
 		return $this->belongsTo('Judge', 'user_id', 'id' );
 	}
 
+	public function school() {
+	    return $this->belongsTo('Schools', 'wp_school_id', 'school_id');
+	}
+
 	public function videos() {
-		return $this->hasMany('Video', 'user_id', 'user_id');
+		return $this->hasMany('Video', 'teacher_id', 'user_id');
 	}
 
 	public function teams() {
-		return $this->hasMany('Team', 'user_id', 'user_id');
+		return $this->hasMany('Team', 'teacher_id', 'user_id');
 	}
 
 }

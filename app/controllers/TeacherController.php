@@ -21,39 +21,34 @@ class TeacherController extends BaseController {
 	 */
 	public function index()
 	{
-		$invoice = Wp_invoice_table::where('invoice_type_id', 16)
-								    ->where('user_id', Auth::user()->ID)
-								    ->with('invoice_data','user','user.usermeta')
-								    ->first();
+	    $year = CompYear::current()->year;
+	    $invoice = Invoices::where('year', $year)
+	                       ->where('user_id', Auth::user()->ID)
+	                       ->with('judge', 'school',
+	                              'teams', 'teams.students',
+	                              'videos', 'videos.students')
+	                       ->first();
+
+//		$invoice = Wp_invoice_table::where('invoice_type_id', 16)
+//								    ->where('user_id', Auth::user()->ID)
+//								    ->with('invoice_data','user','user.usermeta')
+//								    ->first();
 
 		if(!isset($invoice)) {
 			return View::make('error', [ 'message' => 'No invoice found for this School']);
 		}
 
-		$school_id = $invoice->user->getMeta('wp_school_id',0);
+		$school_id = $invoice->wp_school_id;
 
 		if($school_id == 0) {
 			return View::make('error', [ 'message' => 'School Id not set']);
 		}
 
-		$school = Schools::with('district')->find($school_id);
-
+		$school = $invoice->school;
 		$paid = $invoice->paid==1 ? 'Paid' : 'Unpaid';
+		$teams = $invoice->teams;
+		$videos = $invoice->videos;
 
-		$teams = Team::with('school','students')
-					->where('teacher_id', Auth::user()->ID)
-					->where('year', Carbon::now()->year)
-					->get();
-
-		$videos = Video::with('school', 'students', 'vid_division')
-					->where('teacher_id', Auth::user()->ID)
-					->where('year', Carbon::now()->year)
-					->get();
-
-		$math_teams = MathTeam::with('school','students', 'division')
-					->where('teacher_id', Auth::user()->ID)
-					->where('year', Carbon::now()->year)
-					->get();
 //dd(DB::getQueryLog());
 
 		View::share('title', 'Manage Teams');

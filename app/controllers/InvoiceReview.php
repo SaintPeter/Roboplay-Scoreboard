@@ -8,14 +8,28 @@ class InvoiceReview extends \BaseController {
 	 *
 	 * @return Response
 	 */
-	public function invoice_review($year)
+	public function invoice_review($year = 0)
 	{
 		Breadcrumbs::addCrumb('Invoice Review');
 		View::share('title', 'Invoice Review');
-		$invoices = Wp_invoice_table::with('invoice_data', 'videos', 'videos.vid_division', 'videos.students','user', 'user.usermeta', 'teams', 'teams.students')
-									->where('invoice_type_id', 16)->get();
-		//dd($invoices);
-		return View::make('invoice_review.index')->with(compact('invoices'));
+
+	    $year = CompYear::yearOrMostRecent($year);
+
+		$invoices = Invoices::with('wp_user', 'wp_user.usermeta', 'school',
+		                           'videos', 'videos.vid_division', 'videos.students',
+		                           'teams', 'teams.division', 'teams.students')
+		                    ->where('year', $year)
+		                    ->get();
+
+        // Callback for reduce to get a total student count
+        $student_count = function($curr, $next) {
+            return $curr + $next->students->count();
+        };
+
+        //ddd($invoices->first()->teams->reduce($student_count, 0));
+
+		//ddd($invoices->toArray());
+		return View::make('invoice_review.index', compact('invoices', 'year', 'student_count'));
 	}
 
 	public function invoice_sync($year = 0)
@@ -40,9 +54,9 @@ class InvoiceReview extends \BaseController {
 
                 $invoice->wp_school_id = intval($raw_invoice->user->getMeta('wp_school_id',0));
 
-                $invoice->teams = $raw_invoice->getData('Challenge', 0) + $raw_invoice->getData('Challenge2', 0);
-                $invoice->videos = $raw_invoice->getData('Video', 0);
-                $invoice->math = $raw_invoice->getData('PreMath', 0) + $raw_invoice->getData('AlgMath', 0);
+                $invoice->team_count = $raw_invoice->getData('Challenge', 0) + $raw_invoice->getData('Challenge2', 0);
+                $invoice->video_count = $raw_invoice->getData('Video', 0);
+                $invoice->math_count = $raw_invoice->getData('PreMath', 0) + $raw_invoice->getData('AlgMath', 0);
 
                 $invoice->paid = $raw_invoice->paid;
 

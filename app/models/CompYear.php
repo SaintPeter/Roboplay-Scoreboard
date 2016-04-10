@@ -9,6 +9,20 @@ class CompYear extends \Eloquent {
 	// Don't forget to fill this array
 	protected $fillable = ['year', 'invoice_type', 'invoice_type_id'];
 
+	// Get the year requested or the most recent
+	public static function yearOrMostRecent($year) {
+	    if($year > 0 AND CompYear::where('year', $year)->count() > 0) {
+	        return $year;
+	    } else {
+	        return CompYear::orderBy('year', 'desc')->first()->year;
+	    }
+	}
+
+	// Get the current Comp Year
+	public static function current() {
+		return CompYear::orderBy('year', 'desc')->first();
+	}
+
 	// Relationships
 	public function competitions() {
 		return $this->morphedByMany('Competition', 'yearable');
@@ -33,10 +47,4 @@ class CompYear extends \Eloquent {
 	public function math_divisions() {
 		return $this->morphedByMany('MathDivision', 'yearable');
 	}
-
-	// Get the current Comp Year
-	public static function current() {
-		return CompYear::where('year', Carbon\Carbon::now()->year);
-	}
-
 }

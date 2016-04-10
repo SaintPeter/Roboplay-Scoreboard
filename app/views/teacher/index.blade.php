@@ -101,9 +101,9 @@
 					</td>
 					<td>
 						<strong>Challenge:</strong> {{ $teams->count() }}
-							({{ $invoice->getData('Challenge', 0) + $invoice->getData('Challenge2', 0) }}) <br />
+							({{ $invoice->team_count }}) <br />
 						<strong>Video:</strong> {{ $videos->count() }}
-							({{ $invoice->getData('Video', 0) }})<br />
+							({{ $invoice->video_count }})<br />
 					</td>
 					<td class="{{ $paid }}">{{ $paid }}</td>
 				</tr>
@@ -120,7 +120,7 @@
 @section('main')
 
 <h3>Manage Challenge Teams</h3>
-@if( $teams->count() < ($invoice->getData('Challenge', 0) + $invoice->getData('Challenge2', 0)) AND ($invoice->getData('Challenge', 0) + $invoice->getData('Challenge2', 0)) > 0)
+@if( $teams->count() < ($invoice->team_count) AND ($invoice->team_count) > 0)
 	@if($invoice->paid == 1)
 		<p>{{ link_to_route('teacher.teams.create', 'Add Challenge Team',array(), array('class' => 'btn btn-primary')) }}</p>
 	@else
@@ -163,7 +163,7 @@
 </table>
 
 	<h3>Manage Videos</h3>
-	@if( $videos->count() < $invoice->getData('Video', 0) AND $invoice->getData('Video', 0) > 0 )
+	@if( $videos->count() < $invoice->video_count AND $invoice->team_count > 0 )
 		@if($invoice->paid == 1)
 			<p>{{ link_to_route('teacher.videos.create', 'Add Video', [], [ 'class' => 'btn btn-primary' ]) }}</p>
 		@else

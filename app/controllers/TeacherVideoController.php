@@ -9,23 +9,8 @@ class TeacherVideoController extends BaseController {
 	 */
 	public function index()
 	{
-		$school_id = Usermeta::getSchoolId();
-		$school = Schools::find($school_id);
-		$invoice = Wp_invoice::with('vid_division')->where('user_id', Auth::user()->ID)->first();
-
-		if(!isset($invoice)) {
-			return View::make('error', [ 'message' => 'No invoice found for this School.']);
-		}
-
-		$paid = $invoice->paid==1 ? 'Paid' : 'Unpaid';
-
-		$videos = Video::with('school', 'vid_division')
-						->where('school_id',$school_id)
-						->where('vid_division_id', $invoice->vid_division_id)
-						->get();
-
-		View::share('title', 'Manage Videos');
-		return View::make('teacher.videos.index', compact('school', 'videos','invoice', 'paid'));
+		// Replaced by combined teacher interface
+		return Redirect::route('teacher.index');
 	}
 
 	/**
@@ -173,7 +158,7 @@ class TeacherVideoController extends BaseController {
 				$division_list[$competition->name][$division->id] = $division->name;
 			}
 		}
-		
+
 		// Student Setup
 		$ethnicity_list = array_merge([ 0 => "- Select Ethnicity -" ], Ethnicity::all()->lists('name','id'));
 		if(!Session::has('students')) {

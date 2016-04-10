@@ -14,15 +14,20 @@
 @stop
 
 @section('main')
+<div class="pull-right">
+	<ul class="nav nav-pills">
+		@for($year_counter = 2014; $year_counter <= Carbon\Carbon::now()->year; $year_counter++)
+			<li @if($year_counter == $year) class="active" @endif>{{ link_to_route('invoice_review', $year_counter, [ $year_counter ]  ) }}</li>
+		@endfor
+	</ul>
+</div>
 <table class="table">
 <thead>
 	<tr>
 		<th>Teacher</th>
 		<th>School</th>
-		<th>Division</th>
 		<th>Teams</th>
 		<th>Videos</th>
-		<th>Math</th>
 		<th>Students</th>
 	</tr>
 </thead>
@@ -31,33 +36,34 @@
 	@foreach($invoices as $invoice)
 	<tr>
 		<td>
-			{{ link_to('mailto:' . $invoice->user->user_email, $invoice->user->getName()) }}
+			{{ link_to('mailto:' . $invoice->wp_user->user_email, $invoice->wp_user->getName()) }}
 		</td>
 		<td>
-			{{ $invoice->user->getSchool() }}
+			{{ ($invoice->school) ? $invoice->school->name : "(Not Set)" }}
 		</td>
 		<td>
-			{{ $invoice->getData('Divlevel','No Division') }}
+			{{ $invoice->teams->count() }} / {{ $invoice->team_count }}
+			<?php $team_count += $invoice->team_count ?>
 		</td>
 		<td>
-			{{ $invoice->teams->count() }} / {{ $invoice->getData('Challenge', 0) + $invoice->getData('Challenge2', 0) }}
-			<?php $team_count += $invoice->getData('Challenge', 0) + $invoice->getData('Challenge2', 0); ?>
+			{{ $invoice->videos->count() }} / {{ $invoice->video_count }}
+			<?php $video_count += $invoice->videos->count() ?>
 		</td>
 		<td>
-			{{ $invoice->videos->count() }} / {{ $invoice->getData('Video', 0) }}
-			<?php $video_count += $invoice->getData('Video', 0); ?>
-		</td>
-		<td>
-			{{ $invoice->getData('PreMath', 0) + $invoice->getData('AlgMath', 0) }}
-			<?php $math_count += $invoice->getData('PreMath', 0) + $invoice->getData('AlgMath', 0); ?>
-		</td>
-		<td>
-			{{ Student::where('teacher_id', $invoice->user->ID)->count(); }}
-			<?php $students_count += Student::where('teacher_id', $invoice->user->ID)->count(); ?>
+			{{ $invoice->videos->reduce($student_count, 0) }}
+			{{ $invoice->teams->reduce($student_count, 0) }}
+			<?php
+			    $students_count += $invoice->videos->reduce($student_count, 0);
+			    $students_count += $invoice->teams->reduce($student_count, 0);
+			?>
 		</td>
 
 	</tr>
 	@if($invoice->videos->count() > 0)
+	<tr>
+	    <td colspan="5">
+	    <table class="table">
+	        <tbody>
 		@foreach($invoice->videos as $video)
 		<tr>
 			<td>&nbsp;</td>
@@ -70,17 +76,20 @@
 
 		</tr>
 		@endforeach
+		</tbody>
+		</table>
+		</td>
+	</tr>
 	@endif
 		<?php
-			$team_actual += $invoice->teams->count();
-			$video_actual += $invoice->videos->count();
+			$team_actual += $invoice->team_count;
+			$video_actual += $invoice->video_count;
 		?>
 	@endforeach
 	<tr>
-		<td colspan="3" class="text-right">Totals</td>
+		<td colspan="2" class="text-right">Totals</td>
 		<td>{{ $team_actual }} / {{ $team_count }}</td>
 		<td>{{ $video_actual }} / {{ $video_count }}</td>
-		<td>{{ $math_count }}</td>
 		<td>{{ $students_count }}</td>
 	</tr>
 @else
