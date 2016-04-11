@@ -21,6 +21,8 @@ class InvoiceReview extends \BaseController {
 		                    ->where('year', $year)
 		                    ->get();
 
+		$last_sync = $invoices->min('updated_at');
+
         // Callback for reduce to get a total student count
         $student_count = function($curr, $next) {
             return $curr + $next->students->count();
@@ -29,7 +31,7 @@ class InvoiceReview extends \BaseController {
         //ddd($invoices->first()->teams->reduce($student_count, 0));
 
 		//ddd($invoices->toArray());
-		return View::make('invoice_review.index', compact('invoices', 'year', 'student_count'));
+		return View::make('invoice_review.index', compact('invoices', 'year', 'student_count', 'last_sync'));
 	}
 
 	public function invoice_sync($year = 0)

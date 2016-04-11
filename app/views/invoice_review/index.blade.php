@@ -21,6 +21,8 @@
 		@endfor
 	</ul>
 </div>
+{{ link_to_route('invoice_sync', "Sync with Wordpress", [ $year], [ 'class' => 'btn btn-info' ]  ) }}
+&nbsp;&nbsp; Last Sync: {{ $last_sync->format('D, F j, g:s a') }}
 <table class="table">
 <thead>
 	<tr>
