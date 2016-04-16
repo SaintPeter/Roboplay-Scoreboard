@@ -21,7 +21,7 @@ class InvoiceReview extends \BaseController {
 		                    ->where('year', $year)
 		                    ->get();
 
-		$last_sync = $invoices->min('updated_at');
+		$last_sync = $invoices->max('updated_at');
 
         // Callback for reduce to get a total student count
         $student_count = function($curr, $next) {
@@ -33,6 +33,19 @@ class InvoiceReview extends \BaseController {
 		//ddd($invoices->toArray());
 		return View::make('invoice_review.index', compact('invoices', 'year', 'student_count', 'last_sync'));
 	}
+
+	public function toggle_video($video_id) {
+	    $video = Video::findOrFail($video_id);
+	    $video->update(['audit' => !$video->audit ]);
+	    return 'true';
+	}
+
+	public function save_video_notes($video_id) {
+	    $video = Video::findOrFail($video_id);
+	    $video->update(['notes' => Input::get('notes', '') ]);
+	    return 'true';
+	}
+
 
 	public function invoice_sync($year = 0)
 	{

@@ -171,8 +171,10 @@ Route::group(array('before' => 'auth'), function() {
 		Route::get('student_list',							[ 'as' => 'student_list', 'uses' => 'Wp_fix@student_list'] );
 
 		// Invouce Review
-		Route::get('invoice_review/{year?}',				[ 'as' => 'invoice_review',		'uses' => 'InvoiceReview@invoice_review' ]);
-		Route::get('invoice_sync/{year}',					[ 'as' => 'invoice_sync',		'uses' => 'InvoiceReview@invoice_sync' ]);
+		Route::get('invoice_review/{year?}',				[ 'as' => 'invoice_review',		         'uses' => 'InvoiceReview@invoice_review' ]);
+		Route::get('invoice_review/toggle_video/{id?}',      [ 'as' => 'invoice_review.toggle_video', 'uses' => 'InvoiceReview@toggle_video' ]);
+		Route::post('invoice_review/save_video_notes/{id?}',      [ 'as' => 'invoice_review.save_video_notes', 'uses' => 'InvoiceReview@save_video_notes' ]);
+		Route::get('invoice_sync/{year}',					[ 'as' => 'invoice_sync',		         'uses' => 'InvoiceReview@invoice_sync' ]);
 
 		// Video Scores management
 		Route::get('video_scores/{year?}', [
