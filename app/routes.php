@@ -173,6 +173,7 @@ Route::group(array('before' => 'auth'), function() {
 		// Invouce Review
 		Route::get('invoice_review/{year?}',				[ 'as' => 'invoice_review',		         'uses' => 'InvoiceReview@invoice_review' ]);
 		Route::get('invoice_review/toggle_video/{id?}',      [ 'as' => 'invoice_review.toggle_video', 'uses' => 'InvoiceReview@toggle_video' ]);
+		Route::get('invoice_review/save_video_div/{video_id?}/{div_id?}',      [ 'as' => 'invoice_review.save_video_div', 'uses' => 'InvoiceReview@save_video_division' ]);
 		Route::post('invoice_review/save_video_notes/{id?}',      [ 'as' => 'invoice_review.save_video_notes', 'uses' => 'InvoiceReview@save_video_notes' ]);
 		Route::get('invoice_sync/{year}',					[ 'as' => 'invoice_sync',		         'uses' => 'InvoiceReview@invoice_sync' ]);
 

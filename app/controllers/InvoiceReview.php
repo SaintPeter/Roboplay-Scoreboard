@@ -28,10 +28,17 @@ class InvoiceReview extends \BaseController {
             return $curr + $next->students->count();
         };
 
-        //ddd($invoices->first()->teams->reduce($student_count, 0));
+        $comp_year = CompYear::where('year', $year)
+                                     ->with('vid_divisions', 'divisions')
+                                     ->first();
 
-		//ddd($invoices->toArray());
-		return View::make('invoice_review.index', compact('invoices', 'year', 'student_count', 'last_sync'));
+        $vid_division_list = $comp_year->vid_divisions->lists('name', 'id');
+        $division_list = $comp_year->divisions->lists('name','id');
+
+		return View::make('invoice_review.index',
+		                compact('invoices', 'year',
+		                        'student_count', 'last_sync',
+		                        'vid_division_list', 'division_list'));
 	}
 
 	public function toggle_video($video_id) {
@@ -43,6 +50,12 @@ class InvoiceReview extends \BaseController {
 	public function save_video_notes($video_id) {
 	    $video = Video::findOrFail($video_id);
 	    $video->update(['notes' => Input::get('notes', '') ]);
+	    return 'true';
+	}
+
+	public function save_video_division($video_id, $vid_div_id) {
+	       $video = Video::findOrFail($video_id);
+	    $video->update(['vid_division_id' => $vid_div_id ]);
 	    return 'true';
 	}
 
