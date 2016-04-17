@@ -40,10 +40,10 @@ function toggle_audit(e) {
 
 function toggle_notes(e) {
     if($(this).data('status') === 'show') {
-        $(this).data('status', 'hide');
+        $(this).data('status', 'hide').html('Show Notes');
         $('.video_notes_section').hide();
     } else {
-        $(this).data('status', 'show');
+        $(this).data('status', 'show').html('Hide Notes');
         $('.video_notes_section').show();
     }
 }
@@ -60,18 +60,18 @@ function toggle_all_videos(e) {
 
 // Update button to a specific status
 function set_video_button(button, status, id) {
-    $(button).removeClass('btn-default')
+    $(button).removeClass('btn-danger')
              .removeClass('btn-warning')
              .removeClass('btn-success')
              .data('status', status);
 
     if(status === 'pass') {
-        $(button).addClass('btn-success').html('Pass');
+        $(button).addClass('btn-success').html('Checked');
     } else {
         if($('#video_notes' + id).val()) {
             $(button).addClass('btn-warning').html('Has Notes');
         } else {
-            $(button).addClass('btn-default').html('Unchecked');
+            $(button).addClass('btn-danger').html('Unchecked');
         }
     }
 }
@@ -130,7 +130,7 @@ function vid_division_change(e) {
 </div>
 {{ link_to_route('invoice_sync', "Sync with Wordpress", [ $year], [ 'class' => 'btn btn-info' ]  ) }}
 &nbsp;&nbsp; Last Sync: {{ $last_sync->format('D, F j, g:s a') }}
-&nbsp;&nbsp; <button class="btn btn-info" id="toggle_notes" data-status="show">Has Notes</button>
+&nbsp;&nbsp; <button class="btn btn-info" id="toggle_notes" data-status="show">Hide Notes</button>
 &nbsp;&nbsp; <button class="btn btn-success" id="toggle_all_videos" data-status="hide">Videos</button>
 &nbsp;&nbsp; <button class="btn btn-info" id="toggle_all_teams" data-status="hide">Teams</button>
 <table class="table">
@@ -212,11 +212,11 @@ function vid_division_change(e) {
             			<td class="text-center">{{ $video->students->count() }}</td>
             			<td>
             			    @if($video->audit)
-            			        <button class="btn btn-success btn-sm audit_button" data-status="pass" id="status_toggle_{{ $video->id }}" data-video="{{ $video->id }}" title="Click to mark unchecked">Pass</button>
+            			        <button class="btn btn-success btn-sm audit_button" data-status="pass" id="status_toggle_{{ $video->id }}" data-video="{{ $video->id }}" title="Click to mark unchecked">Checked</button>
             			    @elseif(strlen($video->notes) > 0)
-            			        <button class="btn btn-warning btn-sm audit_button" data-status="fail" id="status_toggle_{{ $video->id }}" data-video="{{ $video->id }}" title="Click to mark Pass">Has Notes</button>
+            			        <button class="btn btn-warning btn-sm audit_button" data-status="fail" id="status_toggle_{{ $video->id }}" data-video="{{ $video->id }}" title="Click to mark Checked">Has Notes</button>
             			    @else
-            			        <button class="btn btn-default btn-sm audit_button" data-status="fail"  id="status_toggle_{{ $video->id }}" data-video="{{ $video->id }}" title="Click to mark Pass">Unchecked</button>
+            			        <button class="btn btn-danger btn-sm audit_button" data-status="fail"  id="status_toggle_{{ $video->id }}" data-video="{{ $video->id }}" title="Click to mark Checked">Unchecked</button>
             			    @endif
             			</td>
 
