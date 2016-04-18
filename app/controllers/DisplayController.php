@@ -431,7 +431,9 @@ class DisplayController extends BaseController {
 			$divs[] = $div->id;
 		}
 
-		$video_list = Video::with('school', 'vid_division')->whereIn('vid_division_id', $divs)->get();
+		$video_list = Video::with('school', 'vid_division')
+		                   ->where('flag', FLAG_NORMAL)
+		                   ->whereIn('vid_division_id', $divs)->get();
 
 		$videos = [];
 		foreach($video_list as $video) {
