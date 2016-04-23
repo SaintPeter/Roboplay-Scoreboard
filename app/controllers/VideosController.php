@@ -25,7 +25,10 @@ class VideosController extends BaseController {
 		// Selected year set in filters.php -> App::before()
 		$selected_year = Session::get('selected_year', false);
 
-		$video_query = Video::with('vid_division', 'school', 'school.district', 'school.district.county', 'students', 'teacher', 'teacher.usermeta')
+		$video_query = Video::with('vid_division',
+		                           'school', 'school.district', 'school.district.county',
+		                           'students', 'teacher', 'teacher.usermeta',
+		                           'awards')
 							->orderBy('year', 'desc')
 							->orderBy('teacher_id');
 
@@ -55,12 +58,16 @@ class VideosController extends BaseController {
 
 		// Ethnicity List Setup
 		$ethnicity_list = array_merge([ 0 => "- Select Ethnicity -" ], Ethnicity::all()->lists('name','id'));
+
 		// Student Setup
 		$students = [];
 
+        // Video Awards List Setup
+	    $awards_list = VideoAward::all()->lists('name', 'id');
+
 		$index = 0;
 		View::share('index', $index);
-		return View::make('videos.create', compact('vid_divisions', 'teacher_list', 'ethnicity_list', 'students'));
+		return View::make('videos.create', compact('vid_divisions', 'awards_list', 'teacher_list', 'ethnicity_list', 'students'));
 	}
 
 	/**
@@ -70,7 +77,7 @@ class VideosController extends BaseController {
 	 */
 	public function store()
 	{
-		$input = array_except(Input::all(), ['students' ]);
+		$input = Input::except(['students', 'awards' ]);
 		// Skip check on video
 		$rules = Video::$rules;
 		unset($rules['yt_code']);
@@ -115,6 +122,7 @@ class VideosController extends BaseController {
 						$sync_list[] = $newStudent->id;
 					}
 					$newvideo->students()->sync($sync_list);
+					$newvideo->awards()->sync(Input::get('awards', []));
 					return Redirect::route('videos.index');
 				} else {
 					return Redirect::route('videos.create')
@@ -124,7 +132,8 @@ class VideosController extends BaseController {
 				}
 			} else {
 				// No students, just create the team
-				Video::create($input);
+				$newvideo = Video::create($input);
+				$newvideo->awards()->sync(Input::get('awards', []));
 				return Redirect::route('teacher.index');
 			}
 		}
@@ -161,7 +170,9 @@ class VideosController extends BaseController {
 	{
 		Breadcrumbs::addCrumb('Edit Video', 'videos');
 		View::share('title', 'Edit Video');
-		$video = Video::with('teacher','vid_division', 'school', 'school.district', 'school.district.county')->find($id);
+		$video = Video::with('teacher','vid_division',
+		                     'school', 'school.district', 'school.district.county',
+		                     'awards')->find($id);
 		$vid_divisions = Vid_division::longname_array();
 
 		$teacher_list = [];
@@ -170,6 +181,10 @@ class VideosController extends BaseController {
 		// Ethnicity List Setup
 		$ethnicity_list = array_merge([ 0 => "- Select Ethnicity -" ], Ethnicity::all()->lists('name','id'));
 
+        // Video Awards List Setup
+	    $awards_list = VideoAward::all()->lists('name', 'id');
+	    $awards_selected = $video->awards->lists('id');
+
 		if(!Session::has('students')) {
 			// On first load we populate the form from the DB
 			$students = $video->students;
@@ -177,6 +192,7 @@ class VideosController extends BaseController {
 			// On subsequent loads or errors, use the sessions variable
 			$students = [];
 		}
+
 		$index = -1;
 
 		if (is_null($video))
@@ -184,7 +200,7 @@ class VideosController extends BaseController {
 			return Redirect::route('videos.index');
 		}
 		View::share('index', -1);
-		return View::make('videos.edit', compact('video', 'vid_divisions', 'teacher_list', 'ethnicity_list', 'students'));
+		return View::make('videos.edit', compact('video', 'vid_divisions', 'awards_list', 'awards_selected' , 'teacher_list', 'ethnicity_list', 'students'));
 	}
 
 	/**
@@ -195,7 +211,7 @@ class VideosController extends BaseController {
 	 */
 	public function update($id)
 	{
-		$input = Input::except('_method', 'students' );
+		$input = Input::except('_method', 'students', 'awards' );
 		$students = Input::get('students');
 		// Skip check on video
 		$rules = Video::$rules;
@@ -239,6 +255,7 @@ class VideosController extends BaseController {
 						$sync_list[] = $newStudent->id;
 					}
 					$video->students()->sync($sync_list);
+					$video->awards()->sync(Input::get('awards', []));
 					return Redirect::route('videos.index');
 				} else {
 					return Redirect::route('videos.edit', $id)
@@ -250,6 +267,7 @@ class VideosController extends BaseController {
 				// No students, just update the video
 				$video = video::find($id);
 				$video->update($input);
+				$video->awards()->sync(Input::get('awards', []));
 				return Redirect::route('videos.index');
 			}
 

@@ -48,6 +48,10 @@ class Video extends Eloquent {
 	}
 
 	// Relationships
+	public function awards() {
+	    return $this->belongsToMany('VideoAward');
+	}
+
 	public function vid_division()
 	{
 		return $this->belongsTo('Vid_division');

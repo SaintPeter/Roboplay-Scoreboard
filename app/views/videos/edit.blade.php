@@ -108,6 +108,11 @@
 	@include('students.partial.fields', [ 'students' => $students ])
 
 	<div class="form-group">
+		{{ Form::label('awards[]', 'Awards') }}
+		{{ Form::select('awards[]', $awards_list, $awards_selected, [ 'class'=>'form-control', 'multiple' => 'multiple', 'size' => 6 ]) }}
+	</div>
+
+	<div class="form-group">
 		{{ Form::submit('Submit', array('class' => 'btn btn-primary')) }}
 		 		&nbsp;
 		{{ link_to_route('videos.index', 'Cancel', [], ['class' => 'btn btn-info']) }}
