@@ -124,6 +124,11 @@ class TeacherController extends BaseController {
 	}
 
 	public function ajax_import_students_csv() {
+	    // Validate that a file was sent
+	    if(!Input::hasFile('csv_file')) {
+	        return 'nofile';
+	    }
+
 		$field_names = [
 			"First Name" => 'first_name',
 			"Middle/Nick Name" => 'middle_name',
@@ -132,34 +137,50 @@ class TeacherController extends BaseController {
 			"Gender" => 'gender',
 			"Ethnicity" => 'ethnicity_id',
 			"Grade" => 'grade',
-			"E-mail" => 'email' ];
+			"E-mail" => 'email',
+			"T-Shirt" => 'tshirt',
+			"Math Level" => 'math_level_id' ];
 
 		$ethnicity_decode = Ethnicity::all()->lists('id', 'name');
 		$ethnicity_list = array_merge([ 0 => "- Select Ethnicity -" ], Ethnicity::all()->lists('name','id'));
 
+		$math_decode = Math_Level::all()->lists('id', 'name');
+
 		$csv = new parseCSV(Input::file('csv_file')->getRealPath());
 		$rawData = $csv->data;
+
+		// Ensure we even have any data
+		if(count($rawData) < 1) {
+		    return 'nodata';
+		}
 
 		// Index doesn't matter because things get renumbered in the view
 		$index = 0;
 
+		// Empty container for error handling
+		$students = [];
+
 		// Clean up/translate data, fix field names
-		foreach($rawData as $student) {
-			if(!empty($student['First Name'])) {
+		foreach($rawData as $csv_line) {
+			if(!empty($csv_line['First Name'])) {
 				foreach($field_names as $import_field => $proper_field) {
-					if(array_key_exists($import_field, $student)) {
+				    // Set a default value
+					$students[$index][$proper_field] = "";
+
+					if(array_key_exists($import_field, $csv_line)) {
+					    // Ethnicity Field Decode
 						if($import_field == 'Ethnicity') {
-							if(array_key_exists($student[$import_field], $ethnicity_decode)) {
-								$students[$index][$proper_field] = $ethnicity_decode[$student[$import_field]];
-							} else {
-								$students[$index][$proper_field]  = "";
+							if(array_key_exists($csv_line[$import_field], $ethnicity_decode)) {
+								$students[$index][$proper_field] = $ethnicity_decode[$csv_line[$import_field]];
+							}
+						// Math Level Decode
+						} elseif ($proper_field == 'math_level_id') {
+                            if(array_key_exists($csv_line[$import_field], $math_decode)) {
+								$students[$index][$proper_field] = $math_decode[$csv_line[$import_field]];
 							}
 						} else {
-							$students[$index][$proper_field]  = $student[$import_field];
+							$students[$index][$proper_field]  = $csv_line[$import_field];
 						}
-					} else {
-						// Set a default value
-						$students[$index][$proper_field] = "";
 					}
 				}
 				$students[$index]['nickname'] = 0;
@@ -169,7 +190,11 @@ class TeacherController extends BaseController {
 
 		$index = Input::get('index');
 
-		return View::make('students.partial.edit_list')->with(compact('students', 'ethnicity_list', 'index'));
+        if(count($students)) {
+            return View::make('students.partial.edit_list')->with(compact('students', 'ethnicity_list', 'index'));
+        } else {
+            return 'nodata';
+        }
 	}
 
 	/**

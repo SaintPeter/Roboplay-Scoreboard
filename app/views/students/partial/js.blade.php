@@ -1,24 +1,18 @@
 @section('script')
 var savedIndex = 0;
 
-function setup_delete_buttons() {
+$(function() {
 	// Setup Delete Student buttons
-	$('.remove_student').off('click').click(function() {
+	$(document).on('click', '.remove_student', function() {
 		var index = parseInt($(this).attr('index'),10);
 		$('.student_' + index).remove();
 	});
-}
 
-
-$(function() {
-	// Initial setup for delete buttons
-	setup_delete_buttons();
 
 	// Setup Add Student button
 	$('#add_student').click(function() {
 		$.get( '/scoreboard/ajax/blank_student/' + savedIndex, function(data) {
 			$('#student_form').append(data);
-			setup_delete_buttons();
 			savedIndex++;
 		});
 	});
@@ -76,11 +70,24 @@ $(function() {
 		buttons: {
 			"Upload Students": function() {
 				var data = { index: savedIndex };
-				$('#upload_form').ajaxSubmit({data: data,
+				$('#upload_form').ajaxSubmit({
+				    data: data,
 					success: function(responseText, statusText, xhr, $form) {
+					    if(responseText == 'nodata') {
+					        alert('No Data was found in the file.\nEnsure it is a csv file.');
+					        return;
+					    }
+					    if(responseText == 'nofile') {
+					        alert('No File was selected.');
+					        return;
+					    }
+
 						$('#student_form').append(responseText);
-						setup_delete_buttons();
-					}});
+					},
+					error: function(xhR, statusText, errorThrown) {
+					    alert('An unknown error occured on the server.');
+					}
+				});
 				$( this ).dialog( "close" );
 			},
 			Cancel: function() {
