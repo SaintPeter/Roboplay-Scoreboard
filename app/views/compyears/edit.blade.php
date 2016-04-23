@@ -11,20 +11,22 @@
 @endif
 
 {{ Form::model($compyear, ['route' => [ 'compyears.update', $compyear->id ], 'method' => 'PATCH', 'class' => 'col-md-6' ]) }}
-	<div class="form-group">
-		{{ Form::label('year', 'Year') }}
-		{{ Form::text('year', null, [ 'class'=>'form-control col-md-4' ]) }}
-	</div>
+	<div class="row">
+    	<div class="form-group col-md-2">
+    		{{ Form::label('year', 'Year') }}
+    		{{ Form::text('year', null, [ 'class'=>'form-control col-md-4' ]) }}
+    	</div>
 
-	<div class="form-group">
-	    {{ Form::label('invoice_type', "Invoice Type") }}
-	    {{ Form::select('invoice_type', [ 1 => 'C-STEM Invoice' ], null, [ 'class'=>'form-control' ]) }}
-	</div>
+    	<div class="form-group col-md-6">
+    	    {{ Form::label('invoice_type', "Invoice Type") }}
+    	    {{ Form::select('invoice_type', [ 1 => 'C-STEM Invoice' ], null, [ 'class'=>'form-control' ]) }}
+    	</div>
 
-	<div class="form-group">
-	    {{ Form::label('invoice_type_id', "Invoice Type Id") }}
-	    {{ Form::text('invoice_type_id', null, [ 'class'=>'form-control col-md-1' ]) }}
-	</div>
+    	<div class="form-group col-md-4">
+    	    {{ Form::label('invoice_type_id', "Invoice Type Id") }}
+    	    {{ Form::text('invoice_type_id', null, [ 'class'=>'form-control col-md-1' ]) }}
+    	</div>
+    </div>
 
 	<div class="form-group">
 		{{ Form::label('competitions', 'Competitions') }}
@@ -34,11 +36,6 @@
 	<div class="form-group">
 		{{ Form::label('vid_competitions', 'Video Competitions') }}
 		{{ Form::select('vid_competitions[]', $vid_competition_list, $vid_selected, [ 'class'=>'form-control', 'multiple' => 'multiple', 'size' => 10 ]) }}
-	</div>
-
-	<div class="form-group">
-		{{ Form::label('math_competitions', 'Math Competitions') }}
-		{{ Form::select('math_competitions[]', $math_competition_list, $math_selected, [ 'class'=>'form-control', 'multiple' => 'multiple', 'size' => 10 ]) }}
 	</div>
 
 	{{ Form::submit('Submit', array('class' => 'btn btn-primary btn-margin')) }}
