@@ -1,9 +1,14 @@
 <?PHP
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\SoftDeletingTrait;
 
 class Score_run extends Eloquent {
+	use SoftDeletingTrait;
+
 	protected $guarded = array();
+
+	protected $dates = ['deleted_at'];
 
 	public static $rules = array(
 		'run_number' => 'required',
@@ -16,7 +21,6 @@ class Score_run extends Eloquent {
 		'division_id' => 'required'
 	);
 
-	protected $softDelete = true;
 
 	/* Mutators and Assignors
 	   ------------------------------ */
