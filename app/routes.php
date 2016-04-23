@@ -327,6 +327,8 @@ Route::group(array('before' => 'auth'), function() {
 					'as' => 'teacher.index',
 					'uses' => 'TeacherController@index' ]);
 
+	    Route::post('teacher/save_tshirt', [ 'as' => 'teacher.save_tshirt', 'uses' => 'TeacherController@save_tshirt' ]);
+
 
 		Route::resource('students', 'StudentsController');
 	});

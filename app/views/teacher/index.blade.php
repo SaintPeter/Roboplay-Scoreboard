@@ -31,6 +31,15 @@
 @section('script')
 	var delete_id = 0;
 	$(function() {
+	    $("#tshirt").on('change', function(e) {
+	        $.post('{{ route('teacher.save_tshirt') }}', { 'tshirt': $(this).val() }, function(data) {
+                // Flash the tshirt field to show it has been written
+                $('#tshirt').stop()
+                    .animate({backgroundColor: "#90EE90"}, 500)
+                    .animate({backgroundColor: "#FFFFFF"}, 500);
+            });
+	    });
+
 		$(".video_delete_button").click(function(e) {
 			e.preventDefault();
 			delete_id = $(this).attr('delete_id');
@@ -118,6 +127,11 @@
 @stop
 
 @section('main')
+<h3>T-Shirt Size</h3>
+<p>All teachers recieve a t-shirt.</p>
+<div class="form-group">
+    {{ Form::select('tshirt', $tshirt_sizes, $invoice->judge->tshirt, [ 'id' => "tshirt" ]) }}
+</div>
 
 <h3>Manage Challenge Teams</h3>
 @if( $teams->count() < ($invoice->team_count) AND ($invoice->team_count) > 0)

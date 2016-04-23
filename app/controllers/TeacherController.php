@@ -44,6 +44,14 @@ class TeacherController extends BaseController {
 			return View::make('error', [ 'message' => 'School Id not set']);
 		}
 
+		$tshirt_sizes = [ 0 => '- Pick T-shirt Size -',
+                         'XS' => 'XS - Extra Small',
+                         'S' => 'S - Small',
+                         'M' => 'M - Medium',
+                         'L' => 'L - Large',
+                         'XL' => 'XL - Extra Large',
+                         'XXL' => 'XXL - Extra, Extra Large' ];
+
 		$school = $invoice->school;
 		$paid = $invoice->paid==1 ? 'Paid' : 'Unpaid';
 		$teams = $invoice->teams;
@@ -52,8 +60,16 @@ class TeacherController extends BaseController {
 //dd(DB::getQueryLog());
 
 		View::share('title', 'Manage Teams');
-        return View::make('teacher.index', compact('invoice', 'teams', 'videos', 'math_teams', 'school', 'paid'));
+        return View::make('teacher.index', compact('invoice', 'teams', 'videos', 'math_teams', 'school', 'paid', 'tshirt_sizes'));
 
+	}
+
+	// Saves current user t-shirt size
+	public function save_tshirt() {
+	    $judge = Judge::findOrFail(Auth::user()->ID);
+	    $judge->update([ 'tshirt' => Input::get('tshirt', '') ]);
+
+	    return 'true';
 	}
 
 	// Returns a view with a new blank student form
