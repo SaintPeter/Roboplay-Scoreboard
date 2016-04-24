@@ -123,13 +123,13 @@ function vid_division_change(e) {
 @section('main')
 <div class="pull-right">
 	<ul class="nav nav-pills">
-		@for($year_counter = 2014; $year_counter <= Carbon\Carbon::now()->year; $year_counter++)
-			<li @if($year_counter == $year) class="active" @endif>{{ link_to_route('invoice_review', $year_counter, [ $year_counter ]  ) }}</li>
-		@endfor
+	    @foreach($comp_years as $comp_year)
+			<li @if($comp_year->year == $year) class="active" @endif>{{ link_to_route('invoice_review', $comp_year->year, [ $comp_year->year ]  ) }}</li>
+		@endforeach
 	</ul>
 </div>
 {{ link_to_route('invoice_sync', "Sync with Wordpress", [ $year], [ 'class' => 'btn btn-info' ]  ) }}
-&nbsp;&nbsp; Last Sync: {{ $last_sync->format('D, F j, g:s a') }}
+&nbsp;&nbsp; Last Sync: {{ $last_sync }}
 &nbsp;&nbsp; <button class="btn btn-info" id="toggle_notes" data-status="show">Hide Notes</button>
 &nbsp;&nbsp; <button class="btn btn-success" id="toggle_all_videos" data-status="hide">Videos</button>
 &nbsp;&nbsp; <button class="btn btn-info" id="toggle_all_teams" data-status="hide">Teams</button>

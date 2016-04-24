@@ -14,6 +14,7 @@ class InvoiceReview extends \BaseController {
 		View::share('title', 'Invoice Review');
 
 	    $year = CompYear::yearOrMostRecent($year);
+	    $comp_years = CompYear::orderBy('year')->get();
 
 		$invoices = Invoices::with('wp_user', 'wp_user.usermeta', 'school',
 		                           'videos', 'videos.vid_division', 'videos.students',
@@ -21,7 +22,12 @@ class InvoiceReview extends \BaseController {
 		                    ->where('year', $year)
 		                    ->get();
 
-		$last_sync = $invoices->max('updated_at');
+		$last_sync_date = $invoices->max('updated_at');
+		if(isset($last_sync_date)) {
+		    $last_sync = $last_sync_date->format('D, F j, g:s a');
+		} else {
+		    $last_sync = "Never";
+		}
 
         // Callback for reduce to get a total student count
         $student_count = function($curr, $next) {
@@ -38,7 +44,8 @@ class InvoiceReview extends \BaseController {
 		return View::make('invoice_review.index',
 		                compact('invoices', 'year',
 		                        'student_count', 'last_sync',
-		                        'vid_division_list', 'division_list'));
+		                        'vid_division_list', 'division_list',
+		                        'comp_years'));
 	}
 
 	public function toggle_video($video_id) {
