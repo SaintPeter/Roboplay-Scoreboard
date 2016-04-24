@@ -418,7 +418,7 @@ class DisplayController extends BaseController {
 		));
 	}
 
-	public function video_list($competition_id)
+	public function video_list($competition_id, $winners = false)
 	{
 		$comp = Vid_competition::with('divisions')->find($competition_id);
 
@@ -431,16 +431,21 @@ class DisplayController extends BaseController {
 			$divs[] = $div->id;
 		}
 
-		$video_list = Video::with('school', 'vid_division')
+		$video_query = Video::with('school', 'vid_division', 'awards')
 		                   ->where('flag', FLAG_NORMAL)
-		                   ->whereIn('vid_division_id', $divs)->get();
+		                   ->whereIn('vid_division_id', $divs);
+		if($winners) {
+		    $video_query = $video_query->has('awards');
+		}
+
+        $video_list = $video_query->get();
 
 		$videos = [];
 		foreach($video_list as $video) {
 			$videos[$video->vid_division->name][$video->name] = $video;
 		}
 
-		return View::make('display.video_list', compact('videos', 'comp'));
+		return View::make('display.video_list', compact('videos', 'comp', 'winners'));
 	}
 
 	public function show_video($competition_id, $video_id)

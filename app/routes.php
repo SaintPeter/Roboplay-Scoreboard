@@ -60,8 +60,9 @@ Route::get('mathteam/{team_id}/{with_judges}', array('as' => 'display.mathteamsc
 Route::get('scores/{year}', [ 'as' => 'display.export_scores', 'uses' => 'DisplayController@export_year_scores']);
 
 /* ----------------------- Video Display ---------------------------- */
-Route::get('video_list/{comp_id}', [ 'as' => 'display.video_list', 'uses' => 'DisplayController@video_list'] );
-Route::get('video_list/{comp_id}/{video_id}', [ 'as' => 'display.show_video', 'uses' => 'DisplayController@show_video'] );
+Route::get('video_list/{comp_id}/{video_id}', [ 'as' => 'display.show_video', 'uses' => 'DisplayController@show_video'] )
+        ->where('video_id', '\d+');
+Route::get('video_list/{comp_id}/{winners?}', [ 'as' => 'display.video_list', 'uses' => 'DisplayController@video_list'] );
 
 /* ------------------------- Ajax Handlers -------------------------- */
 Route::get('ajax/c', 				[ 'as' => 'ajax.counties', 	'uses' => 'Wp_fix@ajax_counties']);

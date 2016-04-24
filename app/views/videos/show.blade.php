@@ -53,6 +53,9 @@
 			<th>Status</th>
 			<th>County/District/School</th>
 			<th>Challenge/Division</th>
+			@if(isset($video->awards))
+			    <th>Awards</th>
+			@endif
 			<th>Actions</th>
 		</tr>
 	</thead>
@@ -82,6 +85,13 @@
 					No Division Set
 				@endif
 			</td>
+			@if(isset($video->awards))
+			<td>
+			    @foreach($video->awards as $award)
+			        <p style="white-space: nowrap">{{ $award->name }}</p>
+			    @endforeach
+			</td>
+			@endif
             <td>
             	{{ link_to_route('videos.edit', 'Edit', array($video->id), array('class' => 'btn btn-info btn-margin')) }}
             	{{ link_to_route('uploader.index', 'Upload', array($video->id), array('class' => 'btn btn-success btn-margin')) }}

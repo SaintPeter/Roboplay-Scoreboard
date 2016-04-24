@@ -155,7 +155,7 @@ class VideosController extends BaseController {
 	{
 		Breadcrumbs::addCrumb('Show Video', 'videos');
 		View::share('title', 'Show Video');
-		$video = Video::findOrFail($id);
+		$video = Video::with('awards')->findOrFail($id);
 
 		return View::make('videos.show', compact('video'));
 	}
