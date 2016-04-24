@@ -150,7 +150,8 @@ function vid_division_change(e) {
 	@foreach($invoices as $invoice)
 	<tr>
 		<td>
-			{{ link_to('mailto:' . $invoice->wp_user->user_email, $invoice->wp_user->getName()) }}
+			{{ link_to('mailto:' . $invoice->wp_user->user_email, $invoice->wp_user->getName(), [ 'target' => '_blank', 'title' => 'E-mail User']) }}
+			<small>(<a href="http://c-stem.ucdavis.edu/wp-admin/user-edit.php?user_id={{ $invoice->user_id }}" title="Edit User's Wordpress Profile" target="_blank">Edit</a>)</small>
 		</td>
 		<td>
 			{{ ($invoice->school) ? $invoice->school->name : "(Not Set)" }}
