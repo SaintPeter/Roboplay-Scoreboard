@@ -24,9 +24,13 @@ class TeacherController extends BaseController {
 	    $year = CompYear::current()->year;
 	    $invoice = Invoices::where('year', $year)
 	                       ->where('user_id', Auth::user()->ID)
-	                       ->with('judge', 'school',
-	                              'teams', 'teams.students',
-	                              'videos', 'videos.students')
+	                       ->with( [ 'videos' => function($q) use ($year) {
+	                            return $q->where('year', $year);
+	                       }, 'videos.students'])
+	                       ->with( [ 'teams' => function($q) use ($year) {
+	                            return $q->where('year', $year);
+	                       }, 'teams.students'])
+                           ->with('judge', 'school')
 	                       ->first();
 
 //		$invoice = Wp_invoice_table::where('invoice_type_id', 16)

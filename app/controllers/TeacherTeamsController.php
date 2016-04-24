@@ -20,18 +20,16 @@ class TeacherTeamsController extends BaseController {
 		$school_id = Usermeta::getSchoolId();
 		$school = Schools::find($school_id);
 
-		// Create a list of Divisions to choose from
-		$competitions = Competition::where('active', true)->with(
-									[ 'divisions' => function($q) {
-											return $q->orderby('display_order');
-										} ] )
-									->get();
-		$division_list = [];
-		foreach($competitions as $competition) {
-			foreach($competition->divisions as $division) {
-				$division_list[$competition->name][$division->id] = $division->name;
-			}
-		}
+        // Get the most recent competition year with comptition divisisons
+	    $comp_year = CompYear::orderBy('year', 'desc')
+	                         ->with([ 'divisions' => function($q) {
+										return $q->orderby('display_order');
+									}])
+							->first();
+
+        foreach($comp_year->divisions as $division) {
+            $division_list[$division->competition->name][$division->id] = $division->name;
+        }
 
 		// Ethnicity List Setup
 		$ethnicity_list = array_merge([ 0 => "- Select Ethnicity -" ], Ethnicity::all()->lists('name','id'));
@@ -125,18 +123,16 @@ class TeacherTeamsController extends BaseController {
 		View::share('title', 'Edit Team');
 		$team = Team::with('students')->find($id);
 
-		// Create a list of Divisions to choose from
-		$competitions = Competition::where('active', true)->with(
-									[ 'divisions' => function($q) {
-											return $q->orderby('display_order');
-										} ] )
-									->get();
+		// Get the most recent competition year with comptition divisisons
+	    $comp_year = CompYear::orderBy('year', 'desc')
+	                         ->with([ 'divisions' => function($q) {
+										return $q->orderby('display_order');
+									}, 'divisions.competition'])
+							->first();
 
-		foreach($competitions as $competition) {
-			foreach($competition->divisions as $division) {
-				$division_list[$competition->name][$division->id] = $division->name;
-			}
-		}
+        foreach($comp_year->divisions as $division) {
+            $division_list[$division->competition->name][$division->id] = $division->name;
+        }
 
 		// Student Setup
 		$ethnicity_list = array_merge([ 0 => "- Select Ethnicity -" ], Ethnicity::all()->lists('name','id'));

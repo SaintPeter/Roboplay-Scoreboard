@@ -142,18 +142,14 @@ class TeacherVideoController extends BaseController {
 		View::share('title', 'Edit Video');
 		$video = Video::with('students')->find($id);
 
-		// Create a list of Divisions to choose from
-		$competitions = Vid_competition::with(
-									[ 'divisions' => function($q) {
-											return $q->orderby('display_order');
-										} ] )
-									->get();
+		// Get the most recent competition year with video divisisons
+	    $comp_year = CompYear::orderBy('year', 'desc')
+	                         ->with([ 'vid_divisions' => function($q) {
+										return $q->orderby('display_order');
+									}])
+							->first();
 
-		foreach($competitions as $competition) {
-			foreach($competition->divisions as $division) {
-				$division_list[$competition->name][$division->id] = $division->name;
-			}
-		}
+        $division_list = $comp_year->vid_divisions->lists('name', 'id');
 
 		// Student Setup
 		$ethnicity_list = array_merge([ 0 => "- Select Ethnicity -" ], Ethnicity::all()->lists('name','id'));

@@ -16,11 +16,15 @@ class InvoiceReview extends \BaseController {
 	    $year = CompYear::yearOrMostRecent($year);
 	    $comp_years = CompYear::orderBy('year')->get();
 
-		$invoices = Invoices::with('wp_user', 'wp_user.usermeta', 'school',
-		                           'videos', 'videos.vid_division', 'videos.students',
-		                           'teams', 'teams.division', 'teams.students')
-		                    ->where('year', $year)
-		                    ->get();
+		$invoices = Invoices::with('wp_user', 'wp_user.usermeta', 'judge', 'school')
+	                        ->with( [ 'videos' => function($q) use ($year) {
+	                             return $q->where('year', $year);
+	                        }, 'videos.students', 'videos.vid_division'])
+	                        ->with( [ 'teams' => function($q) use ($year) {
+	                             return $q->where('year', $year);
+	                        }, 'teams.students', 'teams.division'])
+    	                    ->where('year', $year)
+    	                    ->get();
 
 		$last_sync_date = $invoices->max('updated_at');
 		if(isset($last_sync_date)) {

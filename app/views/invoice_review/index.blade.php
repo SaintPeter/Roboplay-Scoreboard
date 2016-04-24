@@ -141,6 +141,7 @@ function vid_division_change(e) {
 		<th>Teams</th>
 		<th>Videos</th>
 		<th>Students</th>
+		<th>Paid</th>
 		<th>Actions</th>
 	</tr>
 </thead>
@@ -169,6 +170,9 @@ function vid_division_change(e) {
 			    $students_count += $invoice->videos->reduce($student_count, 0);
 			    $students_count += $invoice->teams->reduce($student_count, 0);
 			?>
+		</td>
+		<td class="text-center">
+		    {{ ($invoice->paid) ? 'Paid' : 'Unpaid' }}
 		</td>
 		<td>
 		    @if($invoice->videos->count() > 0)
