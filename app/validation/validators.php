@@ -40,6 +40,9 @@ function yt_check($code, $option) {
 
 function curlhelper($url) {
 	$curl = curl_init();
+	if (defined('CURLOPT_IPRESOLVE') && defined('CURL_IPRESOLVE_V4')){
+        curl_setopt($curl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+    }
 	curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
 	curl_setopt($curl, CURLOPT_URL, $url);
 	curl_setopt($curl, CURLOPT_RETURNTRANSFER ,true);
