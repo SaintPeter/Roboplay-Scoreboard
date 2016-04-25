@@ -14,12 +14,12 @@
 App::before(function($request)
 {
 	// Store changes to selected year
-	if(Input::has('selected_year')) {
-		$selected_year = Input::get('selected_year');
-		if($selected_year == 'clear') {
-			Session::forget('selected_year');
+	if(Input::has('year')) {
+		$year = Input::get('year');
+		if($year == '') {
+			Session::forget('year');
 		} else {
-			Session::put('selected_year', $selected_year);
+			Session::put('year', $year);
 		}
 	}
 

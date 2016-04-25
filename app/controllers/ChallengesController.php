@@ -27,7 +27,7 @@ class ChallengesController extends BaseController {
 		$challenge_query = Challenge::with('score_elements');
 
 		// Selected year, level select set in filters.php -> App::before()
-		$selected_year = Session::get('selected_year', false);
+		$year = Session::get('year', false);
 		$level_select= Session::get('level_select', false);
 
 		// Filter on Level, if set
@@ -36,8 +36,8 @@ class ChallengesController extends BaseController {
 		}
 
 		// Filter on year, if set
-		if($selected_year) {
-			$challenge_query = $challenge_query->where('year', $selected_year);
+		if($year) {
+			$challenge_query = $challenge_query->where('year', $year);
 		}
 
 		// Get Challenges

@@ -215,6 +215,10 @@ Route::group(array('before' => 'auth'), function() {
 				    'as' => 'video_scores.manage.judge_performance',
 				    'uses' => 'VideoManagementController@judge_performance' ])
 				    ->where('year', '\d{4}');
+	    Route::get('video_scores/graphs/{year?}', [
+				    'as' => 'video_scores.manage.graphs',
+				    'uses' => 'VideoManagementController@graphs' ])
+				    ->where('year', '\d{4}');
 
         // Graph Generation Routines
 	    Route::get('video_scores/video_performance_{year}.jpg', [

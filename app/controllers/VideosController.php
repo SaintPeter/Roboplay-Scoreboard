@@ -23,7 +23,7 @@ class VideosController extends BaseController {
 	public function index()
 	{
 		// Selected year set in filters.php -> App::before()
-		$selected_year = Session::get('selected_year', false);
+		$year = Session::get('year', false);
 
 		$video_query = Video::with('vid_division',
 		                           'school', 'school.district', 'school.district.county',
@@ -32,8 +32,8 @@ class VideosController extends BaseController {
 							->orderBy('year', 'desc')
 							->orderBy('teacher_id');
 
-		if($selected_year) {
-			$video_query = $video_query->where('year', $selected_year);
+		if($year) {
+			$video_query = $video_query->where('year', $year);
 		}
 
 		$videos = $video_query->get();

@@ -8,7 +8,7 @@ class VideoManagementController extends \BaseController {
 	{
 		Breadcrumbs::addCrumb('Manage Scores');
 
-		$year = is_null($year) ? Session::get('selected_year', false) : intval($year);
+		$year = is_null($year) ? Session::get('year', false) : intval($year);
 
 		$scores_query = Video_scores::with('division', 'division.competition', 'judge', 'video')
 							->orderBy('total', 'desc');
@@ -41,7 +41,7 @@ class VideoManagementController extends \BaseController {
 		Breadcrumbs::addCrumb('Scoring Summary');
 		View::share('title', 'Scoring Summary');
 
-		$year = is_null($year) ? Session::get('selected_year', false) : intval($year);
+		$year = is_null($year) ? Session::get('year', false) : intval($year);
 
 		// Videos with score count
 		if($year) {
@@ -64,7 +64,7 @@ class VideoManagementController extends \BaseController {
 		Breadcrumbs::addCrumb('Judge Performace');
 		View::share('title', 'Judge Performance');
 
-		$year = intval($year) OR Session::get('selected_year', false);
+		$year = intval($year) OR Session::get('year', false);
 
 		// Judges Scoring Count
 		$judge_list = Judge::with( [ 'video_scores' => function($q) use ($year) {
@@ -263,7 +263,7 @@ class VideoManagementController extends \BaseController {
 	}
 
 	public function graph_video_scoring($year = null) {
-	    $year = is_null($year) ? Session::get('selected_year', false) : intval($year);
+	    $year = is_null($year) ? Session::get('year', false) : intval($year);
 
 	    // Get the competition start/end dates
 	    $comp = Vid_competition::where(DB::raw("year(event_start)"), $year)->first();
@@ -321,7 +321,7 @@ class VideoManagementController extends \BaseController {
         $graph->SetScale('textlin');
 
         // Setup a title for the graph
-        $graph->title->Set("Video Scores - $delta_day");
+        $graph->title->Set("Video Scoring - $delta_day");
         $graph->title->SetFont(FF_ARIAL,FS_BOLD,14);
         $graph->title->SetMargin(15);
 
@@ -440,7 +440,7 @@ class VideoManagementController extends \BaseController {
         $graph->SetScale('textlin');
 
         // Setup a title for the graph
-        $graph->title->Set("Video Scores - $delta_day");
+        $graph->title->Set("Judge Performace - $delta_day");
         $graph->title->SetFont(FF_ARIAL,FS_BOLD,14);
         $graph->title->SetMargin(15);
 
@@ -477,5 +477,14 @@ class VideoManagementController extends \BaseController {
 
         // Display the graph
         $graph->Stroke();
+	}
+
+	public function graphs($year = null)
+	{
+	    Breadcrumbs::addCrumb('Graphs');
+		View::share('title', 'Graphs');
+	    $year = is_null($year) ? Session::get('year', false) : intval($year);
+
+	    return View::make('video_scores.manage.graphs', compact('year'));
 	}
 }

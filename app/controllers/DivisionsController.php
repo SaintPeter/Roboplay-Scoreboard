@@ -165,12 +165,12 @@ class DivisionsController extends BaseController {
 		$challenge_query = Challenge::with('divisions');
 
 		// Selected year, level select set in filters.php -> App::before()
-		$selected_year = Session::get('selected_year', false);
+		$year = Session::get('year', false);
 		$level_select= Session::get('level_select', false);
 
 		// Filter on selected year
-		if($selected_year) {
-			$challenge_query = $challenge_query->where('year', $selected_year);
+		if($year) {
+			$challenge_query = $challenge_query->where('year', $year);
 		}
 
 		// Filter on Level, if set

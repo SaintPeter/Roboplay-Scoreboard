@@ -16,10 +16,10 @@ class MathTeamsController extends \BaseController {
 	public function index()
 	{
 		// Selected year set in filters.php -> App::before()
-		$selected_year = Session::get('selected_year', false);
+		$year = Session::get('year', false);
 
-		if($selected_year) {
-			$math_teams = MathTeam::where('year', $selected_year)->with('division', 'school', 'school.district', 'school.district.county', 'teacher', 'teacher.usermeta', 'students')->get();
+		if($year) {
+			$math_teams = MathTeam::where('year', $year)->with('division', 'school', 'school.district', 'school.district.county', 'teacher', 'teacher.usermeta', 'students')->get();
 		} else {
 			$math_teams = MathTeam::with('division', 'school', 'school.district', 'school.district.county', 'teacher', 'teacher.usermeta', 'students')
 						->orderBy('year', 'desc')
