@@ -215,6 +215,14 @@ Route::group(array('before' => 'auth'), function() {
 				    'as' => 'video_scores.manage.judge_performance',
 				    'uses' => 'VideoManagementController@judge_performance' ])
 				    ->where('year', '\d{4}');
+
+        // Graph Generation Routines
+	    Route::get('video_scores/video_performance_{year}.jpg', [
+	                'as' => 'graph_video_performace',
+	                'uses' => 'VideoManagementController@graph_video_scoring' ]);
+	    Route::get('video_scores/judge_performance_{year}.jpg', [
+	                'as' => 'graph_judge_performace',
+	                'uses' => 'VideoManagementController@graph_judge_scoring' ]);
 	});
 
 	Route::group(array('before' => 'judge'), function () {

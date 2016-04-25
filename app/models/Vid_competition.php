@@ -11,6 +11,11 @@ class Vid_competition extends Eloquent {
 		'event_end' => 'required|date'
 	);
 
+	public function getDates()
+    {
+        return array('created_at', 'updated_at', 'event_start', 'event_end');
+    }
+
 	public function divisions() {
 		return $this->hasMany('Vid_division', 'competition_id', 'id');
 	}
@@ -20,7 +25,7 @@ class Vid_competition extends Eloquent {
 	}
 
 	public function is_active() {
-		if(Carbon::now()->between(new Carbon($this->event_start), new Carbon($this->event_end))) {
+		if(Carbon::now()->between($this->event_start, $this->event_end)) {
 			return true;
 		}
 		return false;

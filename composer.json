@@ -18,7 +18,8 @@
 		"easybook/geshi": "dev-master",
 		"doctrine/dbal": "dev-master",
 		"parsecsv/php-parsecsv": "0.4.5",
-		"raveren/kint": "dev-master"
+		"raveren/kint": "dev-master",
+		"jpgraph/jpgraph": "dev-master"
 	},
 	"autoload": {
 		"classmap": [

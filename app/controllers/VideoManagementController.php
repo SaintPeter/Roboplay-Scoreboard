@@ -1,4 +1,6 @@
 <?php
+use JpGraph\JpGraph;
+use \Carbon\Carbon;
 
 class VideoManagementController extends \BaseController {
 
@@ -260,4 +262,220 @@ class VideoManagementController extends \BaseController {
 		return Redirect::to(URL::previous());
 	}
 
+	public function graph_video_scoring($year = null) {
+	    $year = is_null($year) ? Session::get('selected_year', false) : intval($year);
+
+	    // Get the competition start/end dates
+	    $comp = Vid_competition::where(DB::raw("year(event_start)"), $year)->first();
+
+        // Calculate day delta
+	    if(Carbon::now()->gt($comp->event_end)) {
+	        $delta_day = "Final";
+	    } else {
+	        $delta_day = "Day " . Carbon::now()->addDay()->diffInDays($comp->event_start);
+	    }
+
+		// Videos with score count
+		if($year) {
+			$videos = Video::where('flag', 0)->with('scores')->where(DB::raw("year(created_at)"), $year)->get();
+		} else {
+			$videos = Video::where('flag', 0)->with('scores')->get();
+		}
+
+
+        // Get counts for all score types
+        $max = 0;
+		foreach($videos as $video) {
+		    $score = $video->all_scores_count();
+			$scores[] = $score;
+			$max = max(max(array_values($score)), $max);
+		}
+		$max += 3;
+
+		// Create blank arrays to fill in
+		$general = array_fill(0, $max, 0);
+		$code    = array_fill(0, $max, 0);
+
+		// Fill in histogram
+		foreach($scores as $score) {
+		    $general[$score['general']]++;
+		    $code[$score['compute']]++;
+		}
+
+        // Generate Graph
+
+	    JpGraph::load();
+	    JpGraph::module('bar');
+
+	     // Width and height of the graph
+        $width = 575; $height = 350;
+
+        // Create a graph instance
+        $graph = new Graph($width,$height);
+        $graph->ClearTheme();
+
+        // Give room on the edges
+        $graph->SetMargin(50,30,50,40);
+
+        // Specify what scale we want to use,
+        $graph->SetScale('textlin');
+
+        // Setup a title for the graph
+        $graph->title->Set("Video Scores - $delta_day");
+        $graph->title->SetFont(FF_ARIAL,FS_BOLD,14);
+        $graph->title->SetMargin(15);
+
+        // Setup titles and X-axis labels
+        $graph->xaxis->SetTitle('Number of Scores', 'center');
+        $graph->xaxis->SetTickLabels(array_keys($general));
+
+
+        // Setup Y-axis title
+        $graph->yaxis->title->Set('Number of Videos');
+
+             // Create the bar graph
+        $bp1 = new BarPlot($general);
+        $bp2 = new BarPlot($code);
+
+        // Style Bars
+        $bp1->SetFillColor([79, 129, 189]); // Blue
+        $bp2->SetFillColor([155, 187, 89]); // Green
+        $bp1->SetColor('white@1.0');
+        $bp2->SetColor('white@1.0');
+
+        // Legend
+        $bp1->SetLegend('General');
+        $bp2->SetLegend('Code');
+
+        // width
+        $bp1->SetWidth(0.3);
+        $bp2->SetWidth(0.3);
+
+        $acc = new GroupBarPlot( [$bp1, $bp2] );
+        // Add the plot to the graph
+        $graph->Add($acc);
+
+
+        // Display the graph
+        $graph->Stroke();
+	}
+
+	public function graph_judge_scoring($year = 2015) {
+        $year = intval($year);
+
+        // Get the competition start/end dates
+	    $comp = Vid_competition::where(DB::raw("year(event_start)"), $year)->first();
+
+        // Calculate day delta
+	    if(Carbon::now()->gt($comp->event_end)) {
+	        $delta_day = "Final";
+	    } else {
+	        $delta_day = "Day " . Carbon::now()->addDay()->diffInDays($comp->event_start);
+	    }
+
+	    $video_count = Video::where('flag', 0)->where(DB::raw("year(created_at)"), $year)->count();
+
+		// Judges Scoring Count
+		$judge_list = Judge::with( [ 'video_scores' => function($q) use ($year) {
+				if($year) {
+					return $q->where(DB::raw("year(created_at)"), $year);
+				} else {
+					return $q;
+				}
+			} ] )->where('is_judge', true)->get();
+
+		$judge_score_count = [];
+		foreach($judge_list as $judge) {
+			if(count($judge->video_scores)) {
+				$judge_score_count[$judge->id]['general'] = $judge->video_scores->reduce(function($count, $score) { return ($score->score_group == 1) ? $count + 1 : $count; }, 0) / 3;
+				$judge_score_count[$judge->id]['code'] = $judge->video_scores->reduce(function($count, $score) { return ($score->score_group == 3) ? $count + 1 : $count; }, 0);
+			}
+		}
+
+        // Make Bins
+        $bins = [ 0 ];
+        for($i = 5; $i < $video_count; $i += 5) {
+            $bins[] = $i;
+        }
+        $bins[] = $video_count;
+
+        $general = array_fill(0,count($bins),0);
+        $code = array_fill(0,count($bins),0);
+
+		foreach($judge_score_count as $counts) {
+		    // General
+		    foreach($bins as $index => $bin) {
+		        if($counts['general'] <= $bin) {
+		            $general[$index]++;
+		            break;
+		        }
+		    }
+		    // Code
+		    foreach($bins as $index => $bin) {
+		        if($counts['code'] <= $bin) {
+		            $code[$index]++;
+		            break;
+		        }
+		    }
+		}
+
+        //dd($general, $code);
+
+        // Generate Graph
+
+	    JpGraph::load();
+	    JpGraph::module('bar');
+
+	     // Width and height of the graph
+        $width = 575; $height = 350;
+
+        // Create a graph instance
+        $graph = new Graph($width,$height);
+        $graph->ClearTheme();
+
+        // Give room on the edges
+        $graph->SetMargin(50,30,50,40);
+
+        // Specify what scale we want to use,
+        $graph->SetScale('textlin');
+
+        // Setup a title for the graph
+        $graph->title->Set("Video Scores - $delta_day");
+        $graph->title->SetFont(FF_ARIAL,FS_BOLD,14);
+        $graph->title->SetMargin(15);
+
+        // Setup titles and X-axis labels
+        $graph->xaxis->SetTitle('Videos Scored', 'center');
+        $graph->xaxis->SetTickLabels($bins);
+
+
+        // Setup Y-axis title
+        $graph->yaxis->title->Set('Number of Judges');
+
+        // Create the bar graph
+        $bp1 = new BarPlot($general);
+        $bp2 = new BarPlot($code);
+
+        // Style Bars
+        $bp1->SetFillColor([79, 129, 189]); // Blue
+        $bp2->SetFillColor([155, 187, 89]); // Green
+        $bp1->SetColor('white@1.0');
+        $bp2->SetColor('white@1.0');
+
+        // Legend
+        $bp1->SetLegend('General');
+        $bp2->SetLegend('Code');
+
+        // width
+        $bp1->SetWidth(0.1);
+        $bp2->SetWidth(0.1);
+
+        $acc = new GroupBarPlot( [$bp1, $bp2] );
+        // Add the plot to the graph
+        $graph->Add($acc);
+
+
+        // Display the graph
+        $graph->Stroke();
+	}
 }

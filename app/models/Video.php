@@ -112,12 +112,12 @@ class Video extends Eloquent {
 
 	public function general_scores_count()
 	{
-		$count = 0;
-		$this->scores->map(function($score) use (&$count) {
+		$count = $this->scores->reduce(function($acc, $score) {
 			if($score->score_group == 1) {
-				$count++;
+				$acc++;
 			}
-		});
+		    return $acc;
+		}, 0);
 		$count /= 3;
 		return $count;
 	}
@@ -148,6 +148,25 @@ class Video extends Eloquent {
 			return $count;
 		}
 		return '-';
+	}
+
+	public function all_scores_count()
+	{
+	    $count = $this->scores->reduce(function($acc, $score) {
+			if($score->score_group == 1) {
+				$acc['general']++;
+			}
+			if($score->score_group == 2) {
+				$acc['custom']++;
+			}
+			if($score->score_group == 3) {
+				$acc['compute']++;
+			}
+		    return $acc;
+		}, ['general' => 0, 'compute' => 0, 'custom' => 0]);
+
+		$count['general'] /= 3;
+		return $count;
 	}
 
 }

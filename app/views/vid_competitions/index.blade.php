@@ -19,8 +19,8 @@
 			@foreach ($vid_competitions as $vid_competition)
 				<tr>
 					<td>{{{ $vid_competition->name }}}</td>
-					<td>{{{ $vid_competition->event_start }}}</td>
-					<td>{{{ $vid_competition->event_end }}}</td>
+					<td>{{{ $vid_competition->event_start->toFormattedDateString() }}}</td>
+					<td>{{{ $vid_competition->event_end->toFormattedDateString() }}}</td>
 	                <td>{{ link_to_route('vid_competitions.edit', 'Edit', array($vid_competition->id), array('class' => 'btn btn-info btn-margin')) }}
 
 	                    {{ Form::open(array('method' => 'DELETE', 'route' => array('vid_competitions.destroy', $vid_competition->id), 'style' => 'display: inline-block')) }}
