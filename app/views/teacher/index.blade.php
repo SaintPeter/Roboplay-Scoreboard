@@ -127,14 +127,16 @@
 @stop
 
 @section('main')
-<h3>T-Shirt Size</h3>
-<p>All teachers recieve a t-shirt.</p>
-<div class="form-group">
-    {{ Form::select('tshirt', $tshirt_sizes, $invoice->judge->tshirt, [ 'id' => "tshirt" ]) }}
-</div>
+@if($invoice->team_count > 0)
+    <h3>T-Shirt Size</h3>
+    <p>All Challenge Team Teachers recieve a t-shirt</p>
+    <div class="form-group">
+        {{ Form::select('tshirt', $tshirt_sizes, $invoice->judge->tshirt, [ 'id' => "tshirt" ]) }}
+    </div>
+@endif
 
 <h3>Manage Challenge Teams</h3>
-@if( $teams->count() < ($invoice->team_count) AND ($invoice->team_count) > 0)
+@if( $teams->count() < $invoice->team_count AND $invoice->team_count > 0)
 	@if($invoice->paid == 1)
 		<p>{{ link_to_route('teacher.teams.create', 'Add Challenge Team',array(), array('class' => 'btn btn-primary')) }}</p>
 	@else
@@ -177,7 +179,7 @@
 </table>
 
 	<h3>Manage Videos</h3>
-	@if( $videos->count() < $invoice->video_count AND $invoice->team_count > 0 )
+	@if( $videos->count() < $invoice->video_count AND $invoice->video_count > 0 )
 		@if($invoice->paid == 1)
 			<p>{{ link_to_route('teacher.videos.create', 'Add Video', [], [ 'class' => 'btn btn-primary' ]) }}</p>
 		@else
