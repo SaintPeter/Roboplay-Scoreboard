@@ -116,6 +116,7 @@
 	<li>{{ link_to('videos', 'Manage Videos', $noajax) }}</li>
 	<li data-role="list-divider">Other Management</li>
 	<li>{{ link_to('invoice_review', 'Invoice Review', $noajax) }}</li>
+	<li>{{ link_to_route('data_export', 'Data Export', null, $noajax) }}</li>
 	<li>{{ link_to_route('list_judges', 'User List', null, $noajax) }}</li>
 </ul>
 @endif

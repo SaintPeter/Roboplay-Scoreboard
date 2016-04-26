@@ -105,4 +105,93 @@ class InvoiceReview extends \BaseController {
             return Redirect::route('invoice_review', $year)->with('message', 'Synced ' . $count . " Invoices for $year");
         }
 	}
+
+	// Data Export interface
+	public function data_export($year = '')
+	{
+	    Breadcrumbs::addCrumb('Data Export');
+		View::share('title', 'Data Export');
+
+	    return View::make('data_export.index', compact('year'));
+	}
+
+	public function student_tshirts($year = '')
+	{
+	    if(!$year) {
+	        return Redirect::route('data_export')->with('message', 'Year must be set to export data');
+	    }
+
+
+		$invoices = Invoices::with('wp_user', 'wp_user.usermeta', 'judge', 'school')
+	                        ->with( [ 'teams' => function($q) use ($year) {
+	                             return $q->where('year', $year);
+	                        }, 'teams.students', 'teams.division', 'teams.division.competition'])
+    	                    ->where('year', $year)
+    	                    ->get();
+
+        // Header
+	    $content = "Teacher Name, Site, Team Name, Student Name, Size\n";
+
+		foreach($invoices as $invoice) {
+		    foreach($invoice->teams as $team) {
+		        foreach($team->students as $student) {
+        			$content .= '"';
+        			$content .= join('","',
+        			                [ $invoice->judge->display_name,
+	                                $team->division->competition->location,
+	                                $team->name,
+	                                $student->fullName(),
+	                                ($student->tshirt) ? $student->tshirt : 'Not Selected'
+								   ]) .
+						     '"' . "\n";
+				}
+			}
+		}
+
+		// return an string as a file to the user
+		return Response::make($content, '200', array(
+			'Content-Type' => 'application/octet-stream',
+			'Content-Disposition' => 'attachment; filename="student_tshirts_' . $year . '.csv"'
+		));
+	}
+
+	public function teacher_tshirts($year = '')
+	{
+	    if(!$year) {
+	        return Redirect::route('data_export')->with('message', 'Year must be set to export data');
+	    }
+
+
+		$invoices = Invoices::with('wp_user', 'wp_user.usermeta', 'judge', 'school')
+	                        ->with( [ 'teams' => function($q) use ($year) {
+	                             return $q->where('year', $year);
+	                        }, 'teams.division', 'teams.division.competition'])
+    	                    ->where('year', $year)
+    	                    ->where('team_count', '>', 0)
+    	                    ->get();
+
+        // Header
+	    $content = "Teacher Name, Site, Size\n";
+
+		foreach($invoices as $invoice) {
+		    $team = $invoice->teams->first();
+		    if($team) {
+    			$content .= '"';
+    			$content .= join('","',
+    			                [ $invoice->judge->display_name,
+                                $team->division->competition->location,
+                                ($invoice->judge->tshirt) ? $invoice->judge->tshirt : 'Not Selected',
+    						   ]) .
+    				     '"' . "\n";
+    	    }
+		}
+
+		// return an string as a file to the user
+		return Response::make($content, '200', array(
+			'Content-Type' => 'application/octet-stream',
+			'Content-Disposition' => 'attachment; filename="teacher_tshirts_' . $year . '.csv"'
+		));
+
+	}
+
 }
