@@ -211,6 +211,7 @@ class TeacherVideoController extends BaseController {
 
 				if($students_pass) {
 					$video = video::find($id);
+					$video->audit = 0;
 					$video->update($input);
 
 					foreach ($students as $index => &$student) {
@@ -236,6 +237,7 @@ class TeacherVideoController extends BaseController {
 			} else {
 				// No students, just update the video
 				$video = video::find($id);
+				$video->audit = 0;
 				$video->update($input);
 				return Redirect::route('teacher.index');
 			}
