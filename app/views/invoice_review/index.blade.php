@@ -158,7 +158,7 @@ function vid_division_change(e) {
 		</td>
 		<td class="text-center">
 			{{ $invoice->teams->count() }} / {{ $invoice->team_count }}
-			<?php $team_count += $invoice->team_count ?>
+			<?php $team_count += $invoice->teams->count() ?>
 		</td>
 		<td class="text-center">
 			{{ $invoice->videos->count() }} / {{ $invoice->video_count }}
@@ -168,6 +168,7 @@ function vid_division_change(e) {
 			{{ $invoice->teams->reduce($student_count, 0) }} /
 			{{ $invoice->videos->reduce($student_count, 0) }}
 			<?php
+			    // Count the students in videos and teams
 			    $students_count += $invoice->videos->reduce($student_count, 0);
 			    $students_count += $invoice->teams->reduce($student_count, 0);
 			?>
@@ -245,9 +246,9 @@ function vid_division_change(e) {
 	@endforeach
 	<tr>
 		<td colspan="2" class="text-right">Totals</td>
-		<td>{{ $team_actual }} / {{ $team_count }}</td>
-		<td>{{ $video_actual }} / {{ $video_count }}</td>
-		<td>{{ $students_count }}</td>
+		<td class="text-center">{{ $team_count }} / {{ $team_actual }}</td>
+		<td class="text-center">{{ $video_count }} / {{ $video_actual }}</td>
+		<td class="text-center">{{ $students_count }}</td>
 	</tr>
 @else
 	<tr><td>No Invoices</td></tr>
