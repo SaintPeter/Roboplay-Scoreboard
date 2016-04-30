@@ -41,7 +41,7 @@
 
 	<div class="form-group">
 		{{ Form::label('vid_division_id', 'Video Division:') }}
-		{{ Form::select('vid_division_id', $division_list, '', [ 'class'=>'form-control col-md-4' ]) }}
+		{{ Form::select('vid_division_id', $division_list, null, [ 'class'=>'form-control col-md-4' ]) }}
 	</div>
 
 	<div class="form-group">

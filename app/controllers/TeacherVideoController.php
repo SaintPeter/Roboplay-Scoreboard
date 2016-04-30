@@ -32,10 +32,10 @@ class TeacherVideoController extends BaseController {
 									}])
 							->first();
 
-        $division_list = $comp_year->vid_divisions->lists('name', 'id');
+        $division_list = [ 0 => "- Select Division -" ] + $comp_year->vid_divisions->lists('name', 'id');
 
-		// Ethnicity List Setup
-		$ethnicity_list = array_merge([ 0 => "- Select Ethnicity -" ], Ethnicity::all()->lists('name','id'));
+		// Student Setup
+		$ethnicity_list = [ 0 => "- Select Ethnicity -" ] + Ethnicity::all()->lists('name','id');
 
 		View::share('title', 'Create Video');
 		return View::make('teacher.videos.create',compact('division_list', 'ethnicity_list'));
@@ -149,10 +149,10 @@ class TeacherVideoController extends BaseController {
 									}])
 							->first();
 
-        $division_list = $comp_year->vid_divisions->lists('name', 'id');
+        $division_list = [ 0 => "- Select Division -" ] + $comp_year->vid_divisions->lists('name', 'id');
 
 		// Student Setup
-		$ethnicity_list = array_merge([ 0 => "- Select Ethnicity -" ], Ethnicity::all()->lists('name','id'));
+		$ethnicity_list = [ 0 => "- Select Ethnicity -" ] + Ethnicity::all()->lists('name','id');
 		if(!Session::has('students')) {
 			// On first load we populate the form from the DB
 			$students = $video->students;

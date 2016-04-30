@@ -8,7 +8,7 @@ class Video extends Eloquent {
 		'name' => 'required',
 		'yt_code' => array('required','yt_valid', 'yt_embeddable', 'yt_public'),
 		'school_id' => 'required',
-		'vid_division_id' => 'required'
+		'vid_division_id' => 'required|not_in:0'
 	);
 
 	protected $attributes = array(

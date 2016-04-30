@@ -27,12 +27,13 @@ class TeacherTeamsController extends BaseController {
 									}])
 							->first();
 
+        $division_list[0] = "- Select Division -";
         foreach($comp_year->divisions as $division) {
             $division_list[$division->competition->name][$division->id] = $division->name;
         }
 
 		// Ethnicity List Setup
-		$ethnicity_list = array_merge([ 0 => "- Select Ethnicity -" ], Ethnicity::all()->lists('name','id'));
+		$ethnicity_list = [ 0 => "- Select Ethnicity -" ] + Ethnicity::all()->lists('name','id');
 
 		View::share('title', 'Add Team - ' . $school->name);
         return View::make('teacher.teams.create', compact('school','ethnicity_list', 'division_list'));
@@ -130,12 +131,13 @@ class TeacherTeamsController extends BaseController {
 									}, 'divisions.competition'])
 							->first();
 
+        $division_list[0] = "- Select Division -";
         foreach($comp_year->divisions as $division) {
             $division_list[$division->competition->name][$division->id] = $division->name;
         }
 
 		// Student Setup
-		$ethnicity_list = array_merge([ 0 => "- Select Ethnicity -" ], Ethnicity::all()->lists('name','id'));
+		$ethnicity_list = [ 0 => "- Select Ethnicity -" ] + Ethnicity::all()->lists('name','id');
 		if(!Session::has('students')) {
 			// On first load we populate the form from the DB
 			$students = $team->students;

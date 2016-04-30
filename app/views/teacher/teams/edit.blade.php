@@ -36,7 +36,7 @@
 
 		<div class="form-group">
 			{{ Form::label('division_id', 'Division:') }}
-			{{ Form::select('division_id', $division_list, '', [ 'class'=>'form-control col-md-4' ]) }}
+			{{ Form::select('division_id', $division_list, null, [ 'class'=>'form-control col-md-4' ]) }}
 		</div>
 
 		<div class="form-group">

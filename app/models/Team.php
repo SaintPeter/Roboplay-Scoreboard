@@ -6,7 +6,7 @@ class Team extends Eloquent {
 
 	public static $rules = array(
 		'name' => 'required',
-		'division_id' => 'required',
+		'division_id' => 'required|not_in:0',
 		'school_id' => 'required'
 	);
 
@@ -38,7 +38,7 @@ class Team extends Eloquent {
 	public function students() {
 		return $this->morphToMany('Student', 'studentable');
 	}
-	
+
 	public function teacher() {
 		return $this->belongsTo('Wp_user', 'teacher_id', 'ID');
 	}
