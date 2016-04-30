@@ -485,20 +485,17 @@ class DisplayController extends BaseController {
 	}
 
 	public function export_year_scores($year) {
-	    $compyear = CompYear::with('divisions', 'divisions.teams', 'divisions.challenges')->where('year', $year)->first();
+	    $compyear = CompYear::with('divisions', 'divisions.teams', 'divisions.challenges', 'divisions.competition')->where('year', $year)->first();
 		$divisions = $compyear->divisions;
 		$division_list = $divisions->lists('id');
 
-		$content = "Division,Challenge,Team,Run,Score,s1,s2,s3,s4,s5,s6,Used\n";
+		$content = "Division,Challenge,Team,Location,Run,Score,s1,s2,s3,s4,s5,s6,Used\n";
 
 		foreach ($divisions as $division) {
 		    $division_id = $division->id;
 
-//            $challenges = Challenge::with( [ 'scores' => function($q) use ($division_id)
-//							{
-//								$q->where('division_id', $division_id);
-//							} ] )->get();
-
+            // Only return scores from this division
+            // Overcome limitation of Eloquent
             $division->challenges = $division->challenges->filter( function($val) use ($division_id)
 							{
 								return ($val->pivot->division_id === $division_id);
@@ -519,6 +516,7 @@ class DisplayController extends BaseController {
     			              $division->name,
     			              $num . $challenge->display_name,
     			              $team->name,
+    			              $division->competition->location,
     			              $score->run_number,
     			              $score->total
     			            ];
