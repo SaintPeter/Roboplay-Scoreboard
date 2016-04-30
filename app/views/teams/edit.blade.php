@@ -60,6 +60,11 @@
 
 	@include('students.partial.fields', [ 'students' => $students ])
 
+	<div class="form-group">
+	    {{ Form::label('audit', 'Audit Status:') }}
+	    {{ Form::select('audit', [ 0 => 'Unchecked', 1 => 'Checked' ], null, [ 'class' => 'form-control col-md-4' ]) }}
+	</div>
+
 	{{ Form::submit('Submit', array('class' => 'btn btn-primary ')) }}
 	&nbsp;
 	{{ link_to_route('teams.index', 'Cancel', [], ['class' => 'btn btn-info']) }}
