@@ -78,18 +78,21 @@
 @if(Roles::isTeacher())
 <h2>Teacher Menu</h2>
 <ul data-role="listview" data-inset="true">
-	<li><a href="/scoreboard/docs/teacher_guide_2015.pdf" data-ajax="false">Teacher Guide</a></li>
 	<li>
 		<a href="{{ route('teacher.index') }}" data-ajax="false">
 			Manage Challenge and Video Teams
 		</a>
 	</li>
+	<li><a href="http://c-stem.ucdavis.edu/wp-content/uploads/2016/CDay/Teacher%20Instructions%202016.challenge.pdf" data-ajax="false" target="_blank"><i class="fa fa-users"></i>&nbsp;Teacher Guide &mdash; Challenge Teams</a></li>
+	<li><a href="http://c-stem.ucdavis.edu/wp-content/uploads/2016/CDay/Teacher%20Instructions%202016.video.pdf" data-ajax="false" target="_blank"><i class="fa fa-video-camera"></i>&nbsp;Teacher Guide &mdash; Video Teams</a></li>
+
 
 </ul>
-	<p>Lost?  Confused?  Frustrated?<br />
+	<p>Issues?<br />
 		<ol>
-			<li>Read the <a href="/scoreboard/docs/teacher_guide_2015.pdf" data-ajax="false">Teacher Guide</a></li>
-			<li>Still stuck?<br /> E-mail <a href="mailto:rex.schrader@gmail.com?subject=RoboPlay 2015 - Scoreboard Question&cc=hespindola@ucdavis.edu">rex.schrader@gmail.com</a></li>
+			<li>Read the Teacher Guides above.</li>
+			<li>Technical Problems?<br /> E-mail <a href="mailto:rex.schrader@gmail.com?subject=RoboPlay 2016 - Scoreboard Question&cc=hespindola@ucdavis.edu">rex.schrader@gmail.com</a></li>
+			<li>Invoice Problems?<br /> E-mail <a href="mailto:hespindola@ucdavis.edu?subject=RoboPlay 2016 - Scoreboard Question">hespindola@ucdavis.edu</a></li>
 		</ol>
 		</p>
 @endif
