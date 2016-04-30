@@ -34,6 +34,9 @@
 			.over {
 			 	text-decoration: overline;
 			}
+			.table-nonfluid {
+               width: auto !important;
+            }
 			@yield('style')
 		</style>
 	</head>

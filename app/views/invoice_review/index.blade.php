@@ -11,9 +11,12 @@
 
 @section('script')
 $('.toggle_videos').on('click', toggle_videos);
+$('.toggle_teams').on('click', toggle_teams);
 $('.audit_button').on('click', toggle_audit);
+$('.team_audit_button').on('click', team_toggle_audit);
 $('.video_notes').on('input', notes_change);
 $('.vid_division').on('change', vid_division_change);
+$('.division').on('change', division_change);
 $('#toggle_notes').on('click', toggle_notes);
 $('#toggle_all_videos').on('click', toggle_all_videos);
 $('#toggle_all_teams').on('click', toggle_all_teams);
@@ -27,6 +30,15 @@ function toggle_videos(e) {
     }
 }
 
+function toggle_teams(e) {
+    var id = $(this).data('invoice');
+    if($('#teams' + id).is(":hidden")) {
+        $('#teams' + id).show();
+    } else {
+        $('#teams' + id).hide();
+    }
+}
+
 function toggle_audit(e) {
     var button = this;
     var status = $(button).data('status');
@@ -35,6 +47,23 @@ function toggle_audit(e) {
     $.get('{{ route('invoice_review.toggle_video') }}/' + id, function(data) {
         // Toggle status
         set_video_button(button, (status === 'pass' ? 'fail' : 'pass'), id);
+    });
+}
+
+function team_toggle_audit(e) {
+    var button = this;
+    var status = $(button).data('status');
+    var id = $(button).data('team');
+
+    $.get('{{ route('invoice_review.toggle_team') }}/' + id, function(data) {
+        // Toggle status
+        if(status == 'pass') {
+            $(button).data('status', 'fail');
+            $(button).removeClass('btn-success').addClass('btn-danger').html('Unchecked');
+        } else {
+            $(button).data('status', 'pass');
+            $(button).removeClass('btn-danger').addClass('btn-success').html('Checked');
+        }
     });
 }
 
@@ -55,6 +84,16 @@ function toggle_all_videos(e) {
     } else {
         $(this).data('status', 'show');
         $('.video_section').show();
+    }
+}
+
+function toggle_all_teams(e) {
+    if($(this).data('status') === 'show') {
+        $(this).data('status', 'hide');
+        $('.team_section').hide();
+    } else {
+        $(this).data('status', 'show');
+        $('.team_section').show();
     }
 }
 
@@ -108,6 +147,17 @@ function vid_division_change(e) {
     });
 }
 
+function division_change(e) {
+    var dropdown = $(this);
+    var id = dropdown.data('id');
+
+    $.get('{{ route('invoice_review.save_team_div') }}/' + id + '/' + dropdown.val(), function(data) {
+        $(dropdown).stop()
+                .animate({backgroundColor: "#90EE90"}, 500)
+                .animate({backgroundColor: "#FFFFFF"}, 500);
+    });
+}
+
 
 @stop
 
@@ -117,6 +167,9 @@ function vid_division_change(e) {
     }
     .video_notes {
         width: 100%;
+    }
+    .team_section {
+        display: none;
     }
 @stop
 
@@ -142,7 +195,7 @@ function vid_division_change(e) {
 		<th>Videos</th>
 		<th>Students</th>
 		<th>Paid</th>
-		<th>Actions</th>
+		<th class="text-center">Actions</th>
 	</tr>
 </thead>
 <tbody>
@@ -176,24 +229,24 @@ function vid_division_change(e) {
 		<td class="text-center">
 		    {{ ($invoice->paid) ? 'Paid' : 'Unpaid' }}
 		</td>
-		<td>
-		    @if($invoice->videos->count() > 0)
-		        <button class="btn btn-success btn-sm toggle_videos" data-invoice="{{ $invoice->id }}">Videos</button>
-		    @else
-		        <button class="btn btn-success btn-sm " disabled>Videos</button>
-		    @endif
-
+		<td class="text-center">
 		    @if($invoice->teams->count() > 0)
 		        <button class="btn btn-info btn-sm toggle_teams" data-invoice="{{ $invoice->id }}">Teams</button>
 		    @else
 		        <button class="btn btn-info btn-sm " disabled>Teams</button>
+		    @endif
+
+		    		    @if($invoice->videos->count() > 0)
+		        <button class="btn btn-success btn-sm toggle_videos" data-invoice="{{ $invoice->id }}">Videos</button>
+		    @else
+		        <button class="btn btn-success btn-sm " disabled>Videos</button>
 		    @endif
 		</td>
 
 	</tr>
 	@if($invoice->videos->count() > 0)
 	<tr>
-	    <td colspan="6" class="video_section" id="videos{{ $invoice->id }}">
+	    <td colspan="7" class="video_section" id="videos{{ $invoice->id }}">
     	    <table class="table">
     	        <thead>
     	            <th>Video</th>
@@ -233,6 +286,67 @@ function vid_division_change(e) {
                             <textarea class="video_notes" id="video_notes{{ $video->id }}"data-id="{{ $video->id }}">{{ $video->notes }}</textarea>
             		    </td>
             		</tr>
+            		@endforeach
+    		    </tbody>
+    		</table>
+		</td>
+	</tr>
+	@endif
+	@if($invoice->teams->count() > 0)
+	<tr>
+	    <td colspan="7" class="team_section" id="teams{{ $invoice->id }}">
+
+    	    <table class="table pull-right">
+    	        <thead>
+    	            <th>Team Name</th>
+    	            <th>Division</th>
+    	            <th class="text-center">Students</th>
+    	            <th>Status</th>
+    	        </thead>
+    	        <tbody>
+            		@foreach($invoice->teams as $team)
+            		<tr>
+            			<td>
+            			    {{ $team->name }}
+            			</td>
+            			<td>
+            			    {{ Form::select('division', $division_list, $team->division->id, [ 'data-id' => $team->id, 'class' => 'division' ])  }}
+            			</td>
+            			<td class="text-center">{{ $team->students->count() }}</td>
+            			<td>
+            			    @if($team->audit)
+            			        <button class="btn btn-success btn-sm team_audit_button" data-status="pass" id="team_status_toggle_{{ $team->id }}" data-tean="{{ $team->id }}" title="Click to mark unchecked">Checked</button>
+            			    @else
+            			        <button class="btn btn-danger btn-sm team_audit_button" data-status="fail"  id="team_status_toggle_{{ $team->id }}" data-team="{{ $team->id }}" title="Click to mark Checked">Unchecked</button>
+            			    @endif
+            			</td>
+            		</tr>
+            		@if(count($team->students))
+                		<tr>
+                		    <td></td>
+                		    <td>
+                		        <table class="table table-condensed">
+                		            <thead>
+                		                <th>Student</th>
+                		                <th>Math Level</th>
+                		                <th class="text-center">Math Div</th>
+
+                		            </thead>
+                		            <tbody>
+                		            @foreach($team->students as $student)
+                		            <tr>
+                		                <td>{{ $student->fullName() }}</td>
+                		                <td>{{ $student->math_level->name }}</td>
+                		                <td class="text-center">{{ $student->math_level->level }}</td>
+                		             </tr>
+                		            @endforeach
+                		            </tbody>
+                		        </table>
+
+                		    </td>
+                		    <td colspan=2></td>
+                		</tr>
+                    @endif
             		@endforeach
     		    </tbody>
     		</table>

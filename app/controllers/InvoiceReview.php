@@ -22,7 +22,7 @@ class InvoiceReview extends \BaseController {
 	                        }, 'videos.students', 'videos.vid_division'])
 	                        ->with( [ 'teams' => function($q) use ($year) {
 	                             return $q->where('year', $year);
-	                        }, 'teams.students', 'teams.division'])
+	                        }, 'teams.students', 'teams.students.math_level', 'teams.division'])
     	                    ->where('year', $year)
     	                    ->get();
 
@@ -43,7 +43,11 @@ class InvoiceReview extends \BaseController {
                                      ->first();
 
         $vid_division_list = $comp_year->vid_divisions->lists('name', 'id');
-        $division_list = $comp_year->divisions->lists('name','id');
+
+        foreach($comp_year->divisions as $division) {
+            $division_list[$division->competition->name][$division->id] = $division->longname();
+        }
+        //$division_list = $comp_year->divisions->lists('name','id');
 
 		return View::make('invoice_review.index',
 		                compact('invoices', 'year',
@@ -58,6 +62,12 @@ class InvoiceReview extends \BaseController {
 	    return 'true';
 	}
 
+	public function toggle_team($team_id) {
+	    $team = Team::findOrFail($team_id);
+	    $team->update(['audit' => !$team->audit ]);
+	    return 'true';
+	}
+
 	public function save_video_notes($video_id) {
 	    $video = Video::findOrFail($video_id);
 	    $video->update(['notes' => Input::get('notes', '') ]);
@@ -67,6 +77,12 @@ class InvoiceReview extends \BaseController {
 	public function save_video_division($video_id, $vid_div_id) {
 	       $video = Video::findOrFail($video_id);
 	    $video->update(['vid_division_id' => $vid_div_id ]);
+	    return 'true';
+	}
+
+	public function save_team_division($team_id, $div_id) {
+	    $team = Team::findOrFail($team_id);
+	    $team->update(['division_id' => $div_id ]);
 	    return 'true';
 	}
 
