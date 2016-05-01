@@ -108,4 +108,51 @@ class RandomListsController extends \BaseController {
 		return Redirect::back();
 	}
 
+    public function edit_list_elements($random_list_id) {
+        $random_list = RandomList::with('elements')->findOrFail($random_list_id);
+
+        $elements = $random_list->get_elements();
+
+        return View::make('random_lists.partials.edit_elements')
+                   ->with(compact('elements', 'random_list_id'));
+    }
+
+
+    public function save_list_elements($random_list_id) {
+        $names = [ 'd1', 'd2', 'd3', 'd4', 'd5' ];
+        $random_list = RandomList::findOrFail($random_list_id);
+        RandomListElement::whereIn('id', $random_list->elements->lists('id'))->delete();
+
+        $element_lines = preg_split('/\s*\n\s*/', Input::get('elements'));
+        $save = [];
+        foreach($element_lines as $elements_raw) {
+            $elements = preg_split('/\s*(;|\t)\s*/', $elements_raw);
+            for($i = 0; $i < count($elements) AND $i < 5; $i++) {
+                if(!empty($elements[$i])) {
+                    $save[$names[$i]] = $elements[$i];
+                } else {
+                    break;
+                }
+            }
+            if(!empty($save)) {
+                $save['random_list_id'] = $random_list_id;
+                $data[] = $save;
+            }
+        }
+        //ddd($data);
+        RandomListElement::insert($data);
+
+        return Redirect::route('list_elements.show', $random_list_id);
+    }
+
+    public function show_list_elements($random_list_id) {
+        $random_list = RandomList::with('elements')->findOrFail($random_list_id);
+
+        $elements_list = $random_list->elements;
+
+        //ddd($elements_list);
+
+        return View::make('random_lists.partials.show_elements')->with(compact('elements_list'));
+    }
+
 }

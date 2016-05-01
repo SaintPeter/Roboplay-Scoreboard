@@ -156,6 +156,9 @@ Route::group(array('before' => 'auth'), function() {
 		Route::get('randoms/{challenge_id}/create', 	   [ 'as' => 'randoms.create',			'uses' => 'RandomsController@create']);
 		Route::resource('random_list', 'RandomListsController');
 		Route::get('random_list/{challenge_id}/create', 	[ 'as' => 'random_list.create',			'uses' => 'RandomListsController@create']);
+		Route::get('list_elements/{random_list_id}/edit', 	[ 'as' => 'list_elements.edit',	'uses' => 'RandomListsController@edit_list_elements']);
+		Route::post('list_elements/{random_list_id}/save', 	[ 'as' => 'list_elements.save',	'uses' => 'RandomListsController@save_list_elements']);
+		Route::get('list_elements/{random_list_id}/show', 	[ 'as' => 'list_elements.show',	'uses' => 'RandomListsController@show_list_elements']);
 		Route::resource('score_runs', 'Score_runsController');
 		Route::resource('judges', 'JudgesController');
 		Route::resource('videos', 'VideosController');

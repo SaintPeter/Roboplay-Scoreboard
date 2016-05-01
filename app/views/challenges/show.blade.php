@@ -48,6 +48,7 @@ $(function() {
 		event.preventDefault();
 		$.get( $(this).attr('href'),
 			function( data ) {
+			$( "#active_random_dialog" ).dialog('option', 'title', 'Edit Random');
 			$( "#active_random_dialog" ).html( data );
 			$( "#active_random_dialog" ).dialog("open");
 			}, "html" ).done(setup_random_handler);
@@ -57,6 +58,25 @@ $(function() {
 		event.preventDefault();
 		$.get( $(this).attr('href'),
 			function( data ) {
+			$( "#active_random_dialog" ).dialog('option', 'title', 'Edit Random List');
+			$( "#active_random_dialog" ).html( data );
+			$( "#active_random_dialog" ).dialog("open");
+			}, "html" ).done(setup_random_list_handler);
+	});
+	$(".btn_random_elements_edit").click( function (event) {
+		event.preventDefault();
+		$.get( $(this).attr('href'),
+			function( data ) {
+			$( "#active_random_dialog" ).dialog('option', 'title', 'Edit Random Elements List');
+			$( "#active_random_dialog" ).html( data );
+			$( "#active_random_dialog" ).dialog("open");
+			}, "html" ).done(setup_random_list_handler);
+	});
+	$(".btn_random_elements_show").click( function (event) {
+		event.preventDefault();
+		$.get( $(this).attr('href'),
+			function( data ) {
+			$( "#active_random_dialog" ).dialog('option', 'title', 'Show Random List');
 			$( "#active_random_dialog" ).html( data );
 			$( "#active_random_dialog" ).dialog("open");
 			}, "html" ).done(setup_random_list_handler);
@@ -133,6 +153,7 @@ function setup_random_list_handler() {
 .mix .col-md-6 {
 	margin-left: 0px;
 }
+button:focus {outline:0;}
 @stop
 
 @section('main')
@@ -277,11 +298,14 @@ function setup_random_list_handler() {
 				<td>{{ $random_list->d4_format }}</td>
 				<td>{{ $random_list->d5_format }}</td>
 				<td>{{{ $random_list->display_order }}}</td>
-				<td style="white-space:nowrap;">{{ link_to_route('random_list.edit', 'Edit', array($random_list->id), array('class' => 'btn btn-info btn_random_list_edit')) }}
+				<td style="white-space:nowrap;">
+				{{ link_to_route('random_list.edit', 'Edit', array($random_list->id), array('class' => 'btn btn-info btn_random_list_edit')) }}
 					&nbsp;
 					{{ Form::open(['method' => 'DELETE', 'route' => ['random_list.destroy', $random_list->id], 'style' => 'display: inline-block']) }}
 						{{ Form::submit('Delete', array('class' => 'btn btn-danger')) }}
-					{{ Form::close() }}
+					{{ Form::close() }}<br />
+					{{ link_to_route('list_elements.edit', 'Edit Elements', array($random_list->id), array('class' => 'btn btn-info btn_random_elements_edit')) }}
+					{{ link_to_route('list_elements.show', 'Show Elements', array($random_list->id), array('class' => 'btn btn-info btn_random_elements_show')) }}
 				</td>
 			</tr>
 			@endforeach

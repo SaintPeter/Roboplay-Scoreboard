@@ -14,6 +14,22 @@ class RandomList extends \Eloquent {
 		'display_order' => 'numeric'
 	];
 
+	public function get_elements() {
+	    $element_list = $this->elements;
+
+        if(count($element_list)) {
+            $output = [];
+
+    	    foreach($element_list as $element) {
+    	        $output[] = join(';', [ $element->d1, $element->d2, $element->d3, $element->d4, $element->d5 ]);
+    	    }
+
+    	    return join("\n", $output);
+    	} else {
+    	    return '';
+    	}
+	}
+
 
 	// Relationships
 	public function elements()
