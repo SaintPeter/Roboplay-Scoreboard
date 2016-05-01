@@ -93,7 +93,7 @@ class ChallengesController extends BaseController {
 	{
 		Breadcrumbs::addCrumb('Show Challenge', route('challenges.show', $id));
 		View::share('title', 'Show Challenge');
-		$challenge = $this->challenge->with('score_elements')->findOrFail($id);
+		$challenge = $this->challenge->with('score_elements', 'randoms', 'random_lists')->findOrFail($id);
 
 		return View::make('challenges.show', compact('challenge'));
 	}

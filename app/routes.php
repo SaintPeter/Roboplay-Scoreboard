@@ -154,6 +154,8 @@ Route::group(array('before' => 'auth'), function() {
 		Route::get('score_elements/{challenge_id}/create', [ 'as' => 'score_elements.create',	'uses' => 'Score_elementsController@create']);
 		Route::resource('randoms', 'RandomsController');
 		Route::get('randoms/{challenge_id}/create', 	   [ 'as' => 'randoms.create',			'uses' => 'RandomsController@create']);
+		Route::resource('random_list', 'RandomListsController');
+		Route::get('random_list/{challenge_id}/create', 	[ 'as' => 'random_list.create',			'uses' => 'RandomListsController@create']);
 		Route::resource('score_runs', 'Score_runsController');
 		Route::resource('judges', 'JudgesController');
 		Route::resource('videos', 'VideosController');

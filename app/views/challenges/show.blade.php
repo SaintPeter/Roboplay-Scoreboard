@@ -34,7 +34,16 @@ $(function() {
 			}, "html" ).done(setup_random_handler);
 	});
 
-	// Edit Score Element Button Functions
+	// Add Random Element Button
+	$("#add_random_list").click(function() {
+		$.get("{{ route('random_list.create', $challenge->id) }}",
+			function( data ) {
+				$( "#active_random_dialog" ).html(data);
+				$( "#active_random_dialog" ).dialog("open");
+			}, "html" ).done(setup_random_list_handler);
+	});
+
+	// Edit Random Element Button Functions
 	$(".btn_random_edit").click( function (event) {
 		event.preventDefault();
 		$.get( $(this).attr('href'),
@@ -42,6 +51,15 @@ $(function() {
 			$( "#active_random_dialog" ).html( data );
 			$( "#active_random_dialog" ).dialog("open");
 			}, "html" ).done(setup_random_handler);
+	});
+
+	$(".btn_random_list_edit").click( function (event) {
+		event.preventDefault();
+		$.get( $(this).attr('href'),
+			function( data ) {
+			$( "#active_random_dialog" ).html( data );
+			$( "#active_random_dialog" ).dialog("open");
+			}, "html" ).done(setup_random_list_handler);
 	});
 });
 
@@ -76,6 +94,28 @@ function setup_random_handler() {
 			} else {
 				jQuery("#active_random_dialog").html(data);
 				setup_random_handler();
+			}
+		}, "html" );
+	});
+
+	jQuery( ".random_close" ).click( function( event ) {
+		event.preventDefault();
+		jQuery( "#active_dialog" ).dialog("close");
+		jQuery( "#active_dialog" ).remove();
+		$( "#dialog" ).clone().attr('id', 'active_dialog').dialog({ autoOpen: false });
+	});
+}
+
+function setup_random_list_handler() {
+	jQuery( ".numeric" ).spinner();
+	jQuery( "#random_list_form" ).on( "submit", function( event ) {
+		event.preventDefault();
+		jQuery.post( jQuery(this).attr('action'), jQuery( this ).serialize(), function(data) {
+			if(data == "true") {
+				location.reload(true);
+			} else {
+				jQuery("#active_random_dialog").html(data);
+				setup_random_list_handler();
 			}
 		}, "html" );
 	});
@@ -141,7 +181,7 @@ function setup_random_handler() {
 
 	<tbody>
 		@if( $challenge->score_elements->count() == 0 )
-			<tr><td colspan="9" style="align=center;">No Score Elements</td></tr>
+			<tr><td colspan="9" class="text-center">No Score Elements</td></tr>
 		@else
 		@foreach( $challenge->score_elements as $score_element)
 			<tr>
@@ -182,7 +222,7 @@ function setup_random_handler() {
 
 	<tbody>
 		@if( $challenge->randoms->count() == 0 )
-		<tr><td colspan="11" class="text-center">No Random Elements</td></tr>
+		<tr><td colspan="11" class="text-center">No Random Lists</td></tr>
 		@else
 			@foreach( $challenge->randoms as $random)
 			<tr>
@@ -205,9 +245,55 @@ function setup_random_handler() {
 	</tbody>
 </table>
 
+<h4>Random Lists</h4>
+<table class="table table-striped table-bordered">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Popup Format</th>
+			<th>Format String</th>
+			<th>d1 Format</th>
+			<th>d2 Format</th>
+			<th>d3 Format</th>
+			<th>d4 Format</th>
+			<th>d5 Format</th>
+			<th>Order</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
+
+	<tbody>
+		@if( count($challenge->random_lists) == 0 )
+		<tr><td colspan="10" class="text-center">No Random Lists</td></tr>
+		@else
+			@foreach( $challenge->random_lists as $random_list)
+			<tr>
+				<td>{{ $random_list->name }}</td>
+				<td>{{{ $random_list->format }}}</td>
+				<td>{{ $random_list->popup_format }}</td>
+				<td>{{ $random_list->d1_format }}</td>
+				<td>{{ $random_list->d2_format }}</td>
+				<td>{{ $random_list->d3_format }}</td>
+				<td>{{ $random_list->d4_format }}</td>
+				<td>{{ $random_list->d5_format }}</td>
+				<td>{{{ $random_list->display_order }}}</td>
+				<td style="white-space:nowrap;">{{ link_to_route('random_list.edit', 'Edit', array($random_list->id), array('class' => 'btn btn-info btn_random_list_edit')) }}
+					&nbsp;
+					{{ Form::open(['method' => 'DELETE', 'route' => ['random_list.destroy', $random_list->id], 'style' => 'display: inline-block']) }}
+						{{ Form::submit('Delete', array('class' => 'btn btn-danger')) }}
+					{{ Form::close() }}
+				</td>
+			</tr>
+			@endforeach
+		@endif
+	</tbody>
+</table>
+
 {{ Form::button('Add Score Element', array('class' => 'btn btn-primary', 'id' => 'add_score_element')) }}
 &nbsp;
 {{ Form::button('Add Random Element', array('class' => 'btn btn-info', 'id' => 'add_random_element')) }}
+&nbsp;
+{{ Form::button('Add Random List', array('class' => 'btn btn-success', 'id' => 'add_random_list')) }}
 
 <div id="dialog" title="Score Elements">
 

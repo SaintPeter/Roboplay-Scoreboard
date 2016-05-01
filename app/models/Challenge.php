@@ -16,6 +16,7 @@ class Challenge extends Eloquent {
 		3 => 3
 	];
 
+    // Relationships
 	public function score_elements()
 	{
 		return $this->hasMany('Score_element')->orderBy('element_number', 'asc');
@@ -24,6 +25,11 @@ class Challenge extends Eloquent {
 	public function randoms()
 	{
 		return $this->hasMany('Random')->orderBy('display_order', 'asc');
+	}
+
+	public function random_lists()
+	{
+		return $this->hasMany('RandomList')->orderBy('display_order', 'asc');
 	}
 
 	public function divisions()
