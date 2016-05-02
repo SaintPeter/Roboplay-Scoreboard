@@ -9,7 +9,7 @@
 		<span class="error">Username or password incorrect.</span>
 	@endif
 	<!-- username field -->
-	<p>{{ Form::label('username', 'Username') }}</p>
+	<p>{{ Form::label('username', 'Wordpress Username (<strong>Not</strong> your e-mail address)') }}</p>
 	<p>{{ Form::text('username') }}</p>
 	<!-- password field -->
 	<p>{{ Form::label('password', 'Password') }}</p>
