@@ -11,26 +11,34 @@
 		{{ Form::label('format', 'Format', [ 'class' => 'form-label' ]) }}
 		{{ Form::text('format', null, [ 'class' => 'form-control' ]) }}
 	</div>
-	<div class="form-group mix">
-		<div class="col-md-6">
-			{{ Form::label('min1', 'Min 1', [ 'class' => 'form-label' ]) }}
-			{{ Form::text('min1', 1, [ 'class' => 'form-control numeric' ]) }}
-		</div>
-		<div class="col-md-6">
-			{{ Form::label('max1', 'Max 1', [ 'class' => 'form-label' ]) }}
-			{{ Form::text('max1', 10, [ 'class' => 'form-control numeric' ]) }}
-		</div>
-	</div>
-	<div class="form-group mix">
-		<div class="col-md-6">
-			{{ Form::label('min2', 'Min 2', [ 'class' => 'form-label' ]) }}
-			{{ Form::text('min2', 1, [ 'class' => 'form-control numeric' ]) }}
-		</div>
-		<div class="col-md-6">
-			{{ Form::label('max2', 'Max 2', [ 'class' => 'form-label' ]) }}
-			{{ Form::text('max2', 10, [ 'class' => 'form-control numeric' ]) }}
-		</div>
-	</div>
+	<div class="row">
+    	<div class="form-group col-md-12">
+    	    <div class="row">
+        		<div class="col-md-6">
+        			{{ Form::label('min1', 'Min 1', [ 'class' => 'form-label' ]) }}
+        			{{ Form::text('min1', 1, [ 'class' => 'form-control numeric' ]) }}
+        		</div>
+        		<div class="col-md-6">
+        			{{ Form::label('max1', 'Max 1', [ 'class' => 'form-label' ]) }}
+        			{{ Form::text('max1', 10, [ 'class' => 'form-control numeric' ]) }}
+        		</div>
+        	</div>
+        </div>
+    </div>
+	<div class="row">
+    	<div class="form-group col-md-12">
+    	    <div class="row">
+        		<div class="col-md-6">
+        			{{ Form::label('min2', 'Min 2', [ 'class' => 'form-label' ]) }}
+        			{{ Form::text('min2', 1, [ 'class' => 'form-control numeric' ]) }}
+        		</div>
+        		<div class="col-md-6">
+        			{{ Form::label('max2', 'Max 2', [ 'class' => 'form-label' ]) }}
+        			{{ Form::text('max2', 10, [ 'class' => 'form-control numeric' ]) }}
+        		</div>
+        	</div>
+	    </div>
+    </div>
 	<div class="checkbox">
 		{{ Form::hidden('may_not_match', 0) }}
 		<label class="form-label">May not Match</label>

@@ -20,3 +20,4 @@
         @endforeach
     </tbody>
 </table>
+<button class="btn btn-info btn-margin random_close">Close</button>

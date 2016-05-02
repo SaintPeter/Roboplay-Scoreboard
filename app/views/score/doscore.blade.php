@@ -12,7 +12,7 @@
 	.center {
 		text-align: center;
 	}
-	#abortPopup-popup, #submitPopup-popup, #randomPopup-popup {
+	#abortPopup-popup, #submitPopup-popup, #randomPopup-popup, #randomListPopup-popup {
 		width: 90%;
 	}
 @stop
@@ -96,6 +96,27 @@
 	<div role="main" class="ui-corner-bottom ui-content center">
 		@foreach($challenge->randoms as $random)
 			<span class="bigtext">{{ $random->formatted() }}</span><br />
+		@endforeach
+	</div>
+</div>
+@endif
+@if(count($challenge->random_lists) > 0)
+<div class="ui-body ui-body-a">
+	<a href="#randomListPopup" id="random_list_popout" data-rel="popup" data-position-to="window" class="ui-btn ui-btn-inline pull-right">Popout</a>
+	<h4>Random Lists</h4>
+	<p>
+	@foreach($challenge->random_lists as $random)
+		{{ $random->get_formatted() }}<br />
+	@endforeach
+	</p>
+</div>
+<div data-role="popup" data-history='false' id="randomListPopup" class="ui-corner-all">
+	<div role="banner" data-role="header" data-theme="a" class="ui-corner-top ui-header ui-bar-a">
+		<h1 aria-level="1" role="heading" class="ui-title">Random List</h1>
+	</div>
+	<div role="main" class="ui-corner-bottom ui-content center">
+		@foreach($challenge->random_lists as $random)
+			<span class="bigtext">{{ $random->get_formatted_popup() }}</span><br />
 		@endforeach
 	</div>
 </div>

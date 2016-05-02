@@ -142,7 +142,7 @@ class RandomListsController extends \BaseController {
         //ddd($data);
         RandomListElement::insert($data);
 
-        return Redirect::route('list_elements.show', $random_list_id);
+        return  Redirect::route('list_elements.show', $random_list_id);
     }
 
     public function show_list_elements($random_list_id) {

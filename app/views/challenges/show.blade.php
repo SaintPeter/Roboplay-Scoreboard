@@ -5,6 +5,8 @@ $(function() {
 	$( "#dialog" ).clone().attr('id', 'active_dialog').dialog({ autoOpen: false });
 	$( "#random_dialog" ).clone().attr('id', 'active_random_dialog').dialog({ autoOpen: false });
 
+	jQuery(document).on('click', '.random_close', dialog_close_handler );
+
 	// Add Score Element Button
 	$("#add_score_element").click(function() {
 		$.get("{{ route('score_elements.create', $challenge->id) }}",
@@ -29,6 +31,7 @@ $(function() {
 	$("#add_random_element").click(function() {
 		$.get("{{ route('randoms.create', $challenge->id) }}",
 			function( data ) {
+			    $( "#active_random_dialog" ).dialog('option', 'title', 'Create Random');
 				$( "#active_random_dialog" ).html(data);
 				$( "#active_random_dialog" ).dialog("open");
 			}, "html" ).done(setup_random_handler);
@@ -38,6 +41,7 @@ $(function() {
 	$("#add_random_list").click(function() {
 		$.get("{{ route('random_list.create', $challenge->id) }}",
 			function( data ) {
+			    $( "#active_random_dialog" ).dialog('option', 'title', 'Create Random List');
 				$( "#active_random_dialog" ).html(data);
 				$( "#active_random_dialog" ).dialog("open");
 			}, "html" ).done(setup_random_list_handler);
@@ -70,7 +74,7 @@ $(function() {
 			$( "#active_random_dialog" ).dialog('option', 'title', 'Edit Random Elements List');
 			$( "#active_random_dialog" ).html( data );
 			$( "#active_random_dialog" ).dialog("open");
-			}, "html" ).done(setup_random_list_handler);
+			}, "html" ).done(setup_elements_list_handler);
 	});
 	$(".btn_random_elements_show").click( function (event) {
 		event.preventDefault();
@@ -96,12 +100,12 @@ function setup_form_handler() {
 			}
 		}, "html" );
 	});
-	jQuery( ".se_close" ).click( function( event ) {
-		event.preventDefault();
-		jQuery( "#active_dialog" ).dialog("close");
-		jQuery( "#active_dialog" ).remove();
-		$( "#dialog" ).clone().attr('id', 'active_dialog').dialog({ autoOpen: false });
-	});
+	jQuery( ".dialog_close" ).on('click', function (event) {
+    	event.preventDefault();
+    	jQuery( "#active_dialog" ).dialog("close");
+    	jQuery( "#active_dialog" ).remove();
+    	$( "#dialog" ).clone().attr('id', 'active_dialog').dialog({ autoOpen: false });
+    });
 }
 
 function setup_random_handler() {
@@ -116,13 +120,6 @@ function setup_random_handler() {
 				setup_random_handler();
 			}
 		}, "html" );
-	});
-
-	jQuery( ".random_close" ).click( function( event ) {
-		event.preventDefault();
-		jQuery( "#active_dialog" ).dialog("close");
-		jQuery( "#active_dialog" ).remove();
-		$( "#dialog" ).clone().attr('id', 'active_dialog').dialog({ autoOpen: false });
 	});
 }
 
@@ -139,14 +136,29 @@ function setup_random_list_handler() {
 			}
 		}, "html" );
 	});
+}
 
-	jQuery( ".random_close" ).click( function( event ) {
+function setup_elements_list_handler() {
+	jQuery( "#random_list_form" ).on( "submit", function( event ) {
 		event.preventDefault();
-		jQuery( "#active_dialog" ).dialog("close");
-		jQuery( "#active_dialog" ).remove();
-		$( "#dialog" ).clone().attr('id', 'active_dialog').dialog({ autoOpen: false });
+		jQuery.post( jQuery(this).attr('action'), jQuery( this ).serialize(), function(data) {
+			if(data == "true") {
+				location.reload(true);
+			} else {
+				jQuery("#active_random_dialog").html(data);
+				setup_elements_list_handler();
+			}
+		}, "html" );
 	});
 }
+
+function dialog_close_handler(event) {
+	event.preventDefault();
+	jQuery( "#active_random_dialog" ).dialog("close");
+	jQuery( "#active_random_dialog" ).remove();
+	$( "#dialog" ).clone().attr('id', 'active_random_dialog').dialog({ autoOpen: false });
+}
+
 @stop
 
 @section('style')
@@ -271,8 +283,8 @@ button:focus {outline:0;}
 	<thead>
 		<tr>
 			<th>Name</th>
-			<th>Popup Format</th>
 			<th>Format String</th>
+			<th>Popup Format</th>
 			<th>d1 Format</th>
 			<th>d2 Format</th>
 			<th>d3 Format</th>
@@ -290,7 +302,7 @@ button:focus {outline:0;}
 			@foreach( $challenge->random_lists as $random_list)
 			<tr>
 				<td>{{ $random_list->name }}</td>
-				<td>{{{ $random_list->format }}}</td>
+				<td>{{ $random_list->format }}</td>
 				<td>{{ $random_list->popup_format }}</td>
 				<td>{{ $random_list->d1_format }}</td>
 				<td>{{ $random_list->d2_format }}</td>
@@ -298,14 +310,13 @@ button:focus {outline:0;}
 				<td>{{ $random_list->d4_format }}</td>
 				<td>{{ $random_list->d5_format }}</td>
 				<td>{{{ $random_list->display_order }}}</td>
-				<td style="white-space:nowrap;">
-				{{ link_to_route('random_list.edit', 'Edit', array($random_list->id), array('class' => 'btn btn-info btn_random_list_edit')) }}
-					&nbsp;
+				<td style="white-space:nowrap;" class="text-center">
+				{{ link_to_route('random_list.edit', 'Edit', array($random_list->id), array('class' => 'btn btn-info btn_random_list_edit btn-margin')) }}
 					{{ Form::open(['method' => 'DELETE', 'route' => ['random_list.destroy', $random_list->id], 'style' => 'display: inline-block']) }}
-						{{ Form::submit('Delete', array('class' => 'btn btn-danger')) }}
-					{{ Form::close() }}<br />
-					{{ link_to_route('list_elements.edit', 'Edit Elements', array($random_list->id), array('class' => 'btn btn-info btn_random_elements_edit')) }}
-					{{ link_to_route('list_elements.show', 'Show Elements', array($random_list->id), array('class' => 'btn btn-info btn_random_elements_show')) }}
+						{{ Form::submit('Delete', array('class' => 'btn btn-danger btn-margin')) }}
+					{{ Form::close() }}<br>
+					{{ link_to_route('list_elements.edit', 'Edit Elements', array($random_list->id), array('class' => 'btn btn-success btn-margin btn_random_elements_edit')) }}
+					{{ link_to_route('list_elements.show', 'Show Elements', array($random_list->id), array('class' => 'btn btn-warning btn-margin btn_random_elements_show')) }}
 				</td>
 			</tr>
 			@endforeach

@@ -43,7 +43,7 @@ class ScoreController extends BaseController {
 
 	public function doscore($team_id, $challenge_id)
 	{
-		$challenge = Challenge::with('score_elements','randoms','divisions')->find($challenge_id);
+		$challenge = Challenge::with('score_elements','randoms','random_lists','divisions')->find($challenge_id);
 		$team = Team::with('division', 'division.competition')->find($team_id);
 		$judge = Judge::find(Auth::user()->ID);
 
@@ -52,6 +52,8 @@ class ScoreController extends BaseController {
 		}
 
 		$run_number = Score_run::where('team_id',  $team_id)->where('challenge_id', $challenge_id)->max('run_number') + 1;
+
+		//ddd($challenge->random_lists->first()->get_formatted());
 
 		return View::make('score.doscore')
 					->with(compact('challenge', 'team', 'run_number', 'judge'))
