@@ -8,7 +8,7 @@ class InvoiceReview extends \BaseController {
 	 *
 	 * @return Response
 	 */
-	public function invoice_review($year = 0)
+	public function invoice_review($year = 0, $terse = 0)
 	{
 		Breadcrumbs::addCrumb('Invoice Review');
 		View::share('title', 'Invoice Review');
@@ -49,6 +49,14 @@ class InvoiceReview extends \BaseController {
         }
         //$division_list = $comp_year->divisions->lists('name','id');
 
+		if($terse) {
+			return View::make('invoice_review.usernames',
+						compact('invoices', 'year',
+		                        'student_count', 'last_sync',
+		                        'vid_division_list', 'division_list',
+		                        'comp_years'));
+		}
+		
 		return View::make('invoice_review.index',
 		                compact('invoices', 'year',
 		                        'student_count', 'last_sync',

@@ -190,6 +190,7 @@ function division_change(e) {
 <thead>
 	<tr>
 		<th>Teacher</th>
+		<th>Username</th>
 		<th>School</th>
 		<th>Teams</th>
 		<th>Videos</th>
@@ -205,6 +206,9 @@ function division_change(e) {
 		<td>
 			{{ link_to('mailto:' . $invoice->wp_user->user_email, $invoice->wp_user->getName(), [ 'target' => '_blank', 'title' => 'E-mail User']) }}
 			<small>(<a href="http://c-stem.ucdavis.edu/wp-admin/user-edit.php?user_id={{ $invoice->user_id }}" title="Edit User's Wordpress Profile" target="_blank">Edit</a>)</small>
+		</td>
+		<td>
+			{{ $invoice->wp_user->user_login }}
 		</td>
 		<td>
 			{{ ($invoice->school) ? $invoice->school->name : "(Not Set)" }}

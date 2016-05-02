@@ -180,7 +180,7 @@ Route::group(array('before' => 'auth'), function() {
 		Route::get('student_list',							[ 'as' => 'student_list', 'uses' => 'Wp_fix@student_list'] );
 
 		// Invoice Review
-		Route::get('invoice_review/{year?}',				[ 'as' => 'invoice_review',		         'uses' => 'InvoiceReview@invoice_review' ]);
+		Route::get('invoice_review/{year?}/{terse?}',     	[ 'as' => 'invoice_review',		         'uses' => 'InvoiceReview@invoice_review' ]);
 		Route::get('invoice_review/toggle_video/{id?}',      [ 'as' => 'invoice_review.toggle_video', 'uses' => 'InvoiceReview@toggle_video' ]);
 		Route::get('invoice_review/toggle_team/{id?}',      [ 'as' => 'invoice_review.toggle_team', 'uses' => 'InvoiceReview@toggle_team' ]);
 		Route::get('invoice_review/save_video_div/{video_id?}/{div_id?}',  [ 'as' => 'invoice_review.save_video_div', 'uses' => 'InvoiceReview@save_video_division' ]);
