@@ -10,16 +10,18 @@
 ?>
 
 @section('script')
-$('.toggle_videos').on('click', toggle_videos);
-$('.toggle_teams').on('click', toggle_teams);
-$('.audit_button').on('click', toggle_audit);
-$('.team_audit_button').on('click', team_toggle_audit);
-$('.video_notes').on('input', notes_change);
-$('.vid_division').on('change', vid_division_change);
-$('.division').on('change', division_change);
-$('#toggle_notes').on('click', toggle_notes);
-$('#toggle_all_videos').on('click', toggle_all_videos);
-$('#toggle_all_teams').on('click', toggle_all_teams);
+$(document).on('ready', function() {
+    $('.toggle_videos').on('click', toggle_videos);
+    $('.toggle_teams').on('click', toggle_teams);
+    $('.audit_button').on('click', toggle_audit);
+    $('.team_audit_button').on('click', team_toggle_audit);
+    $('.video_notes').on('input', notes_change);
+    $('.vid_division').on('change', vid_division_change);
+    $('.division').on('change', division_change);
+    $('#toggle_notes').on('click', toggle_notes);
+    $('#toggle_all_videos').on('click', toggle_all_videos);
+    $('#toggle_all_teams').on('click', toggle_all_teams);
+});
 
 function toggle_videos(e) {
     var id = $(this).data('invoice');
