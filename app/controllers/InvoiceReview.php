@@ -56,7 +56,7 @@ class InvoiceReview extends \BaseController {
 		                        'vid_division_list', 'division_list',
 		                        'comp_years'));
 		}
-		
+
 		return View::make('invoice_review.index',
 		                compact('invoices', 'year',
 		                        'student_count', 'last_sync',
@@ -126,7 +126,19 @@ class InvoiceReview extends \BaseController {
                 $invoice->save();
                 $count++;
             }
-            return Redirect::route('invoice_review', $year)->with('message', 'Synced ' . $count . " Invoices for $year");
+
+            // Check for removed invoices
+            $invoices = Invoices::where('year', $year)->get();
+            $raw_invoice_array = $raw_invoices->lists('invoice_no');
+            $removed = 0;
+            foreach($invoices as $invoice) {
+                if(!in_array($invoice->remote_id, $raw_invoice_array)) {
+                    $invoice->delete();
+                    $removed++;
+                }
+            }
+
+            return Redirect::route('invoice_review', $year)->with('message', 'Synced ' . $count . " Invoices, Removed $removed for $year");
         }
 	}
 
