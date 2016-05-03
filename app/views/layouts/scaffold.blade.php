@@ -39,6 +39,10 @@
             }
 			@yield('style')
 		</style>
+
+		<script>
+		    @yield('script')
+		</script>
 	</head>
 
 	<body>
@@ -68,9 +72,6 @@
 
 			@yield('main')
 		</div>
-		<script>
-		    @yield('script')
-		</script>
 	</body>
 
 </html>
