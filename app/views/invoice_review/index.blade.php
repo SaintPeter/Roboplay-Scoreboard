@@ -363,7 +363,7 @@ function division_change(e) {
 		?>
 	@endforeach
 	<tr>
-		<td colspan="2" class="text-right">Totals</td>
+		<td colspan="3" class="text-right">Totals</td>
 		<td class="text-center">{{ $team_count }} / {{ $team_actual }}</td>
 		<td class="text-center">{{ $video_count }} / {{ $video_actual }}</td>
 		<td class="text-center">{{ $students_count }}</td>
