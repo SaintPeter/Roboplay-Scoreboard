@@ -148,10 +148,15 @@ class InvoiceReview extends \BaseController {
 	    Breadcrumbs::addCrumb('Data Export');
 		View::share('title', 'Data Export');
 
+		// Load a year from session if it's not set in the URL
+		if(!$year) {
+			$year = Session::get('year', $year);
+		}
+
 	    return View::make('data_export.index', compact('year'));
 	}
 
-	public function student_tshirts($year = '')
+	public function student_tshirts_csv($year = '')
 	{
 	    if(!$year) {
 	        return Redirect::route('data_export')->with('message', 'Year must be set to export data');
@@ -191,7 +196,7 @@ class InvoiceReview extends \BaseController {
 		));
 	}
 
-	public function teacher_tshirts($year = '')
+	public function teacher_tshirts_csv($year = '')
 	{
 	    if(!$year) {
 	        return Redirect::route('data_export')->with('message', 'Year must be set to export data');
@@ -228,6 +233,46 @@ class InvoiceReview extends \BaseController {
 			'Content-Disposition' => 'attachment; filename="teacher_tshirts_' . $year . '.csv"'
 		));
 
+	}
+
+	public function teacher_teams_csv($year = '')
+	{
+	    if(!$year) {
+	        return Redirect::route('data_export')->with('message', 'Year must be set to export data');
+	    }
+
+
+		$invoices = Invoices::with('wp_user', 'wp_user.usermeta', 'judge', 'school')
+	                        ->with( [ 'teams' => function($q) use ($year) {
+	                             return $q->where('year', $year);
+	                        }, 'teams.students', 'teams.division', 'teams.division.competition'])
+    	                    ->where('year', $year)
+    	                    ->get();
+
+        // Header
+	    $content = "Teacher Name,School Name,Team Name,Site,Division, Level\n";
+
+		foreach($invoices as $invoice) {
+		    foreach($invoice->teams as $team) {
+    			$content .= '"';
+    			$content .= join('","',
+    			                [
+    			                $invoice->wp_user->getName(),
+    			                ($invoice->school) ? $invoice->school->name : "(Not Set)",
+                                $team->name,
+                                $team->division->competition->location,
+                                $team->division->name,
+                                $team->division->level
+							   ]) .
+					     '"' . "\n";
+			}
+		}
+
+		// return an string as a file to the user
+		return Response::make($content, '200', array(
+			'Content-Type' => 'application/octet-stream',
+			'Content-Disposition' => 'attachment; filename="teacher_teams_' . $year . '.csv"'
+		));
 	}
 
 }
