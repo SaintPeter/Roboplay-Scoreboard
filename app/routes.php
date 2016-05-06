@@ -49,6 +49,9 @@ Route::get('comp/{competition_id}/{csv?}', array('as' => 'display.compscore', 'u
 Route::get('compyear/{compyear_id}/{csv?}', array('as' => 'display.compyearscore', 'uses' => 'DisplayController@compyearscore'))
 		 ->where('compyear_id', '\d+')
 		 ->where('csv','csv');
+Route::get('compyear/top/{compyear_id}/{csv?}', array('as' => 'display.compyearscore.top', 'uses' => 'DisplayController@compyearscore_top'))
+		 ->where('compyear_id', '\d+')
+		 ->where('csv','csv');
 Route::post('comp/{competition_id}/settings', [ 'as' => 'display.compsettings', 'uses' => 'DisplayController@compsettings' ])
 		->where('competition_id', '\d+');
 Route::post('compyear/{compyear_id}/settings', [ 'as' => 'display.compyearsettings', 'uses' => 'DisplayController@compyearsettings' ])

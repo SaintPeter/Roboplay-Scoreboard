@@ -219,7 +219,19 @@ class DisplayController extends BaseController {
 													   'settings'));
 	}
 
-	public function compyearscore($compyear_id, $csv = null)
+    public function compyearscore_top($compyear_id, $csv = null)
+    {
+        return $this->compyearscore_actual($compyear_id, $csv, true);
+    }
+
+    public function compyearscore($compyear_id, $csv = null)
+    {
+        return $this->compyearscore_actual($compyear_id, $csv, false);
+    }
+
+
+
+	public function compyearscore_actual($compyear_id, $csv = null, $top = null)
 	{
 		Breadcrumbs::addCrumb('Statewide Score', 'compyearscore');
 
