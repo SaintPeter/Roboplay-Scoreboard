@@ -207,7 +207,11 @@ function division_change(e) {
 	<tr>
 		<td>
 			{{ link_to('mailto:' . $invoice->wp_user->user_email, $invoice->wp_user->getName(), [ 'target' => '_blank', 'title' => 'E-mail User']) }}
-			<small>(<a href="http://c-stem.ucdavis.edu/wp-admin/user-edit.php?user_id={{ $invoice->user_id }}" title="Edit User's Wordpress Profile" target="_blank">Edit</a>)</small>
+
+			<small style="white-space: nowrap">(
+			    <a href="{{ route('switch_user', $invoice->wp_user->ID) }}" title="Switch to this User"><i class="fa fa-arrow-circle-right"></i></a>
+			    / <a href="http://c-stem.ucdavis.edu/wp-admin/user-edit.php?user_id={{ $invoice->user_id }}" title="Edit User's Wordpress Profile" target="_blank"><i class="fa fa-pencil"></i></a>
+			    )</small>
 		</td>
 		<td>
 			{{ $invoice->wp_user->user_login }}
