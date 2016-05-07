@@ -61,6 +61,9 @@ Route::get('compyear/top/{compyear_id}/{csv?}', array('as' => 'display.compyears
 		 ->where('compyear_id', '\d+')
 		 ->where('csv','csv');
 
+// Attempts
+Route::get('attempts/{compyear_id}', array('as' => 'display.attempts', 'uses' => 'DisplayController@attempts'));
+
 // All Scores
 Route::get('all_scores/{compyear_id}', array('as' => 'display.all_scores', 'uses' => 'DisplayController@all_scores'))
 		 ->where('compyear_id', '\d+');
@@ -72,6 +75,9 @@ Route::post('compyear/{compyear_id}/settings', [ 'as' => 'display.compyearsettin
 		->where('compyear_id', '\d+');
 Route::post('all_scores/{compyear_id}/settings', [ 'as' => 'display.all_scores_settings', 'uses' => 'DisplayController@all_scores_settings' ])
 		->where('compyear_id', '\d+');
+Route::post('attempts/{compyear_id}/settings', [ 'as' => 'display.attempts_settings', 'uses' => 'DisplayController@attempts_settings' ])
+		->where('compyear_id', '\d+');
+
 
 Route::get('export_scores/{year}', [ 'as' => 'display.export_scores', 'uses' => 'DisplayController@export_year_scores']);
 

@@ -488,6 +488,135 @@ class DisplayController extends BaseController {
 								'settings'));
 	}
 
+	public function attempts($compyear_id)
+	{
+	    $compyear = CompYear::with('divisions')
+		                    ->find($compyear_id);
+
+	    // get the graph data
+	    foreach([ 1, 2, 3] as $level) {
+	        $data = $this->attempts_data($compyear_id, $level);
+            $chart_data[$level] = $data['chart_data'];
+            $max_data[$level] = $data['max_data'];
+        }
+
+        $now = Carbon::now()->setTimezone('America/Los_Angeles');
+		//$event = new Carbon($comp->event_date);
+		$display_timer = true; //$now->isSameDay($event) || Input::get('display_timer', false);
+
+		// Event Timing
+		$start_time = Carbon::now()->setTimezone('America/Los_Angeles')->toTimeString();
+		$this_event = Schedule::where('start', '<', $start_time)->orderBy('start', 'DESC')->first();
+		$next_event = Schedule::where('start', '>', $start_time)->orderBy('start')->first();
+		$frozen = false;
+
+		// Pull settings from the session variable
+		$session_variable = "all_scores_settings_$compyear_id";
+		$settings['columns'] = Session::get($session_variable . '_columns', 1);
+		$settings['rows'] = Session::get($session_variable . '_rows', 15);
+		$settings['delay'] = Session::get($session_variable . '_delay', 3000);
+		$settings['font-size'] = Session::get($session_variable . '_font-size', 'x-large');
+
+	    View::share('title', 'RoboPlay ' . $compyear->year . ' All Scores');
+//ddd($chart_data, $max_data);
+		return View::make('display.attempts',
+		                compact('compyear', 'chart_data', 'max_data',
+		                        'this_event', 'next_event',
+								'frozen', 'start_time', 'display_timer',
+								'settings'));
+
+	}
+
+	public function attempts_data($compyear_id, $level, $json_object = false)
+	{
+	    $colorList = [ '#002855', '#ffd200' ];
+	    $compyear = CompYear::with('divisions', 'divisions.competition',
+	                               'competitions', 'competitions.divisions', 'competitions.divisions.challenges')
+		                    ->find($compyear_id);
+
+    	//$challenge_list = new Illuminate\Database\Eloquent\Collection();
+    	$max_data = [];
+        $data = [];
+    	foreach($compyear->competitions as $competition)
+		{
+		    foreach($competition->divisions as $division) {
+		        $challenge_list = $division->challenges->lists('display_name', 'id');
+
+		        if($division->level == $level) {
+        			// Count attempts
+        			$scores = DB::table('score_runs')
+        					->select('challenge_id',  DB::raw('count(*) as runs'), DB::raw('max(total) as max'))
+        					->groupBy('challenge_id')
+        					->where('division_id', $division->id)
+        					->whereNull('deleted_at')
+        					->whereIn('challenge_id', array_keys($challenge_list))
+        					->get();
+
+                    // Build Score Object
+        			$obj = new stdClass();
+        			$obj->type = "stackedBar";
+        			$obj->legendText = $competition->location;
+        			$obj->showInLegend = "true";
+        			$obj->color = array_shift($colorList);
+        			$obj->dataPoints = [];
+        		    foreach($scores as $score) {
+        		        $scoreObj = new stdClass();
+        		        $scoreObj->label = trim($division->challenges->find($score->challenge_id)->display_name);
+        		        $scoreObj->y = $score->runs;
+        		        $scoreObj->order = $division->challenges->find($score->challenge_id)->pivot->display_order;
+        		        $obj->dataPoints[] = $scoreObj;
+        		        if(array_key_exists($score->challenge_id, $challenge_list)) {
+        		            unset($challenge_list[$score->challenge_id]);
+        		        }
+
+                        if(array_key_exists($score->challenge_id, $max_data)) {
+                            $max_data[$score->challenge_id]['max_score'] = max($score->max, $max_data[$score->challenge_id]['max_score']);
+                        } else {
+                            $max_data[$score->challenge_id]['max_score'] = $score->max;
+        		            $max_data[$score->challenge_id]['max_possible'] = $division->challenges->find($score->challenge_id)->points;
+        		            $max_data[$score->challenge_id]['order'] = $scoreObj->order;
+        		            $max_data[$score->challenge_id]['name'] = $scoreObj->label;
+                        }
+
+        		    }
+
+        		    foreach($challenge_list as $challenge_id => $name) {
+           		        $scoreObj = new stdClass();
+        		        $scoreObj->label = trim($name);
+        		        $scoreObj->y = 0;
+        		        $scoreObj->order = $division->challenges->find($challenge_id)->pivot->display_order;
+        		        $obj->dataPoints[] = $scoreObj;
+
+        		        $max_data[$challenge_id]['max_score'] = 0;
+        		        $max_data[$challenge_id]['max_possible'] = $division->challenges->find($challenge_id)->points;
+        		        $max_data[$challenge_id]['order'] = $scoreObj->order;
+        		        $max_data[$challenge_id]['name'] = $scoreObj->label;
+        		    }
+
+        		    usort($obj->dataPoints, function($a, $b) {
+        		        return $a->order - $b->order;
+        		    });
+
+        		    uasort($max_data, function($a, $b) {
+        		        return $a['order'] - $b['order'];
+        		    });
+
+        		    $data[] = $obj;
+        		}
+        	}
+		}
+
+		$chart_data = new stdClass();
+		$chart_data->title = new stdClass();
+		$chart_data->title->text = "Division $level Attempts";
+		$chart_data->axisY = new stdClass();
+		$chart_data->axisY->interval = 20;
+		$chart_data->data = $data;
+
+		return [ 'chart_data' => json_encode($chart_data),
+		         'max_data' => $max_data ];
+	}
+
 	public function delete_score($team_id, $score_run_id)
 	{
 		$score_run = Score_run::find($score_run_id);
