@@ -14,6 +14,13 @@ class Competition extends Eloquent {
 		'color' => 'required'
 	);
 
+	public function getDates()
+    {
+        return [ 'created_at', 'updated_at', 'event_date' ];
+    }
+
+
+
 	public function divisions()
 	{
 		return $this->hasMany('Division')->orderBy('display_order', 'asc');

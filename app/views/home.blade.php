@@ -45,9 +45,11 @@
 			<h2>{{ $compyear->year }}</h2>
 			<ul data-role="listview" data-theme="c">
 				@if(!$compyear->competitions->isEmpty() )
-					<li>{{ link_to_route('display.compyearscore',  'Combined Scoreboard', $compyear->id, $noajax) }} </li>
+					<li>{{ link_to_route('display.all_scores',  'Combined Scoreboard', $compyear->id, $noajax) }} </li>
 					@foreach($compyear->competitions as $comp)
-						<li>{{ link_to_route('display.compscore', $comp->name . ' Scoreboard', $comp->id, $noajax) }} </li>
+						@if($today->gte($comp->event_date->endOfDay()))
+						    <li>{{ link_to_route('display.compscore', $comp->name . ' Scoreboard', $comp->id, $noajax) }} </li>
+						@endif
 					@endforeach
 				@else
 					<li>No Active Competition</li>
