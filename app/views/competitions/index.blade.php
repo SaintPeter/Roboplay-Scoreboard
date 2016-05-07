@@ -45,6 +45,7 @@
 				<th>Description</th>
 				<th>Location</th>
 				<th>Address</th>
+				<th>Color</th>
 				<th>Event Date</th>
 				<th>Freeze</th>
 				<th>Active</th>
@@ -59,6 +60,7 @@
 					<td>{{{ $competition->description }}}</td>
 					<td>{{{ $competition->location }}}</td>
 					<td>{{ nl2br($competition->address) }}</td>
+					<td><div style="background-color: {{ $competition->color }};width: 20px; height: 20px;"></div></div></td>
 					<td>{{{ $competition->event_date }}}</td>
 					<td>
 						{{{ $competition->freeze_time }}}<br />

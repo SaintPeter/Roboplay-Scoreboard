@@ -10,7 +10,8 @@ class Competition extends Eloquent {
 		'description' => 'required',
 		'location' => 'required',
 		'address' => 'required',
-		'event_date' => 'required'
+		'event_date' => 'required',
+		'color' => 'required'
 	);
 
 	public function divisions()

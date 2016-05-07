@@ -529,7 +529,6 @@ class DisplayController extends BaseController {
 
 	public function attempts_data($compyear_id, $level, $json_object = false)
 	{
-	    $colorList = [ '#002855', '#ffd200' ];
 	    $compyear = CompYear::with('divisions', 'divisions.competition',
 	                               'competitions', 'competitions.divisions', 'competitions.divisions.challenges')
 		                    ->find($compyear_id);
@@ -557,7 +556,7 @@ class DisplayController extends BaseController {
         			$obj->type = "stackedBar";
         			$obj->legendText = $competition->location;
         			$obj->showInLegend = "true";
-        			$obj->color = array_shift($colorList);
+        			$obj->color = $competition->color;
         			$obj->dataPoints = [];
         		    foreach($scores as $score) {
         		        $scoreObj = new stdClass();
@@ -594,7 +593,7 @@ class DisplayController extends BaseController {
         		    }
 
         		    usort($obj->dataPoints, function($a, $b) {
-        		        return $a->order - $b->order;
+        		        return $b->order - $a->order;
         		    });
 
         		    uasort($max_data, function($a, $b) {

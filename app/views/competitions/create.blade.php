@@ -40,6 +40,11 @@
 	    {{ Form::text('event_date', null, [ 'class'=>'form-control date' ]) }}
 	</div>
 
+	<div class="form-group">
+	    {{ Form::label('color', 'Color:') }}
+	    {{ Form::text('color', null, [ 'class'=>'form-control' ]) }}
+	</div>
+
 	<div class="form-group row">
 		<div class="col-md-6">
 		 	{{ Form::label('freeze_time', 'Freeze Time:') }}
