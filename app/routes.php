@@ -39,29 +39,39 @@ Route::get('/', [ 'as' => 'home', function()
 }]);
 
 /* ----------------------- Score Display ---------------------------- */
+// Team Scores
 Route::get('team/{team_id}', array('as' => 'display.teamscore', 'uses' => 'DisplayController@teamscore'))
 		 ->where('team_id', '\d+');
 Route::get('team/{team_id}/{with_judges}', array('as' => 'display.teamscore', 'uses' => 'DisplayController@teamscore'))
 		 ->where('team_id', '\d+');
+
+// Single Competiton
 Route::get('comp/{competition_id}/{csv?}', array('as' => 'display.compscore', 'uses' => 'DisplayController@compscore'))
 		 ->where('competition_id', '\d+')
 		 ->where('csv','csv');
+Route::get('comp/top/{competition_id}/{csv?}', array('as' => 'display.compscore.top', 'uses' => 'DisplayController@compscore_top'))
+		 ->where('competition_id', '\d+')
+		 ->where('csv','csv');
+
+// Entire Competition Year
 Route::get('compyear/{compyear_id}/{csv?}', array('as' => 'display.compyearscore', 'uses' => 'DisplayController@compyearscore'))
 		 ->where('compyear_id', '\d+')
 		 ->where('csv','csv');
 Route::get('compyear/top/{compyear_id}/{csv?}', array('as' => 'display.compyearscore.top', 'uses' => 'DisplayController@compyearscore_top'))
 		 ->where('compyear_id', '\d+')
 		 ->where('csv','csv');
+
+// All Scores
+Route::get('all_scores/{compyear_id}', array('as' => 'display.all_scores', 'uses' => 'DisplayController@all_scores'))
+		 ->where('compyear_id', '\d+');
+
+// Paging Settings
 Route::post('comp/{competition_id}/settings', [ 'as' => 'display.compsettings', 'uses' => 'DisplayController@compsettings' ])
 		->where('competition_id', '\d+');
 Route::post('compyear/{compyear_id}/settings', [ 'as' => 'display.compyearsettings', 'uses' => 'DisplayController@compyearsettings' ])
 		->where('compyear_id', '\d+');
-Route::get('mathcomp/{competition_id}', array('as' => 'display.mathcompscore', 'uses' => 'MathDisplayController@mathcompscore'))
-		 ->where('competition_id', '\d+');
-Route::get('mathteam/{team_id}', array('as' => 'display.mathteamscore', 'uses' => 'MathDisplayController@mathteamscore'))
-		 ->where('team_id', '\d+');
-Route::get('mathteam/{team_id}/{with_judges}', array('as' => 'display.mathteamscore', 'uses' => 'MathDisplayController@mathteamscore'))
-		 ->where('team_id', '\d+');
+Route::post('all_scores/{compyear_id}/settings', [ 'as' => 'display.all_scores_settings', 'uses' => 'DisplayController@all_scores_settings' ])
+		->where('compyear_id', '\d+');
 
 Route::get('export_scores/{year}', [ 'as' => 'display.export_scores', 'uses' => 'DisplayController@export_year_scores']);
 

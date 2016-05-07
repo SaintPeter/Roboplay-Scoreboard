@@ -147,9 +147,6 @@
 		<h1>{{ $title }}</h1>
 		{{ link_to_route('home', 'Home', null, [ 'class' => 'btn btn-primary btn-margin' ]) }}
 		<a href="#" id="show_settings" class="btn btn-info btn-margin"><span class="glyphicon glyphicon-cog"></span></a>
-		<a href="{{ route('display.compyearscore' . (($top) ? '.top' : ''), [ $compyear->id, 'csv' ]) }}" id="download_csv" class="btn btn-success btn-margin" title="Download scores as CSV">
-			<i class="fa fa-file-excel-o"></i>
-		</a>
     	<a href="#" id="toggle_pause" class="btn btn-warning btn-margin"><i class="fa fa-pause"></i></a>
 	</div>
 @stop
@@ -158,57 +155,44 @@
 <div id="slick_container">
 	<div class="col-md-12 col-lg-12">
 		<table class="table table-striped table-bordered table-condensed">
-			<?php $rowcount = 0; ?>
-			@foreach($score_list as $level => $scores)
-				<tr class="info">
-					<td colspan="4">Division {{ $level }}</td>
+			<tr class="info">
+				<td>School</td>
+				<td>Team</td>
+				<td>Score (Runs)</td>
+			</tr>
+			<?php $rowcount = 1; ?>
+			@foreach($score_list as $team_id => $score)
+				<?php $rowcount++; ?>
+				<tr>
+					<td>
+						{{ $score['school'] }}
+					</td>
+					<td>
+						{{ link_to_route('display.teamscore', $score['name'], $team_id) }}
+					</td>
+					<td>
+						{{ $score['total'] }} ({{ $score['runs'] }})
+					</td>
 				</tr>
-				<tr class="bold_row">
-					<td>#</td>
-					<td>Team</td>
-					<td>School</td>
-					<td>Score (Runs)</td>
-				</tr>
-				<?php $rowcount += 2; ?>
-				@foreach($scores as $team_id => $score)
-					<?php $rowcount++; ?>
-					<tr>
-						<td>{{ $score['place'] }}</td>
-						<td>
-							{{ link_to_route('display.teamscore', $teams->find($team_id)->name, $team_id) }}
-						</td>
-						<td>
-							{{ $teams->find($team_id)->school->name }}
-						</td>
-						<td>
-							{{ $score['total'] }} ({{ $score['runs'] }})
-						</td>
-					</tr>
-					@if($rowcount > $settings['rows'])
-						</table>
-					</div>
-					<div class="col-md-12 col-lg-12">
-					<table class="table table-striped table-bordered table-condensed">
-
-						<tr class="info">
-							<td colspan="4">Division {{ $level }}</td>
-						</tr>
-						<tr class="bold_row">
-							<td>#</td>
-							<td>Team</td>
-							<td>School</td>
-							<td>Score (Runs)</td>
-						</tr>
-						<?php $rowcount = 2; ?>
-					@endif
-				@endforeach
+				@if($rowcount > $settings['rows'])
+					</table>
+				</div>
+				<div class="col-md-12 col-lg-12">
+				<table class="table table-striped table-bordered table-condensed">
+					<tr class="info">
+    					<td>School</td>
+    					<td>Team</td>
+    					<td>Score (Runs)</td>
+    				</tr>
+    				<?php $rowcount = 1; ?>
+				@endif
 			@endforeach
 		</table>
 	</div>
 </div>
 
 <div id="dialog-settings" title="Adjust Settings">
-	{{ Form::open( [ 'route' => [ 'display.compyearsettings', $compyear->id ], 'class' => 'form-horizontal', 'id' => 'settings_form', 'style' => 'margin: 5px;' ] ) }}
+	{{ Form::open( [ 'route' => [ 'display.all_scores_settings', $compyear->id ], 'class' => 'form-horizontal', 'id' => 'settings_form', 'style' => 'margin: 5px;' ] ) }}
 		<div class="form-group">
 			{{ Form::label('columns', 'Columns:', [ 'class' => 'col-sm-4 control-label' ]) }}
 			<div class="col-sm-7">
