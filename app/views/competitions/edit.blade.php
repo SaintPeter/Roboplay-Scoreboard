@@ -2,7 +2,7 @@
 
 @section('head')
 	{{ HTML::style('css/bootstrap-timepicker.min.css') }}
-	{{ HTML::script('js/bootstrap-timepicker.js') }}
+	{{ HTML::script('js/bootstrap-timepicker.min.js') }}
 @stop
 
 @section('script')

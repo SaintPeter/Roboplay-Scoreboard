@@ -260,6 +260,11 @@ Route::group(array('before' => 'auth'), function() {
 	    Route::get('video_scores/judge_performance_{year}.jpg', [
 	                'as' => 'graph_judge_performace',
 	                'uses' => 'VideoManagementController@graph_judge_scoring' ]);
+
+	    // Schedule Editing
+	    Route::get('schedule', [ 'as' => 'schedule.index', 'uses' => 'ScheduleController@index' ]);
+	    Route::post('schedule', [ 'as' => 'schedule.update', 'uses' => 'ScheduleController@update' ]);
+
 	});
 
 	Route::group(array('before' => 'judge'), function () {
