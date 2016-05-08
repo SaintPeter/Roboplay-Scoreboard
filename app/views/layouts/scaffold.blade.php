@@ -10,6 +10,7 @@
 		{{ HTML::style('//maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css') }}
 		{{ HTML::script('//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js') }}
         {{ HTML::script('//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js') }}
+        {{ HTML::script('//maxcdn.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js'); }}
 
         @yield('head')
 
