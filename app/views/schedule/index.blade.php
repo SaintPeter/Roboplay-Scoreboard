@@ -32,6 +32,7 @@
     @foreach($schedule as $row)
     <tr>
         <td>
+            <input type="hidden" name="{{ "schedule[{$row->id}][id]" }}" value="{{ $row->id }}">
             <div class="input-group bootstrap-timepicker timepicker">
                 <input name="{{ "schedule[{$row->id}][start]" }}" type="text" class="form-control input-sm timepicker" value="{{ $row->start }}">
                 <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
@@ -51,6 +52,16 @@
             </button>
         </td>
     </tr>
+    @if(isset($row['errors']))
+    <tr>
+        <div class="col-md-6">
+        	<ul>
+        		{{ implode('', $row['errors'],('<li class="error">:message</li>')) }}
+        	</ul>
+        </div>
+
+    </tr>
+    @endif
     @endforeach
 </table>
     <input type="submit" name="submit" value="Save" class="btn btn-primary">

@@ -18,7 +18,12 @@ class ScheduleController extends \BaseController {
 	public function index()
 	{
 	    View::share('title', 'Schedule Editor');
-	    $schedule = Schedule::orderBy('start')->get();
+	    if(Input::has('schedule')) {
+	        $schedule = Input::get('schedule');
+	        ddd($schedule);
+	    } else {
+	        $schedule =  Schedule::orderBy('start')->get();
+	    }
 
 	    Carbon\Carbon::setToStringFormat('g:i:s a');
 
@@ -26,73 +31,53 @@ class ScheduleController extends \BaseController {
 	}
 
 	/**
-	 * Show the form for creating a new resource.
-	 * GET /schedule/create
-	 *
-	 * @return Response
-	 */
-	public function create()
-	{
-		//
-	}
-
-	/**
-	 * Store a newly created resource in storage.
-	 * POST /schedule
-	 *
-	 * @return Response
-	 */
-	public function store()
-	{
-		//
-	}
-
-	/**
-	 * Display the specified resource.
-	 * GET /schedule/{id}
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function show($id)
-	{
-		//
-	}
-
-	/**
-	 * Show the form for editing the specified resource.
-	 * GET /schedule/{id}/edit
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function edit($id)
-	{
-		//
-	}
-
-	/**
 	 * Update the specified resource in storage.
 	 * PUT /schedule/{id}
 	 *
-	 * @param  int  $id
-	 * @return Response
+	 * @return Redirect to Index
 	 */
-	public function update($id)
+	public function update()
 	{
-		//
-	}
+		$new_schedule = Input::get('schedule', []);
+		$current_schedule = Schedule::orderBy('start')->get();
 
-	/**
-	 * Remove the specified resource from storage.
-	 * DELETE /schedule/{id}
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function destroy($id)
-	{
-		//
-	}
+		$keys = array_keys($new_schedule);
+        $errors = false;
 
+		foreach($keys as $i => $key) {
+		    $update_schedule = $current_schedule->find($new_schedule[$key]['id']);
+
+		    // Create a new model if it doesn't exist
+		    if(!$update_schedule) {
+		        $update_schedule = new Schedule;
+		        $new_schedule[$key]['id'] = $key;
+		    }
+
+		    // End time is always the next element's start time, unless it is the last
+		    if(isset($keys[$i+1])) {
+		        $new_schedule[$key]['end'] = $new_schedule[$keys[$i+1]]['start'];
+		    } else {
+		        $new_schedule[$key]['end'] = $new_schedule[$key]['start'];
+		    }
+
+		    // Validate
+		    $scheduleErrors = Validator::make($new_schedule[$key], Schedule::$rules);
+
+		    if($scheduleErrors->passes()) {
+		        $update_schedule->update($new_schedule[$key]);
+		        $new_schedule[$key]['id'] = $update_schedule->id;
+		    } else {
+		        $new_schedule[$key]['errors'] = $scheduleErrors->messages()->all();
+		        $errors = true;
+		    }
+		}
+//ddd($new_schedule);
+		if($errors) {
+		    return Redirect::route('schedule.index')
+		                   ->with([ 'schedule' => $new_schedule,
+		                            'message' => "Errors Occured" ]);
+		}
+
+		return Redirect::route('schedule.index')->with(['message' => 'Schedule Updated']);
+	}
 }

@@ -5,6 +5,12 @@ class Schedule extends \Eloquent {
 	public $timestamps = false;
 	public $table = 'schedule';
 
+	public static $rules = [
+	    'start' => 'required|date_format:h:i a',
+	    'end' => 'required|date_format:h:i a',
+	    'display' => 'required'
+	];
+
 	public function getStartAttribute($value) {
 	    return Carbon\Carbon::createFromFormat('H:i:s', $value);
 	}
