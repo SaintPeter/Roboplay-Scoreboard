@@ -197,12 +197,13 @@ Route::group(array('before' => 'auth'), function() {
 		Route::get('student_list',							[ 'as' => 'student_list', 'uses' => 'Wp_fix@student_list'] );
 
 		// Invoice Review
-		Route::get('invoice_review/{year?}/{terse?}',     	[ 'as' => 'invoice_review',		         'uses' => 'InvoiceReview@invoice_review' ]);
 		Route::get('invoice_review/toggle_video/{id?}',      [ 'as' => 'invoice_review.toggle_video', 'uses' => 'InvoiceReview@toggle_video' ]);
 		Route::get('invoice_review/toggle_team/{id?}',      [ 'as' => 'invoice_review.toggle_team', 'uses' => 'InvoiceReview@toggle_team' ]);
 		Route::get('invoice_review/save_video_div/{video_id?}/{div_id?}',  [ 'as' => 'invoice_review.save_video_div', 'uses' => 'InvoiceReview@save_video_division' ]);
 		Route::get('invoice_review/save_team_div/{team_id?}/{div_id?}',    [ 'as' => 'invoice_review.save_team_div', 'uses' => 'InvoiceReview@save_team_division' ]);
 		Route::post('invoice_review/save_video_notes/{id?}',      [ 'as' => 'invoice_review.save_video_notes', 'uses' => 'InvoiceReview@save_video_notes' ]);
+		Route::get('invoice_review/{year?}/{terse?}',     	[ 'as' => 'invoice_review',		         'uses' => 'InvoiceReview@invoice_review' ])
+		     ->where('year', '\d{4}');
 		Route::get('invoice_sync/{year}',					[ 'as' => 'invoice_sync',		         'uses' => 'InvoiceReview@invoice_sync' ]);
 
 		Route::get('data_export/{year?}',					[ 'as' => 'data_export',    'uses' => 'InvoiceReview@data_export' ])
