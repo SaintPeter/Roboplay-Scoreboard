@@ -246,7 +246,7 @@ function division_change(e) {
 		        <button class="btn btn-info btn-sm " disabled>Teams</button>
 		    @endif
 
-		    		    @if($invoice->videos->count() > 0)
+		    @if($invoice->videos->count() > 0)
 		        <button class="btn btn-success btn-sm toggle_videos" data-invoice="{{ $invoice->id }}">Videos</button>
 		    @else
 		        <button class="btn btn-success btn-sm " disabled>Videos</button>
@@ -325,7 +325,7 @@ function division_change(e) {
             			<td class="text-center">{{ $team->students->count() }}</td>
             			<td>
             			    @if($team->audit)
-            			        <button class="btn btn-success btn-sm team_audit_button" data-status="pass" id="team_status_toggle_{{ $team->id }}" data-tean="{{ $team->id }}" title="Click to mark unchecked">Checked</button>
+            			        <button class="btn btn-success btn-sm team_audit_button" data-status="pass" id="team_status_toggle_{{ $team->id }}" data-team="{{ $team->id }}" title="Click to mark unchecked">Checked</button>
             			    @else
             			        <button class="btn btn-danger btn-sm team_audit_button" data-status="fail"  id="team_status_toggle_{{ $team->id }}" data-team="{{ $team->id }}" title="Click to mark Checked">Unchecked</button>
             			    @endif
