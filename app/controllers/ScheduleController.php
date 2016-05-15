@@ -1,5 +1,7 @@
 <?php
 
+use Carbon\Carbon;
+
 class ScheduleController extends \BaseController {
 
 	public function __construct()
@@ -18,14 +20,14 @@ class ScheduleController extends \BaseController {
 	public function index()
 	{
 	    View::share('title', 'Schedule Editor');
-	    if(Input::has('schedule')) {
-	        $schedule = Input::get('schedule');
-	        ddd($schedule);
-	    } else {
-	        $schedule =  Schedule::orderBy('start')->get();
-	    }
 
-	    Carbon\Carbon::setToStringFormat('g:i:s a');
+        $schedule =  Schedule::orderBy('start')->get();
+
+	    Carbon::setToStringFormat('g:i:s a');
+
+	    if(Session::has('errors')) {
+	        ddd(Session::get('errors'));
+	    }
 
 		return View::make('schedule.index', compact('schedule'));
 	}
@@ -65,17 +67,16 @@ class ScheduleController extends \BaseController {
 
 		    if($scheduleErrors->passes()) {
 		        $update_schedule->update($new_schedule[$key]);
-		        $new_schedule[$key]['id'] = $update_schedule->id;
 		    } else {
-		        $new_schedule[$key]['errors'] = $scheduleErrors->messages()->all();
+		        $error_list[$key] = $scheduleErrors->messages()->all();
 		        $errors = true;
 		    }
 		}
 //ddd($new_schedule);
 		if($errors) {
 		    return Redirect::route('schedule.index')
-		                   ->with([ 'schedule' => $new_schedule,
-		                            'message' => "Errors Occured" ]);
+		                   ->withErrors( [ 'schedule' => $new_schedule ] )
+		                   ->with( [ 'message' => "Errors Occured" ]);
 		}
 
 		return Redirect::route('schedule.index')->with(['message' => 'Schedule Updated']);
