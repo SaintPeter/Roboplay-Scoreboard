@@ -74,7 +74,8 @@
 	</p>
 	<h2>Run {{{ $run_number }}}</h2>
 	<p>
-		<strong>{{ $challenge->display_name }}</strong><br />
+		<strong>{{ $challenge->divisions->find($team->division_id)->pivot->display_order }}.&nbsp;{{ $challenge->display_name }}</strong>
+		<hr>
 		{{ nl2br($challenge->rules) }}
 	</p>
 </div>
