@@ -8,52 +8,8 @@
 @stop
 
 @section('script')
+    @include('display.partial.timerjs', [ 'timer' => $timer, 'display_timer' => $display_timer ])
 
-@if(isset($next_event) AND isset($this_event) AND 0)
-		var serverTime = moment("{{ $start_time }}", "hh:mm:ss");
-		var delta = moment().diff(serverTime);
-		var endTime = moment("{{ $next_event->start }}", "hh:mm:ss");
-		var sign = '';
-
-		// Current Time Clock Function
-		var clock = setInterval(function() {
-			var now = moment();
-			$("#clock").html(now.subtract('milliseconds', delta).format("h:mm:ss"));
-		}, 1000);
-
-		// Countdown Timer function
-		var countdown_timer = setInterval(function() {
-			var timer = moment.duration(endTime.diff(moment().subtract('milliseconds', delta)));
-			if(timer.asSeconds() < 60 && timer.asSeconds() > 29 && !$('#timer').hasClass('label-warning')) {
-				$('#timer').removeClass('label-info');
-				$('#timer').addClass('label-warning');
-			}
-			if(timer.asSeconds() < 30 && !$('#timer').hasClass('label-danger')) {
-				$('#timer').removeClass('label-warning');
-				$('#timer').addClass('label-danger');
-			}
-		 	if(timer.asSeconds() < 0 && !$('#timer').hasClass('label-default')) {
-		 		$('#timer').removeClass('label-danger');
-		 		$('#timer').addClass('label-default');
-		 		sign = '-';
-		 	}
-
-		 	if(timer.asSeconds() < -5) {
-		 		location.reload(true);
-		 	}
-		 	$("#timer").html(sign + timer.hours() + ':' + prefix(Math.abs(timer.minutes())) + ':' + prefix(Math.abs(timer.seconds())));
-	 	}, 1000);
-
-		// 5 Minute Reload Timer
-		setInterval( function() {
-			location.reload(true);
-		}, 5.2 * 60 * 1000); // 5.2 minutes * 60 seconds * 1000 Milliseconds
-
-	// Add leading zero to single digits
-	function prefix(input) {
-	    return (input < 10 ? '0' : '') + input;
-	}
-@endif
 	$(function(){
 		$('#slick_container').slick({
 			slidesToShow: {{ $settings['columns'] }},
@@ -126,24 +82,7 @@
 <?php View::share( [ 'skip_title' => true, 'skip_breadcrumbs' => true ] ); ?>
 @section('before_header')
 	<div class="clearfix header_container">
-		@if(isset($next_event) AND isset($this_event) AND 0)
-			@if(isset($next_event) AND isset($this_event))
-				<div class="pull-right well well-sm timing col-md-6">
-					<div class="clock_holder">
-						<h1>
-							<span id="clock" class="label label-primary">{{ $this_event->start }}</span>
-							<small>{{ $this_event->display }}</small>
-						</h1>
-					</div>
-					<div class="timer_holder">
-						<h1>
-							<span id="timer" class="label label-info">0:00:00</span>
-							<small>Next: {{ $next_event->display }}</small>
-						</h1>
-					</div>
-				</div>
-			@endif
-		@endif
+		@include('display.partial.timer', [ 'timer' => $timer, 'display_timer' => $display_timer ] )
 		<h1>{{ $title }}</h1>
 		{{ link_to_route('home', 'Home', null, [ 'class' => 'btn btn-primary btn-margin' ]) }}
 		<a href="#" id="show_settings" class="btn btn-info btn-margin"><span class="glyphicon glyphicon-cog"></span></a>

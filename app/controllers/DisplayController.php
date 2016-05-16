@@ -4,6 +4,19 @@ use \Carbon\Carbon;
 
 class DisplayController extends BaseController {
 
+    // Get the current and next events and the current time
+    public function init_timer() {
+        $timer = new stdClass();
+		$timer->start_time = Carbon::now()->setTimezone('America/Los_Angeles')->toTimeString();
+		$timer->this_event = Schedule::where('start', '<', $timer->start_time)->orderBy('start', 'DESC')->first();
+		$timer->next_event = Schedule::where('start', '>', $timer->start_time)->orderBy('start')->first();
+		if(isset($timer->start_time) AND isset($timer->this_event) AND isset($timer->next_event)) {
+		    return $timer;
+		} else {
+		    return null;
+		}
+    }
+
 	/**
 	 * Show the detailed score for a single team for all challenges
 	 *
@@ -101,12 +114,7 @@ class DisplayController extends BaseController {
 		$comp = Competition::with('divisions', 'divisions.teams', 'divisions.challenges')->find($competition_id);
 		$divisions = $comp->divisions;
 
-		// Event Timing
-		$start_time = Carbon::now()->setTimezone('America/Los_Angeles')->toTimeString();
-		$this_event = Schedule::where('start', '<', $start_time)->orderBy('start', 'DESC')->first();
-		$next_event = Schedule::where('start', '>', $start_time)->orderBy('start')->first();
-
-		//dd(DB::getQueryLog());
+        $timer = $this->init_timer();
 
 		// Frozen Calculation
 		$freeze_time = new Carbon($comp->freeze_time);
@@ -236,8 +244,7 @@ class DisplayController extends BaseController {
         }
 
 		return View::make('display.compscore', compact('comp', 'divisions', 'score_list',
-													   'col_class', 'this_event', 'next_event',
-													   'frozen', 'start_time', 'display_timer',
+		                                               'timer', 'frozen',  'display_timer',
 													   'settings', 'top'));
 	}
 
@@ -252,13 +259,21 @@ class DisplayController extends BaseController {
     }
 
 
-
 	public function compyearscore_actual($compyear_id, $csv = null, $top = null)
 	{
 		Breadcrumbs::addCrumb('Statewide Score', 'compyearscore');
 
-		$compyear = CompYear::with('divisions', 'divisions.teams', 'divisions.challenges')->find($compyear_id);
+		$compyear = CompYear::with('competitions', 'divisions', 'divisions.teams', 'divisions.challenges')->find($compyear_id);
 		$divisions = $compyear->divisions;
+
+		// Frozen Calculation
+		$comp = $compyear->competitions->first();
+		$freeze_time = new Carbon($comp->freeze_time);
+		if($comp->frozen AND isset($start_time->freeze_time)) {
+			$frozen = true;
+		} else {
+			$frozen = false;
+		}
 
 		// Get score list and calculate totals
 		$score_list = [];
@@ -285,8 +300,14 @@ class DisplayController extends BaseController {
 					->orderBy('team_id', 'challenge_id')
 					->where('division_id', $division->id)
 					->whereNull('deleted_at')
-					->whereIn('challenge_id', $challenge_list)  // Limit to currently attached challenges
-					->get();
+					->whereIn('challenge_id', $challenge_list);  // Limit to currently attached challenges
+
+			// If we're frozen, limit scores we count by the freeze time
+			if($frozen) {
+				$scores = $scores->where('run_time', '<=', $freeze_time->toTimeString())->get();
+			} else {
+				$scores = $scores->get();
+			}
 
 			// Sum up all of the scores by team
 			foreach($scores as $score)
@@ -363,15 +384,12 @@ class DisplayController extends BaseController {
 			return Response::make(rtrim($output, "\n"), 200, $headers);
 		}
 
+        // Determine if timer should be displayed
 		$now = Carbon::now()->setTimezone('America/Los_Angeles');
-		//$event = new Carbon($comp->event_date);
-		$display_timer = true; //$now->isSameDay($event) || Input::get('display_timer', false);
+		$event = new Carbon($comp->event_date);
+		$display_timer = $now->isSameDay($event) || Input::get('display_timer', false);
 
-		// Event Timing
-		$start_time = Carbon::now()->setTimezone('America/Los_Angeles')->toTimeString();
-		$this_event = Schedule::where('start', '<', $start_time)->orderBy('start', 'DESC')->first();
-		$next_event = Schedule::where('start', '>', $start_time)->orderBy('start')->first();
-		$frozen = false;
+        $timer = $this->init_timer();
 
 		// Pull settings from the session variable
 		$session_variable = "compyearsettings_$compyear_id";
@@ -388,8 +406,7 @@ class DisplayController extends BaseController {
 
 		return View::make('display.compyearscore',
 		                compact('compyear', 'teams', 'score_list',
-								'col_class', 'this_event', 'next_event',
-								'frozen', 'start_time', 'display_timer',
+								'timer', 'frozen', 'display_timer',
 								'settings', 'top'));
 	}
 
@@ -397,9 +414,18 @@ class DisplayController extends BaseController {
 	{
 		Breadcrumbs::addCrumb('Statewide Scores', 'compyearscore');
 
-		$compyear = CompYear::with('divisions', 'divisions.teams', 'divisions.challenges')
+		$compyear = CompYear::with('competitions', 'divisions', 'divisions.teams', 'divisions.challenges')
 		                    ->find($compyear_id);
 		$divisions = $compyear->divisions;
+
+		// Frozen Calculation
+		$comp = $compyear->competitions->first();
+		$freeze_time = new Carbon($comp->freeze_time);
+		if($comp->frozen AND isset($start_time->freeze_time)) {
+			$frozen = true;
+		} else {
+			$frozen = false;
+		}
 
 		// Get score list and calculate totals
 		$score_list = [];
@@ -421,8 +447,14 @@ class DisplayController extends BaseController {
 					->orderBy('team_id', 'challenge_id')
 					->where('division_id', $division->id)
 					->whereNull('deleted_at')
-					->whereIn('challenge_id', $challenge_list)  // Limit to currently attached challenges
-					->get();
+					->whereIn('challenge_id', $challenge_list);  // Limit to currently attached challenges
+
+			// If we're frozen, limit scores we count by the freeze time
+			if($frozen) {
+				$scores = $scores->where('run_time', '<=', $freeze_time->toTimeString())->get();
+			} else {
+				$scores = $scores->get();
+			}
 
 			// Sum up all of the scores by team
 			foreach($scores as $score)
@@ -463,14 +495,10 @@ class DisplayController extends BaseController {
 		});
 
 		$now = Carbon::now()->setTimezone('America/Los_Angeles');
-		//$event = new Carbon($comp->event_date);
-		$display_timer = true; //$now->isSameDay($event) || Input::get('display_timer', false);
+		$event = new Carbon($comp->event_date);
+		$display_timer = $now->isSameDay($event) || Input::get('display_timer', false);
 
-		// Event Timing
-		$start_time = Carbon::now()->setTimezone('America/Los_Angeles')->toTimeString();
-		$this_event = Schedule::where('start', '<', $start_time)->orderBy('start', 'DESC')->first();
-		$next_event = Schedule::where('start', '>', $start_time)->orderBy('start')->first();
-		$frozen = false;
+		$timer = $this->init_timer();
 
 		// Pull settings from the session variable
 		$session_variable = "all_scores_settings_$compyear_id";
@@ -483,8 +511,7 @@ class DisplayController extends BaseController {
 
 		return View::make('display.allscore',
 		                compact('compyear', 'teams', 'score_list',
-								'col_class', 'this_event', 'next_event',
-								'frozen', 'start_time', 'display_timer',
+								'timer', 'frozen', 'display_timer',
 								'settings'));
 	}
 
