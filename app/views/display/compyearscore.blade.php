@@ -15,7 +15,7 @@
 			slidesToShow: {{ $settings['columns'] }},
 			autoplay: true,
 			autoplaySpeed:  {{ $settings['delay'] }},
-			speed: 700,
+			speed: 5000,
 			pauseOnHover: false,
 			prevArrow: '',
 			nextArrow: ''
