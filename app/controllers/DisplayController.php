@@ -147,6 +147,9 @@ class DisplayController extends BaseController {
 				$scores = $scores->get();
 			}
 
+			// Just make force it to not be frozen
+		    $frozen = false;
+
 			// Sum up all of the scores by team
 			foreach($scores as $score)
 			{
@@ -238,7 +241,7 @@ class DisplayController extends BaseController {
 		$settings['font-size'] = Session::get($session_variable . '_font-size', 'x-large');
 
         if($top) {
-            View::share('title', $comp->name . ' - Leaders');
+            View::share('title', $comp->name . ' - Leading Teams');
         } else {
 		    View::share('title', $comp->name . ' - Scores');
         }
@@ -275,6 +278,9 @@ class DisplayController extends BaseController {
 		} else {
 			$frozen = false;
 		}
+
+		// Just make force it to not be frozen
+		$frozen = false;
 
 		// Get score list and calculate totals
 		$score_list = [];
@@ -400,7 +406,7 @@ class DisplayController extends BaseController {
 		$settings['font-size'] = Session::get($session_variable . '_font-size', 'x-large');
 
         if($top) {
-            View::share('title', 'RoboPlay ' . $compyear->year . ' - Leaders');
+            View::share('title', 'RoboPlay ' . $compyear->year . ' - Leading Teams');
         } else {
 		    View::share('title', 'RoboPlay ' . $compyear->year . ' - Scores');
 		}
@@ -422,7 +428,7 @@ class DisplayController extends BaseController {
 		// Frozen Calculation
 		$comp = $compyear->competitions->first();
 		$freeze_time = new Carbon($comp->freeze_time);
-		if($comp->frozen AND isset($start_time->freeze_time)) {
+		if($comp->frozen AND isset($freeze_time)) {
 			$frozen = true;
 		} else {
 			$frozen = false;
@@ -508,11 +514,11 @@ class DisplayController extends BaseController {
 		$settings['delay'] = Session::get($session_variable . '_delay', 3000);
 		$settings['font-size'] = Session::get($session_variable . '_font-size', 'x-large');
 
-	    View::share('title', 'RoboPlay ' . $compyear->year . ' All Scores');
+	    View::share('title', 'RoboPlay ' . $compyear->year . ' - All Scores');
 
 		return View::make('display.allscore',
-		                compact('compyear', 'teams', 'score_list',
-								'timer', 'frozen', 'display_timer',
+		                compact('compyear', 'comp', 'teams', 'score_list',
+								'timer', 'frozen', 'freeze_time', 'display_timer',
 								'settings'));
 	}
 

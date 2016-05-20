@@ -87,6 +87,13 @@
 		{{ link_to_route('home', 'Home', null, [ 'class' => 'btn btn-primary btn-margin' ]) }}
 		<a href="#" id="show_settings" class="btn btn-info btn-margin"><span class="glyphicon glyphicon-cog"></span></a>
     	<a href="#" id="toggle_pause" class="btn btn-warning btn-margin"><i class="fa fa-pause"></i></a>
+    	@if($frozen)
+    	    @if(Roles::isAdmin())
+                {{ link_to_route('competition.toggle_frozen', "Scores Frozen since " . $freeze_time->format('g:i a'), [ $comp->id ], ['class' => 'btn btn-lg btn-info', 'title' => 'Click to Unfreeze' ] ) }}
+            @else
+                <span class="btn btn-lg btn-info">Scores Frozen since {{ $freeze_time->format('g:i a') }}</span>
+            @endif
+    	@endif
 	</div>
 @stop
 
@@ -130,6 +137,6 @@
 	</div>
 </div>
 
-@include('display.partial.settings', [ 'route' => 'display.all_scores_settings', 'id' => $compyear->id ]);
+@include('display.partial.settings', [ 'route' => 'display.all_scores_settings', 'id' => $compyear->id ])
 
 @stop
