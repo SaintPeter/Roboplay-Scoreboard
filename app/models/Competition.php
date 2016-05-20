@@ -40,4 +40,11 @@ class Competition extends Eloquent {
 		$this->attributes['freeze_time'] = Carbon::parse($value)->format('H:i');
 	}
 
+	// Checks to see if it is after the date of the competition
+	public function isDone()
+	{
+	    $today = Carbon::now()->setTimezone('America/Los_Angeles')->startOfDay();
+	    return $today->gte($this->event_date->endOfDay());
+	}
+
 }

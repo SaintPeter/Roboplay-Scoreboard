@@ -46,9 +46,15 @@
 			<ul data-role="listview" data-theme="c">
 				@if(!$compyear->competitions->isEmpty() )
 					<li>{{ link_to_route('display.all_scores',  'Combined Scoreboard', $compyear->id, $noajax) }} </li>
+					@if(Roles::isAdmin())
+					    <li>{{ link_to_route('display.compyearscore.top',  'Statewide Leaders', $compyear->id, $noajax) }} </li>
+					@endif
 					@foreach($compyear->competitions as $comp)
-						@if($today->gte($comp->event_date->endOfDay()))
-						    <li>{{ link_to_route('display.compscore', $comp->name . ' Scoreboard', $comp->id, $noajax) }} </li>
+						@if($comp->isDone())
+						    <li>{{ link_to_route('display.compscore', $comp->name . ' - Scoreboard', $comp->id, $noajax) }} </li>
+						@endif
+						@if(Roles::isAdmin())
+						    <li>{{ link_to_route('display.compscore.top', $comp->name . ' - Local Leaders', $comp->id, $noajax) }} </li>
 						@endif
 					@endforeach
 				@else
@@ -123,6 +129,7 @@
 	<li data-role="list-divider">Other Management</li>
 	<li>{{ link_to('invoice_review', 'Invoice Review', $noajax) }}</li>
 	<li>{{ link_to_route('data_export', 'Data Export', null, $noajax) }}</li>
+	<li>{{ link_to_route('schedule.index', 'Schedule Editor', null, $noajax) }}</li>
 	<li>{{ link_to_route('list_judges', 'User List', null, $noajax) }}</li>
 </ul>
 @endif
