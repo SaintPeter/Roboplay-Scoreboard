@@ -238,14 +238,15 @@ class DisplayController extends BaseController {
 		$settings['font-size'] = Session::get($session_variable . '_font-size', 'x-large');
 
         if($top) {
-            View::share('title', $comp->name . ' Winners');
+            View::share('title', $comp->name . ' - Leaders');
         } else {
-		    View::share('title', $comp->name . ' Scores');
+		    View::share('title', $comp->name . ' - Scores');
         }
 
-		return View::make('display.compscore', compact('comp', 'divisions', 'score_list',
-		                                               'timer', 'frozen',  'display_timer',
-													   'settings', 'top'));
+		return View::make('display.compscore',
+		                  compact('comp', 'divisions', 'score_list',
+                                  'timer', 'frozen',  'display_timer',
+							      'settings', 'top'));
 	}
 
     public function compyearscore_top($compyear_id, $csv = null)
@@ -399,7 +400,7 @@ class DisplayController extends BaseController {
 		$settings['font-size'] = Session::get($session_variable . '_font-size', 'x-large');
 
         if($top) {
-            View::share('title', 'RoboPlay ' . $compyear->year . ' - Winners');
+            View::share('title', 'RoboPlay ' . $compyear->year . ' - Leaders');
         } else {
 		    View::share('title', 'RoboPlay ' . $compyear->year . ' - Scores');
 		}

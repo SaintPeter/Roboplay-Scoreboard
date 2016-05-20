@@ -46,9 +46,15 @@
 			<ul data-role="listview" data-theme="c">
 				@if(!$compyear->competitions->isEmpty() )
 					<li>{{ link_to_route('display.all_scores',  'Combined Scoreboard', $compyear->id, $noajax) }} </li>
+					@if(Roles::isAdmin())
+					    <li>{{ link_to_route('display.compyearscore.top',  'Statewide Leaders', $compyear->id, $noajax) }} </li>
+					@endif
 					@foreach($compyear->competitions as $comp)
-						@if($today->gte($comp->event_date->endOfDay()))
-						    <li>{{ link_to_route('display.compscore', $comp->name . ' Scoreboard', $comp->id, $noajax) }} </li>
+						@if($comp->isDone())
+						    <li>{{ link_to_route('display.compscore', $comp->name . ' - Scoreboard', $comp->id, $noajax) }} </li>
+						@endif
+						@if(Roles::isAdmin())
+						    <li>{{ link_to_route('display.compscore.top', $comp->name . ' - Local Leaders', $comp->id, $noajax) }} </li>
 						@endif
 					@endforeach
 				@else

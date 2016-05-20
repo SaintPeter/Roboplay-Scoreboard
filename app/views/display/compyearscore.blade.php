@@ -85,6 +85,11 @@
 		@include('display.partial.timer', [ 'timer' => $timer, 'display_timer' => $display_timer ] )
 		<h1>{{ $title }}</h1>
 		{{ link_to_route('home', 'Home', null, [ 'class' => 'btn btn-primary btn-margin' ]) }}
+		@if($top)
+		    {{ link_to_route('display.compyearscore', 'All Scores', [ $compyear->id ], [ 'class' => 'btn btn-danger btn-margin' ]) }}
+		@else
+		    {{ link_to_route('display.compyearscore.top', 'Leaders', [ $compyear->id ], [ 'class' => 'btn btn-danger btn-margin' ]) }}
+		@endif
 		<a href="#" id="show_settings" class="btn btn-info btn-margin"><span class="glyphicon glyphicon-cog"></span></a>
 		<a href="{{ route('display.compyearscore' . (($top) ? '.top' : ''), [ $compyear->id, 'csv' ]) }}" id="download_csv" class="btn btn-success btn-margin" title="Download scores as CSV">
 			<i class="fa fa-file-excel-o"></i>
