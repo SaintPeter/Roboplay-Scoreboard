@@ -105,12 +105,15 @@
 			<?php $rowcount = 0; ?>
 			@foreach($score_list as $level => $scores)
 				<tr class="info">
-					<td colspan="4">Division {{ $level }}</td>
+					<td colspan="{{ ($top) ? 5 : 4 }}">Division {{ $level }}</td>
 				</tr>
 				<tr class="bold_row">
 					<td>#</td>
 					<td>Team</td>
 					<td>School</td>
+					@if($top)
+					    <td>Site</td>
+					@endif
 					<td>Score (Runs)</td>
 				</tr>
 				<?php $rowcount += 2; ?>
@@ -124,6 +127,9 @@
 						<td>
 							{{ $teams->find($team_id)->school->name }}
 						</td>
+						@if($top)
+						    <td>{{ $teams->find($team_id)->division->competition->location }}</td>
+						@endif
 						<td>
 							{{ $score['total'] }} ({{ $score['runs'] }})
 						</td>
@@ -135,12 +141,15 @@
 					<table class="table table-striped table-bordered table-condensed">
 
 						<tr class="info">
-							<td colspan="4">Division {{ $level }}</td>
+							<td colspan="{{ ($top) ? 5 : 4 }}">Division {{ $level }}</td>
 						</tr>
 						<tr class="bold_row">
 							<td>#</td>
 							<td>Team</td>
 							<td>School</td>
+							@if($top)
+        					    <td>Site</td>
+        					@endif
 							<td>Score (Runs)</td>
 						</tr>
 						<?php $rowcount = 2; ?>
