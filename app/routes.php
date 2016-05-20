@@ -211,6 +211,7 @@ Route::group(array('before' => 'auth'), function() {
 		Route::get('data_export/student_tshirts_{year}.csv',		[ 'as' => 'data_export.student_tshirts',    'uses' => 'InvoiceReview@student_tshirts_csv' ]);
 		Route::get('data_export/teacher_tshirts_{year}.csv',		[ 'as' => 'data_export.teacher_tshirts',    'uses' => 'InvoiceReview@teacher_tshirts_csv' ]);
 		Route::get('data_export/teacher_teams_{year}.csv',			[ 'as' => 'data_export.teacher_teams',    'uses' => 'InvoiceReview@teacher_teams_csv' ]);
+		Route::get('data_export/student_demographics_{year}.csv',	[ 'as' => 'data_export.student_demographics',    'uses' => 'InvoiceReview@student_demographics_csv' ]);
 
 
 
