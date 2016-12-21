@@ -321,4 +321,49 @@ class InvoiceReview extends \BaseController {
 		));
 	}
 
+	public function video_demographics_csv($year = '')
+	{
+	    if(!$year) {
+	        return Redirect::route('data_export')->with('message', 'Year must be set to export data');
+	    }
+
+
+		$invoices = Invoices::with('wp_user', 'wp_user.usermeta', 'judge', 'school')
+	                        ->with( [ 'videos' => function($q) use ($year) {
+	                             return $q->where('year', $year)->where('flag', 0);
+	                        }, 'videos.students', 'videos.division', 'videos.division.competition',
+	                           'videos.students.math_level', 'videos.students.ethnicity'])
+    	                    ->where('year', $year)
+    	                    ->get();
+
+        // Header
+	    $content = "Teacher Name,Video Name,Student Name,Gender,Ethnicity,Grade,Math Level,Math Div,Division\n";
+
+		foreach($invoices as $invoice) {
+		    foreach($invoice->videos as $video) {
+		        foreach($video->students as $student) {
+        			$content .= '"';
+        			$content .= join('","',
+        			                [ $invoice->judge->display_name,
+	                                $video->name,
+	                                $student->fullName(),
+	                                $student->gender,
+	                                $student->ethnicity->name,
+	                                $student->grade,
+	                                $student->math_level->name,
+	                                $student->math_level->level,
+	                                $video->division->name
+								   ]) .
+						     '"' . "\n";
+				}
+			}
+		}
+
+		// return an string as a file to the user
+		return Response::make($content, '200', array(
+			'Content-Type' => 'application/octet-stream',
+			'Content-Disposition' => 'attachment; filename="video_demographics_' . $year . '.csv"'
+		));
+	}
+
 }

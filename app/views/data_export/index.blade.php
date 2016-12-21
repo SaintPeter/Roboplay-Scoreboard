@@ -15,6 +15,7 @@
         <h1>Demographics</h1>
         <ul>
         	<li>{{ link_to_route('data_export.student_demographics', 'Student Competition Team Demographics (' . $year . ')', [ 'year' => $year ]) }}</li>
+        	<li>{{ link_to_route('data_export.video_demographics', 'Student Video Demographics (' . $year . ')', [ 'year' => $year ]) }}</li>
         </ul>
     @else
         <h2>You must select a year.</h2>
