@@ -282,7 +282,7 @@ class InvoiceReview extends \BaseController {
 	    }
 
 
-		$invoices = Invoices::with('wp_user', 'wp_user.usermeta', 'judge', 'school')
+		$invoices = Invoices::with('wp_user', 'wp_user.usermeta', 'judge', 'school', 'school.district', 'school.district.county')
 	                        ->with( [ 'teams' => function($q) use ($year) {
 	                             return $q->where('year', $year);
 	                        }, 'teams.students', 'teams.division', 'teams.division.competition',
@@ -291,7 +291,7 @@ class InvoiceReview extends \BaseController {
     	                    ->get();
 
         // Header
-	    $content = "Teacher Name,School,Site,Team Name,Student Name,Gender,Ethnicity,Grade,Math Level,Math Div,Division\n";
+	    $content = "Teacher Name,School,District,County,Site,Team Name,Student Name,Gender,Ethnicity,Grade,Math Level,Math Div,Division\n";
 
 		foreach($invoices as $invoice) {
 		    foreach($invoice->teams as $team) {
@@ -300,9 +300,11 @@ class InvoiceReview extends \BaseController {
         			$content .= join('","',
         			                [ $invoice->judge->display_name,
         			                $invoice->school->name,
+        			                $invoice->school->district->name,
+        			                $invoice->school->district->county->name,
 	                                $team->division->competition->location,
 	                                $team->name,
-	                                $student->fullName(),
+	                                preg_replace('/"/','""',$student->fullName()),
 	                                $student->gender,
 	                                $student->ethnicity->name,
 	                                $student->grade,
@@ -329,7 +331,7 @@ class InvoiceReview extends \BaseController {
 	    }
 
 
-		$invoices = Invoices::with('wp_user', 'wp_user.usermeta', 'judge', 'school')
+		$invoices = Invoices::with('wp_user', 'wp_user.usermeta', 'judge', 'school', 'school.district', 'school.district.county')
 	                        ->with( [ 'videos' => function($q) use ($year) {
 	                             return $q->where('year', $year)->where('flag', 0);
 	                        }, 'videos.students', 'videos.division', 'videos.division.competition',
@@ -338,7 +340,7 @@ class InvoiceReview extends \BaseController {
     	                    ->get();
 
         // Header
-	    $content = "Teacher Name,School,Video Name,Student Name,Gender,Ethnicity,Grade,Math Level,Math Div,Division\n";
+	    $content = "Teacher Name,School,District,County,Video Name,Student Name,Gender,Ethnicity,Grade,Math Level,Math Div,Division\n";
 
 		foreach($invoices as $invoice) {
 		    foreach($invoice->videos as $video) {
@@ -347,8 +349,10 @@ class InvoiceReview extends \BaseController {
         			$content .= join('","',
         			                [ $invoice->judge->display_name,
         			                $invoice->school->name,
+        			                $invoice->school->district->name,
+        			                $invoice->school->district->county->name,
 	                                $video->name,
-	                                $student->fullName(),
+	                                preg_replace('/"/','""',$student->fullName()),
 	                                $student->gender,
 	                                $student->ethnicity->name,
 	                                $student->grade,
