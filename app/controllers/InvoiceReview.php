@@ -291,7 +291,7 @@ class InvoiceReview extends \BaseController {
     	                    ->get();
 
         // Header
-	    $content = "Teacher Name,Site,Team Name,Student Name,Gender,Ethnicity,Grade,Math Level,Math Div,Division\n";
+	    $content = "Teacher Name,School,Site,Team Name,Student Name,Gender,Ethnicity,Grade,Math Level,Math Div,Division\n";
 
 		foreach($invoices as $invoice) {
 		    foreach($invoice->teams as $team) {
@@ -299,6 +299,7 @@ class InvoiceReview extends \BaseController {
         			$content .= '"';
         			$content .= join('","',
         			                [ $invoice->judge->display_name,
+        			                $invoice->school->name,
 	                                $team->division->competition->location,
 	                                $team->name,
 	                                $student->fullName(),
@@ -337,7 +338,7 @@ class InvoiceReview extends \BaseController {
     	                    ->get();
 
         // Header
-	    $content = "Teacher Name,Video Name,Student Name,Gender,Ethnicity,Grade,Math Level,Math Div,Division\n";
+	    $content = "Teacher Name,School,Video Name,Student Name,Gender,Ethnicity,Grade,Math Level,Math Div,Division\n";
 
 		foreach($invoices as $invoice) {
 		    foreach($invoice->videos as $video) {
@@ -345,6 +346,7 @@ class InvoiceReview extends \BaseController {
         			$content .= '"';
         			$content .= join('","',
         			                [ $invoice->judge->display_name,
+        			                $invoice->school->name,
 	                                $video->name,
 	                                $student->fullName(),
 	                                $student->gender,
