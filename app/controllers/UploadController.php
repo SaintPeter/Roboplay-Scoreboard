@@ -152,10 +152,44 @@ class UploadController extends BaseController {
 
 	public function delete_file($video_id, $file_id)
 	{
+	    // Make sure they have permission to delete_file
+	    $video = Video::findorfail($video_id);
+	    if(!(Roles::isAdmin() OR $video->teacher_id == Auth::user()->ID)) {
+	        return Redirect::to(URL::previous())->with('error', 'You do not have permission to delete this file.');;
+	    }
+
 		$file = Files::find($file_id);
 		if($file) {
 			$file->delete();
 		}
 		return Redirect::to(URL::previous());
+	}
+
+	public function rename_file($video_id, $file_id)
+	{
+	    // Make sure they have permission to rename
+	    $video = Video::findorfail($video_id);
+	    if(!(Roles::isAdmin() OR $video->teacher_id == Auth::user()->ID)) {
+	        return Response::json( ['success' => 0, 'msg' => 'Error: You do not have permission to rename file'] );
+	    }
+
+	    $filename = trim(Input::get('filename'));
+
+	     // Validate the filename
+	    if(preg_match('/[^a-zA-Z0-9_. -]/', $filename) OR empty($filename)) {
+	        return Response::json( ['success' => 0, 'msg' => 'Error: Invalid Characters in filename'] );
+	    }
+
+		$file = Files::find($file_id);
+		if($file) {
+			if($file->rename($filename)) {
+			    return Response::json( ['success' => 1,
+			                         'msg' => 'Success',
+			                         'filename' => $file->filename ] );
+			} else {
+			    return Response::json( ['success' => 0, 'msg' => 'Error: Renaming Error'] );
+			}
+		}
+		return Response::json( ['success' => 0, 'msg' => 'Error: Cannot Find File'] );
 	}
 }

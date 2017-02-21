@@ -128,6 +128,6 @@
 	</div>
 	<br />
 	<br />
-	{{ link_to_route('teacher.videos.show', 'Return to Video', $video_id, [ 'class' => 'btn btn-info' ]) }}
+	<a class="btn btn-info" href="{{ URL::previous() }}">Return to Video</a>
 </div>
 @stop

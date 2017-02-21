@@ -103,20 +103,16 @@
 	</tbody>
 </table>
 
-<div style="width:950px" class="center-block clearfix">
+
 	<h3>Preview</h3>
 	<div>
 		@include('teacher.videos.partial.tags', [ 'video' => $video ])
 	</div>
-	<div class="pull-left" style="width:640px; margin: 10px;">
-		<h4>{{ $video->name }} </h4>
-		<iframe  style="border: 1px solid black" id="ytplayer" type="text/html" width="640" height="390" src="http://www.youtube.com/embed/{{{ $video->yt_code }}}" frameborder="0"></iframe>
-	</div>
 
-	<div class="pull-left" style="width: 250px; margin: 10px 20px;">
-		@include('partials.filelist', [ 'video' => $video, 'show_type' => true, 'show_delete' => true ])
-	</div>
-</div>
+	@include('partials.showvideo', [ 'video' => $video, 'show_division' => false ])
+
+	@include('partials.filelist', [ 'video' => $video, 'show_type' => true, 'allow_edit' => true ])
+
 
 <div id="dialog-confirm" title="Delete video?">
 <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>

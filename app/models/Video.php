@@ -169,4 +169,21 @@ class Video extends Eloquent {
 		return $count;
 	}
 
+    // Produce a list of files sorted into categories
+	public function getFilelistAttribute()
+	{
+	    $output = [];
+
+	    if(count($this->files)) {
+	        foreach($this->files as $file) {
+	            $output[$file->filetype->name][] = $file;
+	        }
+	        uksort($output, function($a, $b) { return strcasecmp($a, $b); });
+	        foreach($output as $cat => $file) {
+	            uasort($output[$cat], function($a, $b) { return strnatcasecmp($a->filename, $b->filename); } );
+	        }
+	    }
+	    return $output;
+	}
+
 }

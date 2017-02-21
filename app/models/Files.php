@@ -45,4 +45,28 @@ class Files extends \Eloquent {
 		return public_path() . $this->path();
 	}
 
+	public function just_filename() {
+	    return basename($this->filename, '.' . $this->filetype->ext);
+	}
+
+	public function rename($newFilename)
+	{
+	    // Validate the filename
+	    if(preg_match('/[^a-zA-Z0-9_. -]/', $newFilename) OR empty($newFilename)) {
+	        return false;
+	    }
+	    $new_path = join( DIRECTORY_SEPARATOR, [
+	                public_path(),
+	                "uploads",
+	                "video_" . $this->video_id,
+	                $newFilename . '.' . $this->filetype->ext
+	                ]);
+	    if(rename($this->full_path(), $new_path)) {
+	        $this->filename = $newFilename . '.' . $this->filetype->ext;
+	        $this->save();
+	        return true;
+	    } else {
+	        return false;
+	    }
+	}
 }

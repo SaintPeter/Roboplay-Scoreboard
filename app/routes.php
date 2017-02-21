@@ -366,6 +366,12 @@ Route::group(array('before' => 'auth'), function() {
 					->where('video_id', '\d+')
 					->where('file_id', '\d+');
 
+	    Route::post('teacher/video/{video_id}/rename/{file_id}', [
+					'as' => 'uploader.rename_file',
+					'uses' => 'UploadController@rename_file' ])
+					->where('video_id', '\d+')
+					->where('file_id', '\d+');
+
 		Route::get('uploader/{video_id}', [
 				   'as' => 'uploader.index',
 				   'uses' => 'UploadController@index' ])
