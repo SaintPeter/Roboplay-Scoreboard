@@ -128,11 +128,15 @@
 
 @section('main')
 @if($invoice->team_count > 0)
-    <h3>T-Shirt Size</h3>
-    <p>All Challenge Team Teachers recieve a t-shirt</p>
-    <div class="form-group">
-        {{ Form::select('tshirt', $tshirt_sizes, $invoice->judge->tshirt, [ 'id' => "tshirt" ]) }}
+<div class="row">
+    <div class="col-sm-6 col-xs-8">
+        <h3>T-Shirt Size</h3>
+        <p>All Challenge Team Teachers recieve a t-shirt</p>
+        <div class="form-group">
+            {{ Form::select('tshirt', $tshirt_sizes, $invoice->judge->tshirt, [ 'id' => "tshirt", 'class' => 'form-control' ]) }}
+        </div>
     </div>
+</div>
 @endif
 
 <h3>Manage Challenge Teams</h3>
