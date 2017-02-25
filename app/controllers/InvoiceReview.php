@@ -107,7 +107,6 @@ class InvoiceReview extends \BaseController {
 
             $count = 0;
             foreach($raw_invoices as $raw_invoice) {
-                //dd('<pre>' . print_r($raw_invoice->toArray(), true) . '</pre>');
                 // Fetch a local invoice if it exists
                 $invoice = Invoices::firstOrNew([
                     'remote_id' => $raw_invoice->invoice_no,
@@ -130,6 +129,63 @@ class InvoiceReview extends \BaseController {
             // Check for removed invoices
             $invoices = Invoices::where('year', $year)->get();
             $raw_invoice_array = $raw_invoices->lists('invoice_no');
+            $removed = 0;
+            foreach($invoices as $invoice) {
+                if(!in_array($invoice->remote_id, $raw_invoice_array)) {
+                    $invoice->delete();
+                    $removed++;
+                }
+            }
+
+            return Redirect::route('invoice_review', $year)->with('message', 'Synced ' . $count . " Invoices, Removed $removed for $year");
+        }
+
+        // Formidable Forms, 2017-??
+        if($comp_year->invoice_type == 2) {
+            // Get list of Invoices
+            $raw_invoices = Frm_items::with('fields', 'values')
+                                     ->where('form_id', $comp_year->invoice_type_id)
+                                     ->get();
+
+            /*
+            __ 2017 Field Information __
+            field_id   Description
+            966        Video Competition ($20 per team)
+            965        Challenge Competition - Complete Package ($320 per team)
+            964        Challenge Competition - Basic Package ($250 per team)
+            961        wp_school_id from usermeta
+            */
+
+            $count = 0;
+            foreach($raw_invoices as $raw_invoice) {
+                // Create a list of values to lookup from
+                $vals = $raw_invoice->values->lists('meta_value', 'field_id');
+
+                // Fetch a local invoice if it exists
+                $invoice = Invoices::firstOrNew([
+                    'remote_id' => $raw_invoice->id,
+                    'user_id' => $raw_invoice->user_id,
+                    'year' => $year
+                ]);
+
+                $invoice->wp_school_id = intval(arr_get($vals[961],0)); // School id
+
+                // Basic and Complete Packages
+                $invoice->team_count = intval(arr_get($vals[964],0)) + intval(arr_get($vals[965],0));
+
+                // Video Package
+                $invoice->video_count = intval(arr_get($vals[966],0));
+
+                // Not doing this anymore
+                $invoice->math_count = 0;
+
+                $invoice->save();
+                $count++;
+            }
+
+            // Check for removed invoices
+            $invoices = Invoices::where('year', $year)->get();
+            $raw_invoice_array = $raw_invoices->lists('id');
             $removed = 0;
             foreach($invoices as $invoice) {
                 if(!in_array($invoice->remote_id, $raw_invoice_array)) {

@@ -16,7 +16,9 @@ class CompYearsController extends \BaseController {
 	{
 	    $invoice_types = Config::get('settings.invoice_types', []);
 		$compyears = CompYear::with('competitions', 'divisions',
-									'vid_competitions', 'vid_divisions')->get();
+									'vid_competitions', 'vid_divisions')
+								->orderBy('year', 'desc')
+								->get();
 
 
 		View::share('title', 'Manage Competition Years');

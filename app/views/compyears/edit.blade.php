@@ -19,7 +19,7 @@
 
     	<div class="form-group col-md-6">
     	    {{ Form::label('invoice_type', "Invoice Type") }}
-    	    {{ Form::select('invoice_type', [ 1 => 'C-STEM Invoice' ], null, [ 'class'=>'form-control' ]) }}
+    	    {{ Form::select('invoice_type', $invoice_types , null, [ 'class'=>'form-control' ]) }}
     	</div>
 
     	<div class="form-group col-md-4">
