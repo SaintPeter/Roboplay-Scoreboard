@@ -1,57 +1,59 @@
-<h4>Files ({{ count($video->files) }})</h4>
-@if($video->filelist)
-<div class="col-sm-12 col-md-6">
-    <div class="panel panel-default ">
-        @foreach($video->filelist as $cat => $files)
-            <?php $catname = preg_replace('/\W/','',strtolower($cat)) ?>
-            <div class="panel-heading" role="button" data-toggle="collapse" data-target="#{{ $catname }}" aria-expanded="true">
-                {{ $cat }} ({{ count($files) }})
-            </div>
-            <div class="panel-collapse in" id="{{ $catname }}" aria-expanded="true">
-        		<ul class="list-group">
-        		@foreach($files as $file)
-        		    <li class="list-group-item">
-        		        &nbsp;&nbsp;
-        				@if($file->filetype->viewer == 'lytebox')
-    						<a href="{{ $file->url() }}" class="lytebox" data-title="{{ $file->filename }}" data-lyte-options="group:group1" target="_blank" >
-    							<i class="fa {{ $file->filetype->icon}}"></i>
-    							<span id="filename_{{ $file->id }}">{{ $file->filename }}</span>
-    						</a>
-        				@else
-    						<a href="{{ url($file->path()) }}" target="_blank">
-    							<i class="fa {{ $file->filetype->icon}}"></i>
-    							{{ $file->filename }}
-    						</a>
-        				@endif
-        				<span class="pull-right">
-            				@if($file->filetype->viewer == 'lytebox' or $file->filetype->viewer == 'none')
-         					    <a href="{{ url($file->path()) }}" target="_blank">
-         					        <span class="glyphicon glyphicon-download" title="Download File"></span>
-         					    </a>
-         					    &nbsp;
-             				@endif
-            				@if($allow_edit)
-        				        <a class="rename_button"
-        				           data-ext="{{ $file->filetype->ext }}"
-        				           data-filename="{{ $file->just_filename() }}"
-        				           data-id="{{ $file->id }}"
-        				           data-target="{{ route('uploader.rename_file', [ 'video_id' => $video->id, 'file_id' => $file->id ]) }}"
-        				           href="#">
-        					        <span class="glyphicon glyphicon-edit" title="Rename File"></span>
-        					    </a>
-        					    &nbsp;
-        					    <a href="{{ route('uploader.delete_file', [ 'video_id' => $video->id, 'file_id' => $file->id ]) }}" class="delete_file">
-        					        <span class="glyphicon glyphicon-remove" style="color: red;" title="Delete File"></span>
-        					    </a>
+<div class="row">
+    @if($video->filelist)
+    <div class="col-sm-12 col-md-6">
+        <h4>Files ({{ count($video->files) }})</h4>
+        <div class="panel panel-default ">
+            @foreach($video->filelist as $cat => $files)
+                <?php $catname = preg_replace('/\W/','',strtolower($cat)) ?>
+                <div class="panel-heading" role="button" data-toggle="collapse" data-target="#{{ $catname }}" aria-expanded="true">
+                    {{ $cat }} ({{ count($files) }})
+                </div>
+                <div class="panel-collapse in" id="{{ $catname }}" aria-expanded="true">
+            		<ul class="list-group">
+            		@foreach($files as $file)
+            		    <li class="list-group-item">
+            		        &nbsp;&nbsp;
+            				@if($file->filetype->viewer == 'lytebox')
+        						<a href="{{ $file->url() }}" class="lytebox" data-title="{{ $file->filename }}" data-lyte-options="group:group1" target="_blank" >
+        							<i class="fa {{ $file->filetype->icon}}"></i>
+        							<span id="filename_{{ $file->id }}">{{ $file->filename }}</span>
+        						</a>
+            				@else
+        						<a href="{{ url($file->path()) }}" target="_blank">
+        							<i class="fa {{ $file->filetype->icon}}"></i>
+        							{{ $file->filename }}
+        						</a>
             				@endif
-            			</span>
-        			</li>
-        		@endforeach
-        		</ul>
-        	</div>
-        @endforeach
+            				<span class="pull-right">
+                				@if($file->filetype->viewer == 'lytebox' or $file->filetype->viewer == 'none')
+             					    <a href="{{ url($file->path()) }}" target="_blank">
+             					        <span class="glyphicon glyphicon-download" title="Download File"></span>
+             					    </a>
+             					    &nbsp;
+                 				@endif
+                				@if($allow_edit)
+            				        <a class="rename_button"
+            				           data-ext="{{ $file->filetype->ext }}"
+            				           data-filename="{{ $file->just_filename() }}"
+            				           data-id="{{ $file->id }}"
+            				           data-target="{{ route('uploader.rename_file', [ 'video_id' => $video->id, 'file_id' => $file->id ]) }}"
+            				           href="#">
+            					        <span class="glyphicon glyphicon-edit" title="Rename File"></span>
+            					    </a>
+            					    &nbsp;
+            					    <a href="{{ route('uploader.delete_file', [ 'video_id' => $video->id, 'file_id' => $file->id ]) }}" class="delete_file">
+            					        <span class="glyphicon glyphicon-remove" style="color: red;" title="Delete File"></span>
+            					    </a>
+                				@endif
+                			</span>
+            			</li>
+            		@endforeach
+            		</ul>
+            	</div>
+            @endforeach
+        </div>
     </div>
-</div>
+
 @if($allow_edit)
     {{ HTML::style('https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.0.3/jquery-confirm.min.css') }}
     {{ HTML::script('//cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.0.3/jquery-confirm.min.js') }}
@@ -129,11 +131,11 @@
     		}
 
         });
-
-
-
 </script>
-
 @else
-No Files
+    <div class="col-sm-12 col-md-6">
+        <h4>No Files</h4>
+    </div>
+
 @endif
+</div>
