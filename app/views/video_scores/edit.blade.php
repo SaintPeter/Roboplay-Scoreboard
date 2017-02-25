@@ -11,11 +11,10 @@
 }
 
 .name_col, .cat_col, .blank_col {
-	width:28%;
+	    white-space: nowrap;
 }
 
 .score_table {
-	width: 800px;
 	table-layout: fixed;
 	margin-left: auto;
 	margin-right: auto;
@@ -85,6 +84,7 @@
 	@foreach($types as $type)
 		<tr class="title_row">
 			<td class="name_col">{{ $type->display_name }}</td>
+			<td class="score_col">0</td>
 			<td class="score_col">1</td>
 			<td class="score_col">2</td>
 			<td class="score_col">3</td>
@@ -98,6 +98,7 @@
 							{{ $rubric->element_name }}
 						</a>
 				</td>
+				<td class="cb_col">{{ Form::radio('scores[' . $type->id .  '][' . $rubric->element . ']', '0', $video_scores[$type->id][$rubric->element]==0) }}</td>
 				<td class="cb_col">{{ Form::radio('scores[' . $type->id .  '][' . $rubric->element . ']', '1', $video_scores[$type->id][$rubric->element]==1) }}</td>
 				<td class="cb_col">{{ Form::radio('scores[' . $type->id .  '][' . $rubric->element . ']', '2', $video_scores[$type->id][$rubric->element]==2) }}</td>
 				<td class="cb_col">{{ Form::radio('scores[' . $type->id .  '][' . $rubric->element . ']', '3', $video_scores[$type->id][$rubric->element]==3) }}</td>
@@ -107,21 +108,22 @@
 			</tr>
 			<tr class="rubric_row hidden rubric_{{ $rubric->id }}">
 				<td class="blank_col"></td>
+				<td class="rubric_text">{{ $rubric->zero }}</td>
 				<td class="rubric_text">{{ $rubric->one }}</td>
 				<td class="rubric_text">{{ $rubric->two }}</td>
 				<td class="rubric_text">{{ $rubric->three }}</td>
 				<td class="rubric_text">{{ $rubric->four }}</td>
 			</tr>
 			<tr class="blank_row hidden rubric_{{ $rubric->id }}">
-				<td colspan="5">&nbsp</td>
+				<td colspan="6">&nbsp</td>
 			</tr>
 		@endforeach
 	@endforeach
 	<tr class="title_row">
-		<td colspan="5" style="text-align: left;">Report Problem</td>
+		<td colspan="6" style="text-align: left;">Report Problem</td>
 	</tr>
 	<tr>
-		<td colspan="5">
+		<td colspan="6">
 			<a href="#" rubric_id="report_problem" class="rubric_switcher">
 				<span id="icon_report_problem" class="glyphicon glyphicon-chevron-right"></span>
 				Report Problem
@@ -129,7 +131,7 @@
 		</td>
 	</tr>
 	<tr class="rubric_row hidden rubric_report_problem">
-		<td colspan=5">
+		<td colspan="6">
 			<div class="col-md-6">If you believe this video has violated a rule or has a significant issue, please describe the issue in detail.
 				If there is specific content you believe is problematic, include a time marker (mm:ss).
 				<br /><br />
@@ -149,7 +151,7 @@
 		</td>
 	</tr>
 	<tr>
-		<td colspan="5" style="text-align: center">
+		<td colspan="6" style="text-align: center">
 			<br />
 			{{ Form::submit('Update', ['class' => 'btn btn-success']) }}
 		</td>

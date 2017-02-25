@@ -261,8 +261,8 @@ class ScoreVideosController extends \BaseController {
 		$group = Vid_score_type::whereId($type)->pluck('group');
 		$total = 0;
 		$score_count = count($score);
-		// Loop through s1..s5, totalling or creating the index
-		for($i = 1; $i < 6; $i++)
+		// Loop through s1..s20, totalling or creating the index
+		for($i = 1; $i < 11; $i++)
 		{
 			$index = 's' . $i;
 			if(array_key_exists($index, $score)) {
@@ -384,6 +384,11 @@ class ScoreVideosController extends \BaseController {
 			$video_scores[$score->vid_score_type_id]['s3'] = $score->s3;
 			$video_scores[$score->vid_score_type_id]['s4'] = $score->s4;
 			$video_scores[$score->vid_score_type_id]['s5'] = $score->s5;
+			$video_scores[$score->vid_score_type_id]['s6'] = $score->s6;
+			$video_scores[$score->vid_score_type_id]['s7'] = $score->s7;
+			$video_scores[$score->vid_score_type_id]['s8'] = $score->s8;
+			$video_scores[$score->vid_score_type_id]['s9'] = $score->s9;
+			$video_scores[$score->vid_score_type_id]['s10'] = $score->s10;
 		}
 
 		return View::make('video_scores.edit', compact('video', 'video_scores', 'types'))
