@@ -33,11 +33,6 @@ class TeacherController extends BaseController {
                            ->with('judge', 'school')
 	                       ->first();
 
-//		$invoice = Wp_invoice_table::where('invoice_type_id', 16)
-//								    ->where('user_id', Auth::user()->ID)
-//								    ->with('invoice_data','user','user.usermeta')
-//								    ->first();
-
 		if(!isset($invoice)) {
 			return View::make('error', [ 'message' => 'No invoice found for this School']);
 		}
