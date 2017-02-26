@@ -60,6 +60,19 @@ class ScoreVideosController extends \BaseController {
 			$videos[$score->division->longname()][$score->video->name][$score->vid_score_type_id] = $score;
 			$videos[$score->division->longname()][$score->video->name]['video_id'] = $score->video_id;
 			$videos[$score->division->longname()][$score->video->name]['flag'] = $score->video->flag;
+
+			if(count($score->video->comments)) {
+			    foreach($score->video->comments as $comment) {
+			        $videos[$score->division->longname()][$score->video->name]['comments'] =
+			            "<strong>Comment</strong><br>" . $comment->comment;
+			        if(!empty($comment->resolution)) {
+			            $videos[$score->division->longname()][$score->video->name]['comments'] .=
+			            "<br><strong>Resolution</strong><br>" . $comment->resolution . "<br>";
+			        }
+			    }
+			} else {
+			    $videos[$score->division->longname()][$score->video->name]['comments'] = '';
+			}
 			$scored_count[$score->score_group]++;
 		}
 
@@ -80,7 +93,7 @@ class ScoreVideosController extends \BaseController {
 		$judge_compute = Cookie::get('judge_compute',0) ? 'checked="checked"' : '';
 		$judge_custom = Cookie::get('judge_custom',0) ? 'checked="checked"' : '';
 
-		//dd($judge_compute, $judge_custom);
+		//ddd($videos);
 
 		View::share('title', 'Judge Videos');
 		return View::make('video_scores.index', compact('videos', 'comp_list', 'types', 'total_count', 'scored_count', 'judge_compute', 'judge_custom'));
@@ -200,7 +213,7 @@ class ScoreVideosController extends \BaseController {
 		Breadcrumbs::addCrumb('Score Video', 'score');
 		View::share('title', 'Score Video');
 
-		$video = Video::with('vid_division.competition')->find($video_id);
+		$video = Video::with('vid_division.competition', 'comments')->find($video_id);
 		if(empty($video)) {
 			// Invalid video
 			return Redirect::route('video.judge.index')
@@ -248,8 +261,6 @@ class ScoreVideosController extends \BaseController {
 	 */
 	public function create()
 	{
-
-
 		return View::make('video_scores.create');
 	}
 
@@ -348,7 +359,8 @@ class ScoreVideosController extends \BaseController {
 	{
 		Breadcrumbs::addCrumb('Edit Score', 'edit');
 		View::share('title', 'Edit Video Score');
-		$video = Video::with('vid_division.competition')->find($video_id);
+		$video = Video::with('vid_division.competition', 'comments')->find($video_id);
+
 		if(empty($video)) {
 			// Invalid video
 			return Redirect::route('video.judge.index')
@@ -427,7 +439,21 @@ class ScoreVideosController extends \BaseController {
 			$video->flag = FLAG_REVIEW;
 			$video->save();
 
-			// TODO:  E-mail admin to let them know a video has been flagged
+			//try {
+                $sent = Mail::send('emails.video_report' ,
+                     [ 'video' => $video, 'comment' => $video_comment['comment'], 'year' => $video->year ],
+                     function($message) use ($video) {
+                        $message->from('rex.schrader@gmail.com', 'RoboPlay Scoreboard');
+                        $message->to('rex.schrader@gmail.com', 'RoboPlay Scoreboard');
+                        $message->subject('Video Reported - ' . $video->name);
+                        $message->sender('rex.schrader@gmail.com');
+                    return $message;
+            });
+            //}
+            //catch (\Exception $e)
+            //{
+            //    ddd($e->getMessage());
+           // }
 		}
 
 		return Redirect::route('video.judge.index');

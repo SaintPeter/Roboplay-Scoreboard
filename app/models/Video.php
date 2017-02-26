@@ -82,7 +82,7 @@ class Video extends Eloquent {
 	}
 
 	public function comments() {
-		return $this->belongsTo('Video_comment');
+		return $this->hasMany('Video_comment');
 	}
 
 	public function teacher() {

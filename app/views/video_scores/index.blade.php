@@ -90,11 +90,12 @@ td.score:nth-child(odd) {
 @stop
 
 @section('script')
-$(document).tooltip({
-	content: function (callback) {
-		callback($(this).prop('title'));
-	}
-});
+$.widget.bridge('uitooltip', $.ui.tooltip);
+$(document).uitooltip({
+          content: function () {
+              return $(this).prop('title');
+          }
+      });
 
 @stop
 
@@ -189,19 +190,19 @@ $(document).tooltip({
 					@foreach($video_list as $vid_title => $scores)
 						<tr class="score_row">
 							 @if($scores['flag'] == FLAG_NORMAL)
-								<td>
+							    <td class="{{ $scores['comments'] ? 'comment' : '' }}" title="{{ $scores['comments'] }}">
 									<a href="{{ route('video.judge.edit', [ $scores['video_id'] ]) }}">
 										<span class="glyphicon glyphicon-edit"></span>
 										<strong>{{ $vid_title }}</strong>
 									</a>
 								</td>
 							@elseif($scores['flag'] == FLAG_REVIEW)
-								<td class="comment text-warning" title="<strong>Video Under Review</strong>">
+								<td class="comment text-warning" title="<strong>Video Under Review</strong><br>{{ $scores['comments'] }}">
 									<span class="glyphicon glyphicon-exclamation-sign"></span>
 									<strong>{{ $vid_title }}</strong>
 								</td>
 							@else
-								<td class="comment text-danger" title="<strong>Video Disqualified</strong>">
+								<td class="comment text-danger" title="<strong>Video Disqualified</strong><br>{{ $scores['comments'] }}">
 									<span class="glyphicon glyphicon-remove"></span>
 									<strong>{{ $vid_title }}</strong>
 								</td>

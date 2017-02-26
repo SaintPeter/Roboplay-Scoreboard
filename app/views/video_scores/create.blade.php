@@ -139,7 +139,9 @@
 	</tr>
 	<tr class="rubric_row hidden rubric_report_problem">
 		<td colspan="6">
-			<div class="col-md-6">If you believe this video has violated a rule or has a significant issue, please describe the issue in detail.
+			<div class="col-md-6">
+			    <h4>Reporting Instructions</h4>
+			    If you believe this video has violated a rule or has a significant issue, please describe the issue in detail.
 				If there is specific content you believe is problematic, include a time marker (mm:ss).
 				<br /><br />
 				Reported videos are immediatly removed from judging.
@@ -147,7 +149,20 @@
 				A report will only be submitted if you check the checkbox.
 			</div>
 			<div class="col-md-6">
-				<label for='report_problem'>
+    			@if(count($video->comments))
+    	            <h4>Prior Reports</h4>
+    	            @foreach($video->comments as $comment)
+    	                <strong>Comment: </strong> {{ $comment->comment }}
+    	                @if(!empty($comment->resolution))
+    	                    <br><strong>Resolution:</strong>
+    	                    {{ $comment->resolution }}<br><br>
+    	                @endif
+    	            @endforeach
+        	    @endif
+			</div>
+			<div class="col-md-12">
+			    <h4>Report</h4>
+			    <label for='report_problem'>
 					{{ Form::checkbox('report_problem') }}
 					Report a Problem
 				</label>
