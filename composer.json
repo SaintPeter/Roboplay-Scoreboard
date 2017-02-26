@@ -31,7 +31,10 @@
 			"app/tests/TestCase.php",
 			"app/classes",
 			"app/validation"
-		]
+		],
+	    "files": [
+	        "app/helpers/helper_functions.php"
+	    ]
 	},
 	"scripts": {
 		"post-install-cmd": [
