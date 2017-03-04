@@ -95,7 +95,7 @@ class InvoiceReview extends \BaseController {
 	}
 
 
-	public function invoice_sync($year = 0)
+	public function invoice_sync($year = 0, $online = true)
 	{
 	    $comp_year = CompYear::where('year', $year)->firstOrFail();
 
@@ -137,7 +137,15 @@ class InvoiceReview extends \BaseController {
                 }
             }
 
-            return Redirect::route('invoice_review', $year)->with('message', 'Synced ' . $count . " Invoices, Removed $removed for $year");
+            $message = 'Synced ' . $count . " Invoices, Removed $removed for $year";
+
+            // Only redirect if online
+            if($online) {
+                return Redirect::route('invoice_review', $year)->with('message', $message);
+            } else {
+                return $message;
+            }
+
         }
 
         // Formidable Forms, 2017-??
@@ -194,7 +202,14 @@ class InvoiceReview extends \BaseController {
                 }
             }
 
-            return Redirect::route('invoice_review', $year)->with('message', 'Synced ' . $count . " Invoices, Removed $removed for $year");
+            $message = 'Synced ' . $count . " Invoices, Removed $removed for $year";
+
+            // Only redirect if online
+            if($online) {
+                return Redirect::route('invoice_review', $year)->with('message', $message);
+            } else {
+                return $message;
+            }
         }
 	}
 
