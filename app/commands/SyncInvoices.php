@@ -38,7 +38,7 @@ class SyncInvoices extends Command {
 	public function fire()
 	{
 		$result = App::make('InvoiceReview')->invoice_sync($this->argument('year'),false);
-		$this->info($result);
+		$this->info(date("r") . " - " . $result);
 	}
 
 	/**
