@@ -3,6 +3,7 @@
 @section('script')
 $(document).on('ready', function() {
     $(document).on('click', '.add_button', add_type);
+    $(document).on('click', '.save_button', save_type);
     $(document).on('click', '.edit_button', edit_type);
     $(document).on('click', '.update_button', update_type);
     $(document).on('click', '.cancel_update_button', cancel_update_type);
