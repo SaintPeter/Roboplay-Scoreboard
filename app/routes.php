@@ -107,6 +107,7 @@ Route::group(array('before' => 'auth'), function() {
 		return Redirect::to('/');
 	}]);
 
+/* ----------------------- Admin Routes --------------------------------------*/
 	Route::group(array('before' => 'admin'), function () {
 		// Export Functions
 		Route::get('challenge_students_csv', [ 'uses' => 'DisplayController@challenge_students_csv' ] );
@@ -215,7 +216,13 @@ Route::group(array('before' => 'auth'), function() {
 		Route::get('data_export/student_demographics_{year}.csv',	[ 'as' => 'data_export.student_demographics',    'uses' => 'InvoiceReview@student_demographics_csv' ]);
 		Route::get('data_export/video_demographics_{year}.csv',	    [ 'as' => 'data_export.video_demographics',    'uses' => 'InvoiceReview@video_demographics_csv' ]);
 
-
+        // File Types Editing
+        Route::resource('filetypes', 'FileTypesController');
+        Route::get('filetypes/add/{type?}',          [ 'as' => 'filetypes.add',     'uses' => 'FileTypesController@create' ]);
+        /*
+        Route::post('filetypes/store',        [ 'as' => 'filetypes.store',     'uses' => 'FileTypesController@store' ]);
+        Route::post('filetypes/update/{id}',  [ 'as' => 'filetypes.update',    'uses' => 'FileTypesController@update' ]);
+        */
 
 		// Video Scores management
 		Route::get('video_scores/{year?}', [
@@ -269,6 +276,10 @@ Route::group(array('before' => 'auth'), function() {
 	    Route::post('schedule', [ 'as' => 'schedule.update', 'uses' => 'ScheduleController@update' ]);
 
 	});
+
+/* -----------------------------------------------------------------------------
+|                              Judge Routes                                     |
+------------------------------------------------------------------------------*/
 
 	Route::group(array('before' => 'judge'), function () {
 		// Delete individual score
@@ -354,7 +365,7 @@ Route::group(array('before' => 'auth'), function() {
 					'uses' => 'ScoreVideosController@clear_scores' ]);
 	});
 
-	// ---------------- Teacher Stuff ---------------------------
+/* ----------------------- Teacher Routes ----------------------------------*/
 	Route::group(array('before' => 'teacher'), function ()
 	{
 		Route::resource('teacher/teams', 'TeacherTeamsController');

@@ -130,6 +130,7 @@
 	<li>{{ link_to('invoice_review', 'Invoice Review', $noajax) }}</li>
 	<li>{{ link_to_route('data_export', 'Data Export', null, $noajax) }}</li>
 	<li>{{ link_to_route('schedule.index', 'Schedule Editor', null, $noajax) }}</li>
+	<li>{{ link_to_route('filetypes.index', 'Filetype Editor', null, $noajax) }}</li>
 	<li>{{ link_to_route('list_judges', 'User List', null, $noajax) }}</li>
 </ul>
 @endif
