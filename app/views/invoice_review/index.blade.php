@@ -13,6 +13,7 @@
 $(document).on('ready', function() {
     $('.toggle_videos').on('click', toggle_videos);
     $('.toggle_teams').on('click', toggle_teams);
+    $('.toggle_paid').on('click', toggle_paid);
     $('.audit_button').on('click', toggle_audit);
     $('.team_audit_button').on('click', team_toggle_audit);
     $('.video_notes').on('input', notes_change);
@@ -39,6 +40,31 @@ function toggle_teams(e) {
     } else {
         $('#teams' + id).hide();
     }
+}
+
+function toggle_paid(e) {
+    var id = $(this).data('invoice');
+    var status = $(this).data('paid');
+    $.get('{{ route('invoice_review.toggle_paid') }}/' + id, function(data) {
+        if(data === "true") {
+            $('#paid_' + id).html(!status);
+            if(status) {
+                $('#paid_' + id)
+                    .html('Unpaid')
+                    .data('paid', !status)
+                    .addClass('btn-danger')
+                    .removeClass('btn-success');
+            } else {
+                $('#paid_' + id)
+                    .html('Paid')
+                    .data('paid', !status)
+                    .removeClass('btn-danger')
+                    .addClass('btn-success');
+
+            }
+        }
+    });
+
 }
 
 function toggle_audit(e) {
@@ -237,7 +263,11 @@ function division_change(e) {
 			?>
 		</td>
 		<td class="text-center">
-		    {{ ($invoice->paid) ? 'Paid' : 'Unpaid' }}
+		    @if($invoice->paid)
+		        <button class="toggle_paid btn btn-success" id="paid_{{ $invoice->id }}" data-paid="1" data-invoice="{{ $invoice->id }}">Paid</button>
+		    @else
+		        <button class="toggle_paid btn btn-danger" id="paid_{{ $invoice->id }}" data-paid="0" data-invoice="{{ $invoice->id }}">Unpaid</button>
+		    @endif
 		</td>
 		<td class="text-center">
 		    @if($invoice->teams->count() > 0)

@@ -76,6 +76,13 @@ class InvoiceReview extends \BaseController {
 	    return 'true';
 	}
 
+	// Toggles the status of 'paid' for the given invoice
+	public function toggle_paid($invoice_id) {
+	    $invoice = Invoices::findOrFail($invoice_id);
+	    $invoice->update(['paid' => !$invoice->paid ]);
+	    return 'true';
+	}
+
 	public function save_video_notes($video_id) {
 	    $video = Video::findOrFail($video_id);
 	    $video->update(['notes' => Input::get('notes', '') ]);

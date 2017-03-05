@@ -1,7 +1,7 @@
 <?php
 
 class Invoices extends \Eloquent {
-	protected $fillable = ['remote_id', 'user_id', 'year'];
+	protected $fillable = ['remote_id', 'paid', 'notes', 'user_id', 'year'];
 
 	// Relationships
 	public function user() {
