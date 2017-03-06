@@ -370,6 +370,7 @@ function division_change(e) {
                 		                <th>Student</th>
                 		                <th>Math Level</th>
                 		                <th class="text-center">Math Div</th>
+                		                <th class="text-center">T-Shirt</th>
 
                 		            </thead>
                 		            <tbody>
@@ -378,6 +379,7 @@ function division_change(e) {
                 		                <td>{{ $student->fullName() }}</td>
                 		                <td>{{ $student->math_level->name }}</td>
                 		                <td class="text-center">{{ $student->math_level->level }}</td>
+                		                <td class="text-center">{{ $student->tshirt ? $student->tshirt : "N/A" }}</td>
                 		             </tr>
                 		            @endforeach
                 		            </tbody>
