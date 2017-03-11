@@ -67,11 +67,13 @@
 			</div><!-- /content -->
 
 			<div data-role="footer">
-				<h4>@yield('footer')</h4>
+				<h4>@yield('footer')
+    				<div class="text-center">
+    				    <span style="font-size: 10px; ">This page took {{ round((microtime(true) - LARAVEL_START),5) }} seconds to render</span>
+    				</div>
+				</h4>
+
 			</div><!-- /footer -->
 		</div><!-- /page -->
-
-
 	</body>
-
 </html>

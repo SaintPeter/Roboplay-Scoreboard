@@ -79,6 +79,9 @@
 
 			@yield('main')
 		</div>
+		<div class="text-center">
+		    <span style="font-size: 10px; ">This page took {{ round((microtime(true) - LARAVEL_START),5) }} seconds to render</span>
+		</div>
 	</body>
 
 </html>

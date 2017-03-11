@@ -36,7 +36,7 @@ class ScoreController extends BaseController {
 			$teams = Team::where('division_id', $division_id)->get();
 			return View::make('score.team_list', compact('teams', 'division_id', 'competition_id'));
 		}
-
+//ddd(DB::getQueryLog());
         return View::make('score.index')
         			->with(compact('challenges', 'team_id', 'team', 'judge', 'competition_id', 'division_id'));
 	}

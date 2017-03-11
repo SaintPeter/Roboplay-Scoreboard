@@ -433,7 +433,7 @@ Route::post('login', function() {
 		// Update Judge Info
 		Judge::do_sync();
 
-		//dd(Redirect::intended('/'));
+		//ddd(Redirect::intended('/'));
 	    // Go where we intended to go, or back to the home page
 		return Redirect::intended('/');
 	}
