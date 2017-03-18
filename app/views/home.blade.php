@@ -92,16 +92,16 @@
 			Manage Challenge and Video Teams
 		</a>
 	</li>
-	<li><a href="http://c-stem.ucdavis.edu/wp-content/uploads/2016/CDay/Teacher%20Instructions%202016.challenge.pdf" data-ajax="false" target="_blank"><i class="fa fa-users"></i>&nbsp;Teacher Guide &mdash; Challenge Teams</a></li>
-	<li><a href="http://c-stem.ucdavis.edu/wp-content/uploads/2016/CDay/Teacher%20Instructions%202016.video.pdf" data-ajax="false" target="_blank"><i class="fa fa-video-camera"></i>&nbsp;Teacher Guide &mdash; Video Teams</a></li>
+	<li><a href="http://c-stem.ucdavis.edu/wp-content/uploads/2017/01/2017_RoboPlayChallenge_TeacherInstructions.pdf" data-ajax="false" target="_blank"><i class="fa fa-users"></i>&nbsp;Teacher Guide &mdash; Challenge Teams</a></li>
+	<li><a href="http://c-stem.ucdavis.edu/wp-content/uploads/2017/02/2017_RoboPlayVideo_VideoSubmissionInstructions.pdf" data-ajax="false" target="_blank"><i class="fa fa-video-camera"></i>&nbsp;Teacher Guide &mdash; Video Teams</a></li>
 
 
 </ul>
 	<p>Issues?<br />
 		<ol>
 			<li>Read the Teacher Guides above.</li>
-			<li>Technical Problems?<br /> E-mail <a href="mailto:rex.schrader@gmail.com?subject=RoboPlay 2016 - Scoreboard Question&cc=hespindola@ucdavis.edu">rex.schrader@gmail.com</a></li>
-			<li>Invoice Problems?<br /> E-mail <a href="mailto:hespindola@ucdavis.edu?subject=RoboPlay 2016 - Scoreboard Question">hespindola@ucdavis.edu</a></li>
+			<li>Technical Problems?<br /> E-mail <a href="mailto:rex.schrader@gmail.com?subject=RoboPlay 2017 - Scoreboard Question&cc=sbmisewich@ucdavis.edu">rex.schrader@gmail.com</a></li>
+			<li>Invoice Problems?<br /> E-mail <a href="mailto:sbmisewich@ucdavis.edu?subject=RoboPlay 2017 - Scoreboard Question">sbmisewich@ucdavis.edu</a></li>
 		</ol>
 		</p>
 @endif
