@@ -18,7 +18,8 @@
 		"easybook/geshi": "dev-master",
 		"parsecsv/php-parsecsv": "0.4.5",
 		"raveren/kint": "dev-master",
-		"jpgraph/jpgraph": "dev-master"
+		"jpgraph/jpgraph": "dev-master",
+		"sebklaus/profiler" : "dev-master"
 	},
 	"autoload": {
 		"classmap": [

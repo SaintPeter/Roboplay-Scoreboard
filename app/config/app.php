@@ -110,7 +110,8 @@ return array(
     	'Hampel\WordPress\Hashing\WordPressHashServiceProvider',
     	'Way\Generators\GeneratorsServiceProvider',
     	'Creitive\Breadcrumbs\BreadcrumbsServiceProvider',
-    	'Roles\RolesServiceProvider'
+    	'Roles\RolesServiceProvider',
+    	'Sebklaus\Profiler\Providers\ProfilerServiceProvider'
 
 	),
 
