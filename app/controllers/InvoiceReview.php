@@ -83,6 +83,20 @@ class InvoiceReview extends \BaseController {
 	    return 'true';
 	}
 
+	// Set paid and notes
+	public function set_paid($invoice_id) {
+	    $invoice = Invoices::findOrFail($invoice_id);
+	    $invoice->update(['paid' => 1, 'notes' => Input::get('notes', '') ]);
+	    return 'true';
+	}
+
+	// Clear paid and notes
+	public function clear_paid($invoice_id) {
+	    $invoice = Invoices::findOrFail($invoice_id);
+	    $invoice->update(['paid' => 0, 'notes' => '' ]);
+	    return 'true';
+	}
+
 	public function save_video_notes($video_id) {
 	    $video = Video::findOrFail($video_id);
 	    $video->update(['notes' => Input::get('notes', '') ]);

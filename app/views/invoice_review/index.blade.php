@@ -9,11 +9,17 @@
 	$students_count = 0;
 ?>
 
+@section('head')
+    {{ HTML::style('https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.0.3/jquery-confirm.min.css') }}
+    {{ HTML::script('//cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.0.3/jquery-confirm.min.js') }}
+@stop
+
 @section('script')
 $(document).on('ready', function() {
     $('.toggle_videos').on('click', toggle_videos);
     $('.toggle_teams').on('click', toggle_teams);
     $('.toggle_paid').on('click', toggle_paid);
+    $('.set_invoice_number').on('click', prompt_invoice_number);
     $('.audit_button').on('click', toggle_audit);
     $('.team_audit_button').on('click', team_toggle_audit);
     $('.video_notes').on('input', notes_change);
@@ -45,27 +51,72 @@ function toggle_teams(e) {
 function toggle_paid(e) {
     var id = $(this).data('invoice');
     var status = $(this).data('paid');
-    $.get('{{ route('invoice_review.toggle_paid') }}/' + id, function(data) {
-        if(data === "true") {
+    if(!status) {
+        $.confirm({
+            title: 'Set Invoice Paid',
+            content: '' +
+            '<form action="" class="invoice_notes">' +
+            '<div class="form-group">' +
+            '<label>Invoice Number/Notes</label>' +
+            '<input name="notes" type="text" placeholder="12345" class="notes form-control" required />' +
+            '</div>' +
+            '</form>',
+            buttons: {
+                formSubmit: {
+                    text: 'Submit',
+                    btnClass: 'btn-blue',
+                    action: function () {
+                        var notes = this.$content.find('.notes').val();
+                        var data = $('.invoice_notes').serialize();
+                        console.log(data);
+                        $.post("{{ route('invoice_review.set_paid')}}/" + id, data, function(result) {
+                            if(result === "true") {
+                                $('#paid_' + id).html(!status);
+                                $('#paid_' + id)
+                                    .html('Paid')
+                                    .data('paid', !status)
+                                    .removeClass('btn-danger')
+                                    .addClass('btn-success');
+                                $('#notes_' + id).html(notes);
+                            }
+                        });
+                    }
+                },
+                cancel: function () {
+                    //close
+                },
+            },
+            onContentReady: function () {
+                // bind to events
+                var jc = this;
+                this.$content.find('form').on('submit', function (e) {
+                    // if the user submits the form by pressing enter in the field.
+                    e.preventDefault();
+                    jc.$$formSubmit.trigger('click'); // reference the button and click it
+                });
+            }
+        });
+    } else {
+        // Clear the paid status and notes
+        $.get('{{ route('invoice_review.clear_paid') }}/' + id, function(data) {
             $('#paid_' + id).html(!status);
-            if(status) {
-                $('#paid_' + id)
+            $('#paid_' + id)
                     .html('Unpaid')
                     .data('paid', !status)
                     .addClass('btn-danger')
                     .removeClass('btn-success');
-            } else {
-                $('#paid_' + id)
-                    .html('Paid')
-                    .data('paid', !status)
-                    .removeClass('btn-danger')
-                    .addClass('btn-success');
+            $('#notes_' + id).html("&nbsp;");
+        });
+    }
+}
 
-            }
-        }
-    });
+function prompt_invoice_number(e) {
+    e.preventDefault();
+    var id = $(this).data('invoice');
+
 
 }
+
 
 function toggle_audit(e) {
     var button = this;
@@ -223,6 +274,7 @@ function division_change(e) {
 		<th>Teams</th>
 		<th>Videos</th>
 		<th>Students</th>
+		<th>Invoice</th>
 		<th>Paid</th>
 		<th class="text-center">Actions</th>
 	</tr>
@@ -262,6 +314,13 @@ function division_change(e) {
 			    $students_count += $invoice->teams->reduce($student_count, 0);
 			?>
 		</td>
+		<td id="notes_{{ $invoice->id }}" class="text-center">
+            @if($invoice->notes)
+                {{ $invoice->notes }}
+            @else
+                &nbsp;
+            @endif
+		</td>
 		<td class="text-center">
 		    @if($invoice->paid)
 		        <button class="toggle_paid btn btn-success" id="paid_{{ $invoice->id }}" data-paid="1" data-invoice="{{ $invoice->id }}">Paid</button>
@@ -286,7 +345,7 @@ function division_change(e) {
 	</tr>
 	@if($invoice->videos->count() > 0)
 	<tr>
-	    <td colspan="7" class="video_section" id="videos{{ $invoice->id }}">
+	    <td colspan="8" class="video_section" id="videos{{ $invoice->id }}">
     	    <table class="table">
     	        <thead>
     	            <th>Video</th>
@@ -321,7 +380,7 @@ function division_change(e) {
 
             		</tr>
             		<tr>
-            		    <td colspan="7" class="video_notes_section">
+            		    <td colspan="8" class="video_notes_section">
                             <label>Notes</label>
                             <textarea class="video_notes" id="video_notes{{ $video->id }}"data-id="{{ $video->id }}">{{ $video->notes }}</textarea>
             		    </td>
@@ -334,7 +393,7 @@ function division_change(e) {
 	@endif
 	@if($invoice->teams->count() > 0)
 	<tr>
-	    <td colspan="7" class="team_section" id="teams{{ $invoice->id }}">
+	    <td colspan="8" class="team_section" id="teams{{ $invoice->id }}">
 
     	    <table class="table pull-right">
     	        <thead>
@@ -405,6 +464,7 @@ function division_change(e) {
 		<td class="text-center">{{ $team_count }} / {{ $team_actual }}</td>
 		<td class="text-center">{{ $video_count }} / {{ $video_actual }}</td>
 		<td class="text-center">{{ $students_count }}</td>
+		<td colspan="3"></td>
 	</tr>
 @else
 	<tr><td>No Invoices</td></tr>
