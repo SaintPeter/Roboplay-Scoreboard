@@ -104,8 +104,8 @@
 			<tbody>
 				<tr>
 					<td>
-						<strong>C:</strong> {{ $school->district->county->name }}<br />
-						<strong>D:</strong> {{ $school->district->name }}<br />
+						<strong>C:</strong> {{ $school->county }}<br />
+						<strong>D:</strong> {{ $school->district }}<br />
 						<strong>S:</strong> {{ $school->name }}
 					</td>
 					<td>
