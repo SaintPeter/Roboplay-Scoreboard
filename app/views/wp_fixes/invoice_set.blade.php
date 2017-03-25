@@ -82,8 +82,8 @@ td.bg-warning {
 				<td><a href="mailto:{{ $invoice->user->user_email }}" class="btn btn-info btn-mini"><i class=icon-envelope>M</i> </a></td>
 				@if(isset($invoice->school))
 					<td>
-						<strong>C:</strong> {{ $invoice->school->district->county->name }}<br />
-						<strong>D:</strong> {{ $invoice->school->district->name }}<br />
+						<strong>C:</strong> {{ $invoice->school->county }}<br />
+						<strong>D:</strong> {{ $invoice->school->district }}<br />
 						<strong>S:</strong> {{ $invoice->school->name }}<br />
 					</td>
 				@else

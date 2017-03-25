@@ -17,7 +17,7 @@ class Invoices extends \Eloquent {
 	}
 
 	public function school() {
-	    return $this->belongsTo('Schools', 'wp_school_id', 'school_id');
+	    return $this->belongsTo('School', 'wp_school_id', 'id');
 	}
 
 	public function videos() {

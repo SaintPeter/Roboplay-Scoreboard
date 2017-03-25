@@ -26,8 +26,7 @@ class VideosController extends BaseController {
 		$year = Session::get('year', false);
 
 		$video_query = Video::with('vid_division',
-		                           'school', 'school.district', 'school.district.county',
-		                           'students', 'teacher', 'teacher.usermeta',
+		                           'school', 'students', 'teacher', 'teacher.usermeta',
 		                           'awards')
 							->orderBy('year', 'desc')
 							->orderBy('teacher_id');
@@ -170,9 +169,7 @@ class VideosController extends BaseController {
 	{
 		Breadcrumbs::addCrumb('Edit Video', 'videos');
 		View::share('title', 'Edit Video');
-		$video = Video::with('teacher','vid_division',
-		                     'school', 'school.district', 'school.district.county',
-		                     'awards')->find($id);
+		$video = Video::with('teacher','vid_division','school','awards')->find($id);
 		$vid_divisions = Vid_division::longname_array();
 
 		$teacher_list = [];

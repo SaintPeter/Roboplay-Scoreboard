@@ -2,7 +2,7 @@
 
 class Team extends Eloquent {
 	protected $guarded = array();
-	protected $with = [ 'school', 'school.district', 'school.district.county', 'division', 'division.competition' ];
+	protected $with = [ 'school', 'division', 'division.competition' ];
 
 	public static $rules = array(
 		'name' => 'required',
@@ -32,7 +32,7 @@ class Team extends Eloquent {
 
 	public function school()
 	{
-		return $this->hasOne('Schools', 'school_id', 'school_id');
+		return $this->belongsTo('School');
 	}
 
 	public function students() {

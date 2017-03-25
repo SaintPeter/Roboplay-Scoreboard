@@ -19,9 +19,9 @@ class TeamsController extends BaseController {
 		$year = Session::get('year', false);
 
 		if($year) {
-			$teams = Team::where('year', $year)->with('division', 'school', 'school.district', 'school.district.county', 'teacher', 'teacher.usermeta', 'students')->get();
+			$teams = Team::where('year', $year)->with('division', 'school', 'teacher', 'teacher.usermeta', 'students')->get();
 		} else {
-			$teams = Team::with('division', 'school', 'school.district', 'school.district.county', 'teacher', 'teacher.usermeta', 'students')
+			$teams = Team::with('division', 'school', 'teacher', 'teacher.usermeta', 'students')
 						->orderBy('year', 'desc')
 						->get();
 		}
@@ -136,7 +136,7 @@ class TeamsController extends BaseController {
 	{
 		Breadcrumbs::addCrumb('Show Team', $id);
 		View::share('title', 'Show Team');
-		$team = Team::with('school', 'school.district', 'school.district.county')->findOrFail($id);
+		$team = Team::with('school')->findOrFail($id);
 
 		return View::make('teams.show', compact('team'));
 	}
@@ -151,7 +151,7 @@ class TeamsController extends BaseController {
 	{
 		Breadcrumbs::addCrumb('Edit Team', $id);
 		View::share('title', 'Edit Team');
-		$team = Team::with('school', 'school.district', 'school.district.county')->find($id);
+		$team = Team::with('school')->find($id);
 
 		if (is_null($team))
 		{

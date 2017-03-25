@@ -278,4 +278,80 @@ class Wp_fix extends BaseController {
 
 	}
 
+	// Fix any missing schools from past years
+	public function sync_team_schools() {
+	    $teams = Team::all();
+	    $school_list = $teams->lists('school_id');
+
+	    // Load all of the schools from the Wordpress list that match our school list
+	    $wp_schools = Schools::whereIn('school_id', $school_list)->with('district', 'district.county')->get();
+
+	    // Get all currently loaded schools
+	    $schools = School::all()->keyBy('id');
+
+        $added_list = [];
+	    foreach($wp_schools as $this_school) {
+	        if(!$schools->has($this_school->school_id)) {
+	            $new_school = School::firstOrNew([
+	                'id' => $this_school->school_id ]);
+	            $new_school->fill([
+	                'county_id' => $this_school->district->county->county_id,
+	                'district_id' => $this_school->district->district_id,
+	                'name' => $this_school->name,
+	                'district' => $this_school->district->name,
+	                'county' => $this_school->district->county->name
+	                ]);
+	            $new_school->save();
+	           $schools->add($new_school);
+	           $added_list[] = $new_school->toArray();
+	        }
+	    }
+	    d($added_list);
+	}
+
+	// Fix any teams missing teachers
+	public function sync_team_teachers() {
+	    $teams = Team::where('teacher_id', '!=', '0')->orderBy('created_at')->get();
+
+	    $school_to_teacher = [];
+	    foreach($teams as $team) {
+	        if(!array_key_exists($team->school_id, $school_to_teacher)) {
+                $school_to_teacher[$team->school_id] = $team->teacher_id;
+            }
+	    }
+
+	    $teams = Team::where('teacher_id', '=', '0')->get();
+
+        $output = [];
+        $missing = [];
+	    foreach($teams as $team) {
+	        if(array_key_exists($team->school_id, $school_to_teacher)) {
+                $team->teacher_id = $school_to_teacher[$team->school_id];
+                $team->save();
+            } else {
+                $output[] = [
+                    'team_id' => $team->id,
+                    'school_id' => $team->school_id,
+                    'Team Name' => $team->name,
+                    'School' => $team->school->name,
+                    'Year' => $team->year ];
+                $missing[] = $team->school_id;
+            }
+	    }
+
+	    d($output);
+
+	    $metas = Usermeta::where('meta_key', 'wp_school_id')->whereIn('meta_value', $missing)->get();
+
+	    // $school_to_teacher = $meta->lists('user_id', 'meta_value');
+
+	    $school_to_teacher = [];
+	    foreach($metas as $meta) {
+	        $school_to_teacher[$meta->meta_value][$meta->user_id] = 1;
+	    }
+
+	    d($school_to_teacher);
+
+	}
+
 }

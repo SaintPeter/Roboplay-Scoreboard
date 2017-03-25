@@ -68,8 +68,8 @@
 			<tbody>
 				<tr>
 					<td>
-						<strong>C:</strong> {{ $invoice->school->district->county->name }}<br />
-						<strong>D:</strong> {{ $invoice->school->district->name }}<br />
+						<strong>C:</strong> {{ $invoice->school->county }}<br />
+						<strong>D:</strong> {{ $invoice->school->district }}<br />
 						<strong>S:</strong> {{ $invoice->school->name }}
 					</td>
 					<td>

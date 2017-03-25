@@ -21,8 +21,8 @@
 			<td>{{{ $math_team->division->longname() }}}</td>
 			<td>
 				@if(isset($math_team->school))
-					<strong>C:</strong> {{ $math_team->school->district->county->name }}<br />
-					<strong>D:</strong> {{ $math_team->school->district->name }}<br />
+					<strong>C:</strong> {{ $math_team->school->district }}<br />
+					<strong>D:</strong> {{ $math_team->school->district }}<br />
 					<strong>S:</strong> {{ $math_team->school->name }}
 				@else
 					Not Set

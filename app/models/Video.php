@@ -2,7 +2,7 @@
 
 class Video extends Eloquent {
 	protected $guarded = [ 'id', 'flag' ];
-	protected $with = [ 'school', 'school.district', 'school.district.county', 'files', 'vid_division' ];
+	protected $with = [ 'school', 'files', 'vid_division' ];
 
 	public static $rules = array(
 		'name' => 'required',
@@ -64,7 +64,7 @@ class Video extends Eloquent {
 
 	public function school()
 	{
-		return $this->belongsTo('Schools', 'school_id', 'school_id');
+		return $this->belongsTo('School');
 	}
 
 	public function files()

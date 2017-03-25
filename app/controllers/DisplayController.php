@@ -421,7 +421,7 @@ class DisplayController extends BaseController {
 	{
 		Breadcrumbs::addCrumb('Statewide Scores', 'compyearscore');
 
-		$compyear = CompYear::with('competitions', 'divisions', 'divisions.teams', 'divisions.challenges')
+		$compyear = CompYear::with('competitions', 'divisions', 'divisions.teams', 'divisions.teams.school', 'divisions.challenges')
 		                    ->find($compyear_id);
 		$divisions = $compyear->divisions;
 
@@ -467,6 +467,9 @@ class DisplayController extends BaseController {
 			foreach($scores as $score)
 			{
 			    $team = $teams->find($score->team_id);
+			    if(!isset($team->school)) {
+			        ddd($team);
+			    }
 				// Initalize the storage location for each team
 				if(!array_key_exists($team->id, $score_list)) {
 					$score_list[$team->id]['school'] = $team->school->name;

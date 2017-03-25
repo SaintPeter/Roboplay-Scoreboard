@@ -70,8 +70,8 @@
 				{{ $video->has_code==1 ? '<span class="btn btn-info btn-xs">Code</span>' : '<span class="btn btn-danger btn-xs">No Code</span>' }} <br />				</td>
 			<td>
 				@if(isset($video->school))
-					<strong>C:</strong> {{ $video->school->district->county->name }}<br />
-					<strong>D:</strong> {{ $video->school->district->name }}<br />
+					<strong>C:</strong> {{ $video->school->county }}<br />
+					<strong>D:</strong> {{ $video->school->district }}<br />
 					<strong>S:</strong> {{ $video->school->name }}
 				@else
 					Not Set

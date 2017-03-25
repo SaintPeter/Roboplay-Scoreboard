@@ -196,6 +196,8 @@ Route::group(array('before' => 'auth'), function() {
 		Route::get('ajax/set_vid_div/{invoice_no}/{value}', [ 'as' => 'ajax.set_vid_div', 'uses' => 'Wp_fix@ajax_set_vid_div']);
 		Route::post('ajax/save_school', 					[ 'as' => 'ajax.save_school', 'uses' => 'Wp_fix@ajax_save_school']);
 		Route::get('student_list',							[ 'as' => 'student_list', 'uses' => 'Wp_fix@student_list'] );
+		Route::get('fix/team_schools',                      [ 'as' => 'fix.team_schools', 'uses' => 'Wp_fix@sync_team_schools']);
+		Route::get('fix/team_teachers',                     [ 'as' => 'fix.team_teachers', 'uses' => 'Wp_fix@sync_team_teachers']);
 
 		// Invoice Review
 		Route::get('invoice_review/toggle_video/{id?}',     [ 'as' => 'invoice_review.toggle_video', 'uses' => 'InvoiceReview@toggle_video' ]);
@@ -209,6 +211,7 @@ Route::group(array('before' => 'auth'), function() {
 		Route::get('invoice_review/{year?}/{terse?}',     	[ 'as' => 'invoice_review',		         'uses' => 'InvoiceReview@invoice_review' ])
 		     ->where('year', '\d{4}');
 		Route::get('invoice_sync/{year}',					[ 'as' => 'invoice_sync',		         'uses' => 'InvoiceReview@invoice_sync' ]);
+		Route::get('school_sync',					        [ 'as' => 'school_sync',		         'uses' => 'InvoiceReview@school_sync' ]);
 
 		Route::get('data_export/{year?}',					[ 'as' => 'data_export',    'uses' => 'InvoiceReview@data_export' ])
 		     ->where('year', '\d{4}');

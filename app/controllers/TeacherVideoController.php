@@ -124,7 +124,7 @@ class TeacherVideoController extends BaseController {
 		View::share('title', 'Video Preview');
 		Breadcrumbs::addCrumb('Manage Teams and Videos', 'teacher');
 		Breadcrumbs::addCrumb('Video Preview', 'teacher/videos/create');
-		$video = Video::with('school', 'school.district', 'school.district.county')->findOrFail($id);
+		$video = Video::with('school')->findOrFail($id);
 
 		return View::make('teacher.videos.show', compact('video'));
 	}

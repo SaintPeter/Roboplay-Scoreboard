@@ -67,8 +67,8 @@
 				<td>
 					@if(isset($team->school))
 						{{ isset($team->teacher) ? $team->teacher->getName() : 'Not Set' }}<br />
-						<strong>C:</strong> {{ $team->school->district->county->name }}<br />
-						<strong>D:</strong> {{ $team->school->district->name }}<br />
+						<strong>C:</strong> {{ $team->school->county }}<br />
+						<strong>D:</strong> {{ $team->school->district }}<br />
 						<strong>S:</strong> {{ $team->school->name }}
 					@else
 						Not Set

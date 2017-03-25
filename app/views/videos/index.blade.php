@@ -71,8 +71,8 @@
 						No Teacher Set<br />
 					@endif
 					@if(isset($video->school))
-						<strong>C:</strong> {{ $video->school->district->county->name }}<br />
-						<strong>D:</strong> {{ $video->school->district->name }}<br />
+						<strong>C:</strong> {{ $video->school->county }}<br />
+						<strong>D:</strong> {{ $video->school->district }}<br />
 						<strong>S:</strong> {{ $video->school->name }}
 					@else
 						Not Set

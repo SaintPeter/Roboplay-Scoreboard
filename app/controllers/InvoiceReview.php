@@ -158,6 +158,8 @@ class InvoiceReview extends \BaseController {
                 }
             }
 
+            $this->school_sync();
+
             $message = 'Synced ' . $count . " Invoices, Removed $removed for $year";
 
             // Only redirect if online
@@ -223,6 +225,8 @@ class InvoiceReview extends \BaseController {
                 }
             }
 
+            $this->school_sync();
+
             $message = 'Synced ' . $count . " Invoices, Removed $removed for $year";
 
             // Only redirect if online
@@ -232,6 +236,30 @@ class InvoiceReview extends \BaseController {
                 return $message;
             }
         }
+	}
+
+    // Make a flat, local copy of the wordpress schools table
+	public function school_sync() {
+	    $invoices = Invoices::all();
+	    $school_list = $invoices->lists('wp_school_id');
+	    $wp_schools = Schools::whereIn('school_id', $school_list)->with('district', 'district.county')->get();
+	    $schools = School::all()->keyBy('id');
+
+	    foreach($wp_schools as $this_school) {
+	        if(!$schools->has($this_school->school_id)) {
+	            $new_school = School::firstOrNew([
+	                'id' => $this_school->school_id ]);
+	            $new_school->fill([
+	                'county_id' => $this_school->district->county->county_id,
+	                'district_id' => $this_school->district->district_id,
+	                'name' => $this_school->name,
+	                'district' => $this_school->district->name,
+	                'county' => $this_school->district->county->name
+	                ]);
+	           $new_school->save();
+	           $schools->add($new_school);
+	        }
+	    }
 	}
 
 	// Data Export interface
@@ -374,11 +402,12 @@ class InvoiceReview extends \BaseController {
 	    }
 
 
-		$invoices = Invoices::with('wp_user', 'wp_user.usermeta', 'judge', 'school', 'school.district', 'school.district.county')
-	                        ->with( [ 'teams' => function($q) use ($year) {
-	                             return $q->where('year', $year);
-	                        }, 'teams.students', 'teams.division', 'teams.division.competition',
-	                           'teams.students.math_level', 'teams.students.ethnicity'])
+		$invoices = Invoices::with([ 'wp_user', 'wp_user.usermeta', 'school', 'judge' ,
+		                             'teams' => function($q) use ($year) {
+	                                       return $q->where('year', $year);
+	                                },
+	                                'teams.students', 'teams.division', 'teams.division.competition',
+	                                'teams.students.math_level', 'teams.students.ethnicity'])
     	                    ->where('year', $year)
     	                    ->get();
 
@@ -392,8 +421,8 @@ class InvoiceReview extends \BaseController {
         			$content .= join('","',
         			                [ $invoice->judge->display_name,
         			                isset($invoice->school) ? $invoice->school->name : "No School",
-        			                isset($invoice->school) ? $invoice->school->district->name : "No School",
-        			                isset($invoice->school) ? $invoice->school->district->county->name : "No School",
+        			                isset($invoice->school) ? $invoice->school->district : "No School",
+        			                isset($invoice->school) ? $invoice->school->county : "No School",
 	                                $team->division->competition->location,
 	                                $team->name,
 	                                preg_replace('/"/','""',$student->fullName()),
@@ -423,7 +452,7 @@ class InvoiceReview extends \BaseController {
 	    }
 
 
-		$invoices = Invoices::with('wp_user', 'wp_user.usermeta', 'judge', 'school', 'school.district', 'school.district.county')
+		$invoices = Invoices::with('wp_user', 'wp_user.usermeta', 'judge', 'school')
 	                        ->with( [ 'videos' => function($q) use ($year) {
 	                             return $q->where('year', $year)->where('flag', 0);
 	                        }, 'videos.students', 'videos.division', 'videos.division.competition',
@@ -441,8 +470,8 @@ class InvoiceReview extends \BaseController {
         			$content .= join('","',
         			                [ $invoice->judge->display_name,
         			                isset($invoice->school) ? $invoice->school->name : "No School",
-        			                isset($invoice->school) ? $invoice->school->district->name : "No School",
-        			                isset($invoice->school) ? $invoice->school->district->county->name : "No School",
+        			                isset($invoice->school) ? $invoice->school->district : "No School",
+        			                isset($invoice->school) ? $invoice->school->county : "No School",
 	                                $video->name,
 	                                preg_replace('/"/','""',$student->fullName()),
 	                                $student->gender,
