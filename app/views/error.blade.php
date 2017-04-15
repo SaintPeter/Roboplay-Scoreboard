@@ -1,7 +1,6 @@
 @extends('layouts.scaffold')
 
 @section('main')
-<H1>Error</H1>
-{{ Breadcrumbs::render() }}
+<H2>{{ isset($error_title) ? $error_title : "An Error has Occured" }}</H2>
 <p>{{ $message }}</p>
 @stop
