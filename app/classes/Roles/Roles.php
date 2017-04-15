@@ -16,7 +16,7 @@ class Roles {
 
 	public static function isTeacher()
 	{
-		return Roles::is('teachers','administrator','scoreboard_admin');
+		return Roles::is('cstemteachers','teachers','administrator','scoreboard_admin');
 	}
 
 	public static function is()
