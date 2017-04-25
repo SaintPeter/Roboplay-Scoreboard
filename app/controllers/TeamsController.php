@@ -78,9 +78,6 @@ class TeamsController extends BaseController {
 				$students_pass = true;
 				foreach ($students as $index => $student) {
 				 	$student_rules = Student::$rules;
-					if(array_key_exists('id', $student)) {
-						$student_rules['ssid'] .= ',' . $student['id'];
-					}
 				 	$studentErrors[$index] = Validator::make($student, $student_rules);
 				 	if($studentErrors[$index]->fails()) {
 				 		$students_pass = false;
@@ -200,9 +197,6 @@ class TeamsController extends BaseController {
 				$students_pass = true;
 				foreach ($students as $index => $student) {
 					$student_rules = Student::$rules;
-					if(array_key_exists('id', $student)) {
-						$student_rules['ssid'] .= ',' . $student['id'];
-					}
 				 	$studentErrors[$index] = Validator::make($student, $student_rules);
 				 	if($studentErrors[$index]->fails()) {
 				 		$students_pass = false;

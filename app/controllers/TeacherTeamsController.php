@@ -62,10 +62,7 @@ class TeacherTeamsController extends BaseController {
 			if(!empty($students)) {
 				$students_pass = true;
 				foreach ($students as $index => $student) {
-				 	 $student_rules = Student::$rules;
-					if(array_key_exists('id', $student)) {
-						$student_rules['ssid'] .= ',' . $student['id'];
-					}
+				 	$student_rules = Student::$rules;
 				 	$studentErrors[$index] = Validator::make($student, $student_rules);
 				 	 if($studentErrors[$index]->fails()) {
 				 	 	$students_pass = false;
@@ -183,10 +180,7 @@ class TeacherTeamsController extends BaseController {
 			if(!empty($students)) {
 				$students_pass = true;
 				foreach ($students as $index => $student) {
-				 	 $student_rules = Student::$rules;
-					if(array_key_exists('id', $student)) {
-						$student_rules['ssid'] .= ',' . $student['id'];
-					}
+				 	$student_rules = Student::$rules;
 				 	$studentErrors[$index] = Validator::make($student, $student_rules);
 				 	 if($studentErrors[$index]->fails()) {
 				 	 	$students_pass = false;
