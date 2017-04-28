@@ -22,8 +22,6 @@ class TeacherVideoController extends BaseController {
 	{
 		Breadcrumbs::addCrumb('Manage Teams and Videos', 'teacher');
 		Breadcrumbs::addCrumb('Add Video', 'teacher/videos/create');
-		$school_id = Usermeta::getSchoolId();
-		$school = Schools::find($school_id);
 
         // Get the most recent competition year with video divisisons
 	    $comp_year = CompYear::orderBy('year', 'desc')
@@ -31,6 +29,13 @@ class TeacherVideoController extends BaseController {
 										return $q->orderby('display_order');
 									}])
 							->first();
+
+		$invoice = Invoices::where('year', $comp_year->year)
+	                       ->where('user_id', Auth::user()->ID)
+	                       ->with('school')
+	                       ->first();
+
+	    $school = $invoice->school;
 
         $division_list = [ 0 => "- Select Division -" ] + $comp_year->vid_divisions->lists('name', 'id');
 
@@ -51,9 +56,16 @@ class TeacherVideoController extends BaseController {
 		$input = Input::except('students');
 		$input['school_id'] = Usermeta::getSchoolId();
 		$teacher = Wp_user::with('usermeta')->find(Auth::user()->ID);
-		$school_id = $teacher->getMeta('wp_school_id');
-		$input['teacher_id'] = Auth::user()->ID;
 		$input['year'] = Carbon\Carbon::now()->year;
+		$invoice = Invoices::where('year', $input['year'])
+	                       ->where('user_id', Auth::user()->ID)
+	                       ->with('school')
+	                       ->first();
+
+	    $school_id = $invoice->school->id;
+
+		$input['teacher_id'] = Auth::user()->ID;
+
 
 		$students = Input::get('students');
 
