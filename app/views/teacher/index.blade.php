@@ -215,9 +215,9 @@
 						<td><a href="http://youtube.com/watch?v={{{ $video->yt_code }}}" target="_new">YouTube</a></td>
 						<td>{{{ $video->has_custom==1 ? 'Yes' : 'No' }}}</td>
 						<td>{{ count($video->files) }}</td>
-						<td class="{{ $video->has_vid==1 ? 'confirmed' : 'unconfirmed' }}">
-							{{ $video->has_vid==1 ? 'Video File' : 'No Video' }} <br />
-							{{ $video->has_code==1 ? 'Code File' : 'No Code' }} <br />
+						<td class="{{ ($video->has_vid==1 && $video->has_code==1) ? 'confirmed' : 'unconfirmed' }}">
+							{{ $video->has_vid==1 ? '<span class="btn btn-success btn-xs btn-margin">Has Video</span>' : '<span class="btn btn-danger btn-xs btn-margin">No Video</span>' }} <br>
+							{{ $video->has_code==1 ? '<span class="btn btn-info btn-xs btn-margin">Has Code</span>' : '<span class="btn btn-danger btn-xs btn-margin">No Code</span>' }} <br>
 						</td>
 						<td>
 							{{ link_to_route('teacher.videos.show', 'Preview', array($video->id), array('class' => 'btn btn-primary')) }}
